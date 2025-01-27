@@ -1,0 +1,77 @@
+@startuml
+
+class Canvas {
+    - currentTransform: Transform
+    - zoomLevel: float
+
+    - zoomCenter: Point2D
+    - hoverPixel: Point2D
+
+    + Canvas()
+    + Canvas(Image activeImage)
+    
+    + setActiveImage(Image activeImage): void
+    + getActiveImage(): Image
+
+    + getPixelPoint(Point p): Point2D
+
+}
+
+class Image {
+    - activeLayerIndex: int 
+    - width: int
+    - height: int
+    - savePath: String
+
+    + Image()
+    + Image(Layer layer)
+    + Image(Layer[] layers)
+    + Image(Color c, int w, int h)
+
+    + getLayerCount(): int
+    + getWidth(): int
+    + getHeight(): int
+    + getSavePath(): String
+
+    + setWidth(int w): void
+    + setHeight(int h): void
+    + setSavePath(String savePath): void
+
+    + getLayer(int idex): Layer
+    + getActiveLayer(): Layer
+
+    + setActiveLayer(int index): void
+    + setActiveLayer(Layer l): void
+
+    + addLayer(int index): void
+    + removeLayer(int index): void
+    + removeLayers(int startIndex, endIndex): void
+    + moveLayer(int oldIndex, int newIndex): void
+
+    + compressLayers(int startIndex, int endIndex): Layer
+}
+
+class Layer {
+    - pixels: Color[][]
+    - active: boolean
+
+    + Layer(int width, int height)
+    + Layer(Color color, int width, int height)
+    + Layer(Color[][] pixels)
+
+    + getPixel(int x, int y): Color
+    + getPixels(int x, int y, int width, int height): Color[][]
+
+    + setPixel(Color c, int x, int y): void
+    + setPixels(Color c, int x, int y, int width, int height): void
+
+    + getActive(): boolean
+    + setActive(boolean active): void
+
+    + compress(Layer l1, Layer l2): Layer
+}
+
+Image --> "*" Layer
+Canvas --> "1" Image
+
+@enduml
