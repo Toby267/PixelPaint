@@ -1,4 +1,36 @@
-@startuml
+@startuml Canvas Class Diagram
+
+left to right direction
+
+interface MouseMotionListener
+interface MouseListener
+interface MouseWheelListener
+class JPanel
+
+interface Tool{
+    + mouseDragged(Canvas c, MouseEvent e): void
+    + mousePressed(Canvas c, MouseEvent e): void
+    + mouseWheelMoved(Canvas c, MouseWheelEvent e): void
+    + mouseClicked(Canvas c, MouseEvent e): void
+    + mouseMoved(Canvas c, MouseEvent e): void
+    + mouseExited(Canvas c, MouseEvent e): void
+    + mouseReleased(Canvas c, MouseEvent e): void
+    + mouseEntered(Canvas c, MouseEvent e): void
+}
+
+class ToolManager {
+    - Map<String, Tool> tools
+
+    - activeTool: Tool
+    - canvas: Canvas
+
+    + ToolManager(Canvas canvas)
+
+    + registerTool(String ID, Tool t): void
+    + getTool(String ID): Tool
+    + setActiveTool(Tool activeTool): void
+    + setActiveTool(String ID): void
+}
 
 class Canvas {
     - currentTransform: Transform
@@ -19,9 +51,12 @@ class Canvas {
 
 class Image {
     - activeLayerIndex: int 
+    - savePath: String
+
     - width: int
     - height: int
-    - savePath: String
+
+    - pixels: Color[][]
 
     + Image()
     + Image(Layer layer)
@@ -49,6 +84,11 @@ class Image {
     + moveLayer(int oldIndex, int newIndex): void
 
     + compressLayers(int startIndex, int endIndex): Layer
+
+    - toPixels() : void
+    + recalculatePixels(int x, int y, int width, int height): void
+    + recalculatePixel(int x, int y): void
+    + getPixels(): Color[][]
 }
 
 class Layer {
@@ -73,5 +113,14 @@ class Layer {
 
 Image --> "*" Layer
 Canvas --> "1" Image
+Canvas --> "1" ToolManager
+
+ToolManager --> "*" Tool
+
+MouseListener <|.. ToolManager : "Implements"
+MouseMotionListener <|.. ToolManager : "Implements"
+MouseWheelListener <|.. ToolManager : "Implements"
+
+JPanel <|-- Canvas: "Extends"
 
 @enduml
