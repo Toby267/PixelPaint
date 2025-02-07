@@ -1,0 +1,22 @@
+@startuml Action Class Diagram
+
+interface Action {
+    + undo(Canvas c): void
+    + redo(Canvas c): void
+}
+
+class PixelChangeAction {
+    startX: int
+    startY: int
+    width: int
+    height: int
+
+    OldData: Color[][]
+    NewData: Color[][]
+
+    + undo(Canvas c): void
+    + redo(Canvas c): void
+}
+
+Layer --> "16" Action
+@enduml

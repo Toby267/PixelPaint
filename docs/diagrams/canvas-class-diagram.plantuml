@@ -5,7 +5,6 @@ left to right direction
 interface MouseMotionListener
 interface MouseListener
 interface MouseWheelListener
-class JPanel
 
 interface Tool{
     + mouseDragged(Canvas c, MouseEvent e): void
@@ -18,11 +17,14 @@ interface Tool{
     + mouseEntered(Canvas c, MouseEvent e): void
 }
 
+class GUI {
+
+}
+
 class ToolManager {
     - Map<String, Tool> tools
 
     - activeTool: Tool
-    - canvas: Canvas
 
     + ToolManager(Canvas canvas)
 
@@ -113,7 +115,11 @@ class Layer {
 
 Image --> "*" Layer
 Canvas --> "1" Image
-Canvas --> "1" ToolManager
+
+GUI --> "1" Canvas
+GUI --> "1" ToolManager
+
+ToolManager --> "1" Canvas
 
 ToolManager --> "*" Tool
 
@@ -121,6 +127,7 @@ MouseListener <|.. ToolManager : "Implements"
 MouseMotionListener <|.. ToolManager : "Implements"
 MouseWheelListener <|.. ToolManager : "Implements"
 
-JPanel <|-- Canvas: "Extends"
+'JPanel <|-- Canvas: "Extends"
+'JFrame <|-- GUI: "Extends"
 
 @enduml
