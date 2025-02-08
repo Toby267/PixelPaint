@@ -22,5 +22,5 @@ java {
 }
 
 application {
-    mainClass = 'org.SCC200G15.PixelPaint' // Define the main class for the application.
+    mainClass = 'org.scc200g15.PixelPaint' // Define the main class for the application.
 }
