@@ -26,7 +26,13 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
         canvas.registerToolManager(this);
     }
 
-    public void registerTool(String ID, Tool t){}
+    public void registerTool(String ID, Tool t){
+        if(!tools.containsKey(ID)){
+            tools.put(ID, t);
+        }else{
+            throw new Error("A tool exists with ID: " + ID);
+        }
+    }
     public Tool getTool(String ID){
         if(tools.containsKey(ID)){
             return tools.get(ID);

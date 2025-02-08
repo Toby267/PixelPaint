@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import javax.swing.JPanel;
@@ -71,10 +71,24 @@ public class PCanvas extends JPanel{
         // Render the pixels onto the screen
         for (int x = 0; x < pixels.length; x++) {
             for (int y = 0; y < pixels[0].length; y++) {
-                g2d.setColor(pixels[x][y]);
+                if((int)(hoverPixel.getX()) == x &&  (int)(hoverPixel.getY()) == y) g2d.setColor(Color.red);
+                else g2d.setColor(pixels[x][y]);
+            
                 g2d.fillRect(x, y, 1, 1);
             }
         }
+    }
+
+    public Point2D getPixelPoint(Point p) {
+        Point2D dsPoint = new Point2D.Float();
+        try {
+            currentTransform.inverseTransform(p, dsPoint);
+        } catch (NoninvertibleTransformException e) {
+            // Should never happen
+            return new Point(0, 0);
+        }
+
+        return dsPoint;
     }
 
     public void setActiveImage(Image i) {
@@ -104,5 +118,9 @@ public class PCanvas extends JPanel{
     }
     public Point getDif(){
         return dif;
+    }
+
+    public void setHoverPixel(Point2D hoverPixel){
+        this.hoverPixel = hoverPixel;
     }
 }
