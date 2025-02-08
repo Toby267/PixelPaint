@@ -9,11 +9,14 @@ import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.PToolBar;
+import org.scc200g15.tools.PanZoomTool;
+import org.scc200g15.tools.ToolManager;
 
 
 public class GUI extends JFrame {
 
     PCanvas canvas;
+    ToolManager toolManager;
 
     public GUI() {
         super("Pixel Paint");
@@ -39,6 +42,10 @@ public class GUI extends JFrame {
         // Canvas
         canvas = new PCanvas();
         add(canvas);
+
+        // ToolManager
+        PanZoomTool defaultTool = new PanZoomTool();
+        toolManager = new ToolManager(canvas, defaultTool);
 
         // General 
         setSize(500, 500);

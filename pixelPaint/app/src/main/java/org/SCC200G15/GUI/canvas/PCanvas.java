@@ -10,18 +10,18 @@ import java.awt.geom.Point2D;
 import javax.swing.JPanel;
 
 import org.scc200g15.image.Image;
+import org.scc200g15.tools.ToolManager;
 
 public class PCanvas extends JPanel{
     Image activeImage = null;
 
-    AffineTransform currentTransform;
+    Transform currentTransform;
 
-    float zoomLevel = 0;
+    float zoomLevel = 1;
 
     Point2D zoomCenter = new Point(-1, -1);
     Point2D hoverPixel = new Point(-1, -1);
 
-    Point offset = new Point(0, 0);
     Point dif = new Point(0, 0);
 
     public PCanvas() {
@@ -51,13 +51,16 @@ public class PCanvas extends JPanel{
         int yMove = (this.getHeight() - (int) (SF * activeImage.getHeight())) / 2;
 
         // Create a new transform
-        currentTransform = new AffineTransform();
+        currentTransform = new Transform();
 
         // Move to the middle of the screen and then apply the offset for pan
-        currentTransform.translate(xMove, yMove);
+        currentTransform.translate(xMove + dif.x, yMove + dif.y);
+
+        // Zoom in with SF zoomLevel about the mouse position
+        currentTransform.scaleAboutPoint(zoomLevel, zoomCenter);
 
         // Scale the pixels so they fill the screen on zoom level 1
-        currentTransform.scale(SF, SF);
+        currentTransform.scale(SF);
 
         // Apply the transform
         g2d.transform(currentTransform);
@@ -76,5 +79,30 @@ public class PCanvas extends JPanel{
 
     public void setActiveImage(Image i) {
         activeImage = i;
+    }
+
+    public void registerToolManager(ToolManager toolManager){
+        addMouseListener(toolManager);
+        addMouseMotionListener(toolManager);
+        addMouseWheelListener(toolManager);
+    }
+
+    public void zoomIn(Point p){
+        zoomCenter = p;
+        zoomLevel += 0.05;
+    }
+
+    public void zoomOut(Point p){
+        zoomCenter = p;
+        zoomLevel -= 0.05;
+        if (zoomLevel <= 0.05)
+            zoomLevel = 0.05f;
+    }
+
+    public void setDif(Point p){
+        dif = p;
+    }
+    public Point getDif(){
+        return dif;
     }
 }
