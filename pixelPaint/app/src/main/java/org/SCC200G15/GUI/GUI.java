@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
+import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
@@ -11,6 +12,8 @@ import org.scc200g15.gui.toolbar.PToolBar;
 
 
 public class GUI extends JFrame {
+
+    PCanvas canvas;
 
     public GUI() {
         super("Pixel Paint");
@@ -34,10 +37,16 @@ public class GUI extends JFrame {
         add(sideBar, BorderLayout.WEST);
 
         // Canvas
+        canvas = new PCanvas();
+        add(canvas);
 
         // General 
         setSize(500, 500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+    }
+
+    public PCanvas getCanvas() {
+        return canvas;
     }
 }
