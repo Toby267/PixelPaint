@@ -1,11 +1,11 @@
-package org.SCC200G15;
+package org.scc200g15;
 
 import org.junit.Test;
+import org.scc200g15.PixelPaint;
+
 import static org.junit.Assert.*;
 
 public class AppTest {
     @Test public void appHasAGreeting() {
-        PixelPaint classUnderTest = new PixelPaint();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
     }
 }

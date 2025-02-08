@@ -1,11 +1,9 @@
-package org.SCC200G15;
+package org.scc200g15;
+
+import org.scc200g15.gui.GUI;
 
 public class PixelPaint {
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
     public static void main(String[] args) {
-        System.out.println(new PixelPaint().getGreeting());
+        GUI gui = new GUI();
     }
 }
