@@ -1,0 +1,84 @@
+@startuml Canvas Class Diagram
+
+left to right direction
+
+interface MouseMotionListener
+interface MouseListener
+interface MouseWheelListener
+
+interface Tool{
+    + mouseDragged(Canvas c, MouseEvent e): void
+    + mousePressed(Canvas c, MouseEvent e): void
+    + mouseWheelMoved(Canvas c, MouseWheelEvent e): void
+    + mouseClicked(Canvas c, MouseEvent e): void
+    + mouseMoved(Canvas c, MouseEvent e): void
+    + mouseExited(Canvas c, MouseEvent e): void
+    + mouseReleased(Canvas c, MouseEvent e): void
+    + mouseEntered(Canvas c, MouseEvent e): void
+}
+
+class GUI {
+
+}
+
+class ToolManager {
+    - Map<String, Tool> tools
+
+    - activeTool: Tool
+
+    + ToolManager(Canvas canvas)
+}
+
+class Canvas {
+    - currentTransform: Transform
+    - zoomLevel: float
+
+    - zoomCenter: Point2D
+    - hoverPixel: Point2D
+
+}
+
+class Image {
+    - activeLayerIndex: int 
+    - savePath: String
+
+    - width: int
+    - height: int
+
+    - pixels: Color[][]
+
+    + setActiveLayer(int index): void
+    + setActiveLayer(Layer l): void
+
+    + addLayer(int index): void
+    + removeLayer(int index): void
+    + removeLayers(int startIndex, endIndex): void
+    + moveLayer(int oldIndex, int newIndex): void
+}
+
+class Layer {
+    - pixels: Color[][]
+    - active: boolean
+
+    + getPixel(int x, int y): Color
+    + setPixel(Color c, int x, int y): void
+}
+
+Image --> "*" Layer
+Canvas --> "1" Image
+
+GUI --> "1" Canvas
+GUI --> "1" ToolManager
+
+ToolManager --> "1" Canvas
+
+ToolManager --> "*" Tool
+
+MouseListener <|.. ToolManager : "Implements"
+MouseMotionListener <|.. ToolManager : "Implements"
+MouseWheelListener <|.. ToolManager : "Implements"
+
+'JPanel <|-- Canvas: "Extends"
+'JFrame <|-- GUI: "Extends"
+
+@enduml
