@@ -11,7 +11,10 @@ repositories {
 }
 
 dependencies { 
-    testImplementation libs.junit // Use JUnit test framework.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -23,4 +26,8 @@ java {
 
 application {
     mainClass = 'org.scc200g15.PixelPaint' // Define the main class for the application.
+}
+
+test {
+    useJUnitPlatform()
 }
