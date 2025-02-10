@@ -10,14 +10,24 @@ import java.util.Map;
 
 import org.scc200g15.gui.canvas.PCanvas;
 
+/**
+ * The toolManager is responsible for passing the mouse events to the current active tool
+ * or the default tool if no tool is active
+ */
 public class ToolManager implements MouseMotionListener, MouseListener, MouseWheelListener{
 
+    // Map of all tools
     private Map<String, Tool> tools;
 
     private Tool defaultTool;
     private Tool activeTool = null;
     private PCanvas canvas;
 
+    /**
+     * Constructor that takes a canvas to work on and a default tool
+     * @param canvas the canvas for tools to work on
+     * @param defaultTool the tool to be active if no tools are selected
+     */
     public ToolManager(PCanvas canvas, Tool defaultTool){
         this.defaultTool = defaultTool;
         tools = new HashMap<>();
@@ -26,6 +36,11 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
         canvas.registerToolManager(this);
     }
 
+    /**
+     * Register a tool
+     * @param ID the ID of the tool
+     * @param t the tool
+     */
     public void registerTool(String ID, Tool t){
         if(!tools.containsKey(ID)){
             tools.put(ID, t);
@@ -33,6 +48,10 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
             throw new Error("A tool exists with ID: " + ID);
         }
     }
+    /**
+     * Get a tool based on the ID
+     * @param ID the ID of the tool you want to get
+     */
     public Tool getTool(String ID){
         if(tools.containsKey(ID)){
             return tools.get(ID);
@@ -40,13 +59,23 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
             throw new Error("No tool exists with ID: " + ID);
         }
     }
+    /**
+     * Set the active tool
+     * @param activeTool the tool you want to be the active tool
+     */
     public void setActiveTool(Tool activeTool) {
         this.activeTool = activeTool;
     }
+    /**
+     * Set the active tool
+     * @param ID the ID of the tool you want to be the active tool
+     */
     public void setActiveTool(String ID) {
         this.activeTool = getTool(ID);
     }
 
+
+    // Pass through to the active or default tool
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         if(activeTool != null) activeTool.mouseWheelMoved(canvas, e);

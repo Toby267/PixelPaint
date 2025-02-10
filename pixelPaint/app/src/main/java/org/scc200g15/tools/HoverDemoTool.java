@@ -1,21 +1,25 @@
 package org.scc200g15.tools;
 
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
 import org.scc200g15.gui.canvas.PCanvas;
 
+/**
+ * Basic tool to demo how you can get a pixel pos from the mouse pos
+ */
 public class HoverDemoTool implements Tool{
 
-    Point offset = new Point(0, 0);
-
+    /**
+     * Sets the hover pixel based on the result from the inverse transform
+     */
     @Override
     public void mouseMoved(PCanvas c, MouseEvent e) {
         c.setHoverPixel(c.getPixelPoint(e.getPoint()));
         c.repaint();
     }
 
+    // Not Used
     @Override
     public void mouseDragged(PCanvas c, MouseEvent e) {
     }
