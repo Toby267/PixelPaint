@@ -1,4 +1,6 @@
 # Build Instructions
+
+## Ubuntu
 ```sh
 cd pixelPaint
 ./gradlew  build #Builds The App
