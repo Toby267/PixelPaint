@@ -12,6 +12,10 @@ import javax.swing.JPanel;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.ToolManager;
 
+/**
+ * PCanvas - The canvas is the area on the screen where the main ActiveImage is drawn
+ * it handles tracks mouse inputs and passes them to the tool manager
+ */
 public class PCanvas extends JPanel{
     Image activeImage = null;
 
@@ -24,10 +28,18 @@ public class PCanvas extends JPanel{
 
     Point dif = new Point(0, 0);
 
+    /**
+     * Default constructor, with no image active to start
+     */
     public PCanvas() {
         this.setBackground(Color.BLACK);
     }
 
+    /**
+     * Overrides the rendering of the JPanel to allow the pixels of the image
+     * to be rendered onto the screen, also responsible for handling the pan and zooming
+     * of the image on the canvas
+     */
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -79,47 +91,84 @@ public class PCanvas extends JPanel{
         }
     }
 
+    /**
+     * Handles applying the reese transform to get the pixel pos from the position on screen
+     * @param p The pixel on screen
+     * @return returns the pixel pos for the given mouse position on screen
+     */
     public Point2D getPixelPoint(Point p) {
+        // Define a point to put the result in
         Point2D dsPoint = new Point2D.Float();
         try {
+            // Apply the inverse of the zoom and pan transform
             currentTransform.inverseTransform(p, dsPoint);
         } catch (NoninvertibleTransformException e) {
-            // Should never happen
+            // This should not be possible this would only happen if the scale was ever set to 0
+            // this should not be possible due to limits being enforced when controlling the zoom
             return new Point(0, 0);
         }
 
         return dsPoint;
     }
 
+    /**
+     * Set the active image to draw on the screen
+     * @param i the new image to draw
+     */
     public void setActiveImage(Image i) {
         activeImage = i;
+        repaint();
     }
 
+    /**
+     * Register the tool managers listeners with to listen to canvas mouse events
+     * @param toolManager
+     */
     public void registerToolManager(ToolManager toolManager){
         addMouseListener(toolManager);
         addMouseMotionListener(toolManager);
         addMouseWheelListener(toolManager);
     }
 
+    /**
+     * Zoom in the canvas about a point
+     * @param p The point to zoom the canvas about
+     */
     public void zoomIn(Point p){
         zoomCenter = p;
         zoomLevel += 0.05;
     }
 
+    /**
+     * Zoom out the canvas about a point
+     * @param p The point to zoom the canvas about
+     */
     public void zoomOut(Point p){
-        zoomCenter = p;
         zoomLevel -= 0.05;
         if (zoomLevel <= 0.05)
             zoomLevel = 0.05f;
+        else 
+            zoomCenter = p;
     }
 
+    /**
+     * Set the dif that is applied by the transform due to the pan tool
+     * @param p the new dif
+     */
     public void setDif(Point p){
         dif = p;
     }
+    /**
+     * Get the dif that is applied by the transform due to the pan tool
+     */
     public Point getDif(){
         return dif;
     }
 
+    /**
+     * FORDEV: set the current hover pixel
+     * @param hoverPixel the pos of the current hover pixel
+     */
     public void setHoverPixel(Point2D hoverPixel){
         this.hoverPixel = hoverPixel;
     }

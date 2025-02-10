@@ -9,6 +9,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
+/**
+ * The StatusBar at the bottom of the window that will show the user there current mouse pos and other useful info
+ * @param window The JFrame to use to size the Panel
+ */
 public class PStatusBar extends JPanel{
     public PStatusBar(JFrame window) {
         setBorder(new BevelBorder(BevelBorder.LOWERED));

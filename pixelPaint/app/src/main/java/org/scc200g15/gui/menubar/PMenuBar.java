@@ -4,6 +4,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+/**
+ * The MenuBar that will appear at the very top of the menu
+ */
 public class PMenuBar extends JMenuBar{
     public PMenuBar() {
         // Create Menus

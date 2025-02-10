@@ -13,7 +13,10 @@ import org.scc200g15.tools.HoverDemoTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
 
-
+/**
+ * The JFrame that is the brain of the application
+ * Controls the creation of the canvas and the other parts of the UI
+ */
 public class GUI extends JFrame {
 
     PCanvas canvas;

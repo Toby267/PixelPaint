@@ -8,6 +8,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+/**
+ * The ToolBar at the top of the window that will allow the user to change the active tool
+ * @param window The JFrame to use to size the Panel
+ */
 public class PToolBar extends JPanel{
     public PToolBar(JFrame window) {
         setPreferredSize(new Dimension(window.getWidth(), 16));

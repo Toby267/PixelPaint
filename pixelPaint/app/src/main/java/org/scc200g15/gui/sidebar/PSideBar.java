@@ -9,6 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
+/**
+ * The SideBar that will contain the color selector
+ */
 public class PSideBar extends JPanel {
     public PSideBar(JFrame window) {
         setBorder(new BevelBorder(BevelBorder.LOWERED));
