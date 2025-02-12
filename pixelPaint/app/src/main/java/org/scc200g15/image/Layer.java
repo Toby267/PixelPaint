@@ -3,7 +3,7 @@ package org.scc200g15.image;
 import java.awt.Color;
 
 /**
- * A layer of an image, stores a grid of pixels TODO: stores a queue of all actions so they can be reverted
+ * A layer of an image, stores a grid of pixels
  */
 public class Layer {
   Color[][] pixels;

@@ -24,7 +24,7 @@ public class Image {
     Layers.add(new Layer(new Color(255, 255, 255, 255), width, height));
     ActiveLayer = Layers.get(0);
 
-    // Layers.get(1).setIsActive(false);
+    moveLayerUp(0);
   }
 
   /**
@@ -55,5 +55,24 @@ public class Image {
    */
   public int getHeight() {
     return height;
+  }
+
+  public int moveLayerUp(int ID){
+    if(ID + 1 < Layers.size()){
+      Layer tmp = Layers.get(ID + 1);
+      Layers.set(ID + 1, Layers.get(ID));
+      Layers.set(ID, tmp);
+      return ID + 1;
+    }
+    return ID;
+  }
+  public int moveLayerDown(int ID){
+    if(ID - 1 >= 0){
+      Layer tmp = Layers.get(ID - 1);
+      Layers.set(ID - 1, Layers.get(ID));
+      Layers.set(ID, tmp);
+      return ID - 1;
+    }
+    return ID;
   }
 }
