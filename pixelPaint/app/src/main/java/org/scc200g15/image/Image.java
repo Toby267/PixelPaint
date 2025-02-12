@@ -23,10 +23,11 @@ public class Image {
     Layers.add(new Layer(Color.BLACK, width, height));
     activeLayer = Layers.get(0);
 
-    // addLayer(new Layer(Color.BLUE, width, height));
+    //addLayer(new Layer(Color.BLUE, width, height));
     // addLayer();
     // moveLayerUp(0);
     // moveLayer(0, 1);
+    //removeLayer(1);
   }
 
   /**
@@ -123,5 +124,25 @@ public class Image {
       activeLayer = Layers.get(activeLayerID + 1);
 
     return activeLayerID + 1;
+  }
+  public int removeLayer(Layer layer){
+    return removeLayer(Layers.indexOf(layer));
+  }
+  public int removeLayer(int ID){
+    if(ID < 0 || ID >= Layers.size()){
+      //TODO: Handle Error Invalid Layer ID
+      return -1;
+    }
+
+    Layer layer = Layers.get(ID);
+
+    // Cannot remove active layer
+    if(activeLayer == layer){
+      //TODO: Handle Error Invalid Layer ID
+      return -1;
+    }
+
+    Layers.remove(layer);
+    return ID;
   }
 }
