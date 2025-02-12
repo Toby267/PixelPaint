@@ -9,6 +9,7 @@ import java.awt.Color;
  */
 public class Layer {
     Color[][] pixels;
+    boolean isActive = true;
 
     /**
      * Basic constructor that creates a layer with a given size that is one color
@@ -33,5 +34,16 @@ public class Layer {
      */
     public Color getPixel(int x, int y){
         return pixels[x][y];
+    }
+    /*
+     */
+    public Color[][] getPixels(){
+        return pixels;
+    }
+    public Boolean getIsActive(){
+        return isActive;
+    }
+    public void setIsActive(Boolean isActive){
+       this.isActive = isActive;
     }
 }
