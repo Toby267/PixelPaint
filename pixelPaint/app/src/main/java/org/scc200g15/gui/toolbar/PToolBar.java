@@ -8,14 +8,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class PToolBar extends JPanel{
-    public PToolBar(JFrame window) {
-        setPreferredSize(new Dimension(window.getWidth(), 16));
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        
-        JLabel toolLabel = new JLabel("status");
-        toolLabel.setHorizontalAlignment(SwingConstants.LEFT);
+/**
+ * The ToolBar at the top of the window that will allow the user to change the active tool
+ * 
+ * @param window The JFrame to use to size the Panel
+ */
+public class PToolBar extends JPanel {
+  public PToolBar(JFrame window) {
+    setPreferredSize(new Dimension(window.getWidth(), 16));
+    setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
-        add(toolLabel);
-    }
+    JLabel toolLabel = new JLabel("status");
+    toolLabel.setHorizontalAlignment(SwingConstants.LEFT);
+
+    add(toolLabel);
+  }
 }
