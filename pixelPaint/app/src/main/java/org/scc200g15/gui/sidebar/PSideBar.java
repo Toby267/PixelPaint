@@ -13,15 +13,15 @@ import javax.swing.border.BevelBorder;
  * The SideBar that will contain the color selector
  */
 public class PSideBar extends JPanel {
-    public PSideBar(JFrame window) {
-        setBorder(new BevelBorder(BevelBorder.LOWERED));
+  public PSideBar(JFrame window) {
+    setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-        setPreferredSize(new Dimension(60, window.getHeight()));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    setPreferredSize(new Dimension(60, window.getHeight()));
+    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JLabel sideLabel = new JLabel("side");
-        sideLabel.setHorizontalAlignment(SwingConstants.LEFT);
+    JLabel sideLabel = new JLabel("side");
+    sideLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
-        add(sideLabel);
-    }
+    add(sideLabel);
+  }
 }

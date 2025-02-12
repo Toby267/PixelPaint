@@ -14,56 +14,55 @@ import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
 
 /**
- * The JFrame that is the brain of the application
- * Controls the creation of the canvas and the other parts of the UI
+ * The JFrame that is the brain of the application Controls the creation of the canvas and the other parts of the UI
  */
 public class GUI extends JFrame {
 
-    PCanvas canvas;
-    ToolManager toolManager;
+  PCanvas canvas;
+  ToolManager toolManager;
 
-    public GUI() {
-        super("Pixel Paint");
+  public GUI() {
+    super("Pixel Paint");
 
-        setLayout(new BorderLayout());
+    setLayout(new BorderLayout());
 
-        // Add the MenuBar to the JFrame
-        PMenuBar menuBar = new PMenuBar();
-        setJMenuBar(menuBar);
+    // Add the MenuBar to the JFrame
+    PMenuBar menuBar = new PMenuBar();
+    setJMenuBar(menuBar);
 
-        // Add Toolbar to the JFrame
-        PToolBar toolBar = new PToolBar(this);
-        add(toolBar, BorderLayout.NORTH);
+    // Add Toolbar to the JFrame
+    PToolBar toolBar = new PToolBar(this);
+    add(toolBar, BorderLayout.NORTH);
 
-        // Add the StatusBar to the JFrame
-        PStatusBar statusBar = new PStatusBar(this);
-        add(statusBar, BorderLayout.SOUTH);
+    // Add the StatusBar to the JFrame
+    PStatusBar statusBar = new PStatusBar(this);
+    add(statusBar, BorderLayout.SOUTH);
 
-        // Add the SideBar to the JFrame
-        PSideBar sideBar = new PSideBar(this);
-        add(sideBar, BorderLayout.WEST);
+    // Add the SideBar to the JFrame
+    PSideBar sideBar = new PSideBar(this);
+    add(sideBar, BorderLayout.WEST);
 
-        // Canvas
-        canvas = new PCanvas();
-        add(canvas);
+    // Canvas
+    canvas = new PCanvas();
+    add(canvas);
 
-        // ToolManager
-        PanZoomTool defaultTool = new PanZoomTool();
-        toolManager = new ToolManager(canvas, defaultTool);
+    // ToolManager
+    PanZoomTool defaultTool = new PanZoomTool();
+    toolManager = new ToolManager(canvas, defaultTool);
 
-        // Register Tools
-        HoverDemoTool hoverDemo = new HoverDemoTool();
-        toolManager.registerTool("hover", hoverDemo);
+    // Register Tools
+    HoverDemoTool hoverDemo = new HoverDemoTool();
+    toolManager.registerTool("hover", hoverDemo);
 
-        toolManager.setActiveTool("hover");
+    toolManager.setActiveTool("hover");
 
-        // General 
-        setSize(500, 500);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
-    }
+    // General
+    setSize(500, 500);
+    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    this.setVisible(true);
+  }
 
-    public PCanvas getCanvas() {
-        return canvas;
-    }
+  public PCanvas getCanvas() {
+    return canvas;
+  }
 }
