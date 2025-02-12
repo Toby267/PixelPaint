@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Image {
   // The Layers
   public ArrayList<Layer> Layers;
-  public Layer ActiveLayer;
+  public Layer activeLayer;
 
   // The width and height of the image
   private int width = 16;
@@ -21,10 +21,12 @@ public class Image {
   public Image() {
     Layers = new ArrayList<>();
     Layers.add(new Layer(Color.BLACK, width, height));
-    Layers.add(new Layer(new Color(255, 255, 255, 255), width, height));
-    ActiveLayer = Layers.get(0);
+    activeLayer = Layers.get(0);
 
-    moveLayerUp(0);
+    // addLayer(new Layer(Color.BLUE, width, height));
+    // addLayer();
+    // moveLayerUp(0);
+    // moveLayer(0, 1);
   }
 
   /**
@@ -58,6 +60,11 @@ public class Image {
   }
 
   public int moveLayerUp(int ID){
+    if(ID < 0 || ID >= Layers.size()){
+      //TODO: Handle Error Invalid Layer ID
+      return -1;
+    }
+
     if(ID + 1 < Layers.size()){
       Layer tmp = Layers.get(ID + 1);
       Layers.set(ID + 1, Layers.get(ID));
@@ -67,6 +74,11 @@ public class Image {
     return ID;
   }
   public int moveLayerDown(int ID){
+    if(ID < 0 || ID >= Layers.size()){
+      //TODO: Handle Error Invalid Layer ID
+      return -1;
+    }
+
     if(ID - 1 >= 0){
       Layer tmp = Layers.get(ID - 1);
       Layers.set(ID - 1, Layers.get(ID));
@@ -74,5 +86,42 @@ public class Image {
       return ID - 1;
     }
     return ID;
+  }
+  public int moveLayer(int ID, int NewID){
+    if(ID < 0 || ID >= Layers.size() || NewID < 0 || NewID >= Layers.size() ){
+      //TODO: Handle Error Invalid Layer ID
+      return -1;
+    }
+
+    Layer l = Layers.get(ID);
+    Layers.remove(ID);
+    Layers.add(NewID, l);
+    return NewID;
+  }
+  public int addLayer(){
+    // Get the ID of the active layer
+    int activeLayerID = Layers.indexOf(activeLayer);
+
+    // Add a blank layer above the active layer
+    Layers.add(activeLayerID + 1, new Layer(new Color(0,0,0,0), width, height));
+
+    // Set active layer to new layer if there is not one
+    if(activeLayerID == -1)
+      activeLayer = Layers.get(activeLayerID + 1);
+
+    return activeLayerID + 1;
+  }
+  public int addLayer(Layer layer){
+    // Get the ID of the active layer
+    int activeLayerID = Layers.indexOf(activeLayer);
+
+    // Add a given layer above the active layer
+    Layers.add(activeLayerID + 1, layer);
+
+    // Set active layer to new layer if there is not one
+    if(activeLayerID == -1)
+      activeLayer = Layers.get(activeLayerID + 1);
+
+    return activeLayerID + 1;
   }
 }
