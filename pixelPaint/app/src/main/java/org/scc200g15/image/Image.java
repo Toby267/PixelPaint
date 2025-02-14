@@ -8,6 +8,7 @@ import java.util.ArrayList;
  */
 public class Image {
   // The Layers
+  // ? Why don't we just make this an array of length 16 to deal with the array limit?
   public ArrayList<Layer> Layers;
   public Layer activeLayer;
 
@@ -20,7 +21,7 @@ public class Image {
    */
   public Image() {
     Layers = new ArrayList<>();
-    Layers.add(new Layer(Color.BLACK, width, height));
+    Layers.add(new Layer(Color.GRAY, width, height));
     activeLayer = Layers.get(0);
 
     //addLayer(new Layer(Color.BLUE, width, height));

@@ -1,0 +1,3 @@
+open_eye_icon.png: Eye password icons created by sonnycandra - Flaticon (https://www.flaticon.com/free-icons/eye-password)
+closed_eye_icon.png: Eye password icons created by sonnycandra - Flaticon (https://www.flaticon.com/free-icons/eye-password)
+trash_icon.png: Trash can icons created by Md Tanvirul Haque - Flaticon (https://www.flaticon.com/free-icons/trash-can)

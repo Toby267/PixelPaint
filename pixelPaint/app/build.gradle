@@ -28,6 +28,15 @@ application {
     mainClass = 'org.scc200g15.PixelPaint' // Define the main class for the application.
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/resources"]
+        }
+    }
+}
+
+
 test {
     useJUnitPlatform()
 }
