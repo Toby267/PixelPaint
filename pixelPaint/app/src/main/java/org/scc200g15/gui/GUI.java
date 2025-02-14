@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
 import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.gui.layerselector.PLayerSelector;
 import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
@@ -41,6 +42,10 @@ public class GUI extends JFrame {
     // Add the SideBar to the JFrame
     PSideBar sideBar = new PSideBar(this);
     add(sideBar, BorderLayout.WEST);
+    
+    // Add the LayerSelector to the JFrame
+    PLayerSelector layerSelector = new PLayerSelector(this);
+    add(layerSelector, BorderLayout.EAST);
 
     // Canvas
     canvas = new PCanvas();
