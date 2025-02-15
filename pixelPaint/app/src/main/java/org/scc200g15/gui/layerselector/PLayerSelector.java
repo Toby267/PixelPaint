@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -16,14 +17,13 @@ import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
-import org.scc200g15.image.Image;
 
 /**
  * The right hand side bar which will contain the layers
  */
 public class PLayerSelector extends JPanel {
-  private JPanel contentPanel = new JPanel();
-  private JPanel titleDisplay = new JPanel();
+  private JPanel contentPanel;
+  private JPanel titleDisplay;
   private JScrollPane scroll;
 
   private ArrayList<LayerMenuItem> layers = new ArrayList<LayerMenuItem>(16);
@@ -47,18 +47,26 @@ public class PLayerSelector extends JPanel {
     this.setBorder(new BevelBorder(BevelBorder.LOWERED));
     this.setPreferredSize(new Dimension(250, window.getHeight()));
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    
+
+    contentPanel = new JPanel();
+
     // JPanel which holds all the content
     contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
+    layers.add(new LayerMenuItem("Layer #1", this));
+
+    setupMenuUI();
+  }
+
+
+  public void setupMenuUI() {
     // Adding the title display
+    titleDisplay = new JPanel();  
     titleDisplay.add(new JLabel("Layer Menu"));
     contentPanel.add(titleDisplay);
 
     // Add first layers
-    LayerMenuItem firstLayer = new LayerMenuItem("Layer #1", this);
-    layers.add(firstLayer);
-    contentPanel.add(firstLayer);
+    for (LayerMenuItem panel : layers) contentPanel.add(panel);
     
     // Add layer adder button
     JPanel plusLayerHolderPanel = new JPanel();
@@ -72,7 +80,7 @@ public class PLayerSelector extends JPanel {
 
     // Fix spacing
     this.titleDisplay.setMaximumSize(getMaxSize(this.titleDisplay));
-    firstLayer.setMaximumSize(getMaxSize(firstLayer));
+    for (LayerMenuItem panel : layers) panel.setMaximumSize(getMaxSize(panel));
   }
 
 
@@ -89,27 +97,33 @@ public class PLayerSelector extends JPanel {
     addLayer.addActionListener(new ActionListener() { 
         @Override
         public void actionPerformed(ActionEvent e) {
-          // Creates a new layer
-          System.out.println("CURRENT NUMBER OF LAYERS: " + layers.size());
-          if(layers.size() >= 16) {
-            JOptionPane.showOptionDialog(
-              null, "You have reached the maximum number of layers (16)", "Layer Maximum",
-              JOptionPane.DEFAULT_OPTION,
-              JOptionPane.WARNING_MESSAGE,
-              createImageIcon(40, 40, "/Icons/warning_icon.png"),
-              null, null
-            );
-            return;
-          }
-          LayerMenuItem newLayer = new LayerMenuItem("Layer #" + (++totalCreatedLayerCount), Manager);
-          Manager.layers.add(newLayer);
-          contentPanel.add(newLayer, contentPanel.getComponentCount() - 1);
-          newLayer.setMaximumSize(getMaxSize(newLayer));
-          refreshUI();
+          if(layers.size() >= 16) maxLayersErrorMessage();
+          else addLayer(Manager);
         }
     });
 
     return addLayer;
+  }
+
+  // Add a new layerMenuItem to the layer menu
+  public void addLayer(PLayerSelector Manager) {
+    LayerMenuItem newLayer = new LayerMenuItem("Layer #" + (++totalCreatedLayerCount), Manager);
+    layers.add(newLayer);
+    contentPanel.add(newLayer, contentPanel.getComponentCount() - 1);
+    newLayer.setMaximumSize(getMaxSize(newLayer));
+    refreshUI();
+  }
+
+  // ! An alternative to this could be to remove the [+] sign which allows users to add more layers when 16 are reached
+  // ! This might be cleaner...
+  public void maxLayersErrorMessage() {
+    JOptionPane.showOptionDialog(
+      null, "You have reached the maximum number of layers (16)", "Layer Maximum",
+      JOptionPane.DEFAULT_OPTION,
+      JOptionPane.WARNING_MESSAGE,
+      createImageIcon(40, 40, "/Icons/warning_icon.png"),
+      null, null
+    );
   }
 
   // Get Largest Dimensions of a layer item
@@ -124,7 +138,29 @@ public class PLayerSelector extends JPanel {
     refreshUI();
   }
 
-  // Refresh the UI
+  // Swap and redraw layers
+  public void swapLayers(int index1, int index2) {
+    // Swap the content in layers ArrayList
+    if(index2 > layers.size()) Collections.swap(layers, index1, layers.size() - 1);
+    else if (index1 < 0) Collections.swap(layers, 0, index2);
+    else Collections.swap(layers, index1, index2);
+
+    // Flip the content in UI
+    removeAll();
+    contentPanel.removeAll();
+    setupMenuUI();
+    refreshUI();
+  }
+
+  // TODO
+  public void setActiveLayer() {
+
+  }
+
+  public ArrayList<LayerMenuItem> getLayers() {
+    return layers;
+  }
+
   public void refreshUI() {
     revalidate();
     repaint();

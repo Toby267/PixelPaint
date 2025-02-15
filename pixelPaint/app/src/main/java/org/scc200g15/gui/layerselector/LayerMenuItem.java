@@ -3,7 +3,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -121,6 +125,39 @@ public class LayerMenuItem extends JPanel {
         removeButton.addActionListener(new ActionListener() { 
             @Override
             public void actionPerformed(ActionEvent e) { removeLayer(Manager); }
+        });
+
+        // TODO: CREATE ACTIVE LAYER
+        // Add the ability to switch two layers
+        this.addMouseListener(new MouseAdapter() {
+            ArrayList<LayerMenuItem> layers = Manager.getLayers();
+            int startPoint;
+            int originIndex;
+            int destinationIndex;
+
+            // TODO: Could add a feature where a blue bar is displayed where the layer would be moved if mouseReleased
+            @Override
+            public void mouseDragged(MouseEvent e) {}
+
+            // Change border to blue when hovered
+            @Override
+            public void mousePressed(MouseEvent e) {
+                startPoint = e.getPoint().y;
+                originIndex = layers.indexOf((JPanel) e.getSource());
+            }
+        
+            // Swap both frames
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                int frameHeight = layers.get(0).getHeight() - 1;
+
+                int trueStartPoint = (originIndex * frameHeight) + startPoint;
+                int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint); // endPoint = e.getPoint().y
+                destinationIndex = (int) (trueEndPoint / frameHeight);
+
+                Manager.swapLayers(originIndex, destinationIndex);
+            }
+            
         });
 
     }
