@@ -29,6 +29,7 @@ public class PLayerSelector extends JPanel {
   private ArrayList<LayerMenuItem> layers = new ArrayList<LayerMenuItem>(16);
 
   private int totalCreatedLayerCount = 1;
+  private LayerMenuItem lastActiveLayerIndex;
 
   public ImageIcon createImageIcon(int x, int y, String path) {
     return new ImageIcon(
@@ -53,7 +54,9 @@ public class PLayerSelector extends JPanel {
     // JPanel which holds all the content
     contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-    layers.add(new LayerMenuItem("Layer #1", this));
+    LayerMenuItem firstLayer = new LayerMenuItem("Layer #1", this);
+    layers.add(firstLayer);
+    setActiveLayer(firstLayer);
 
     setupMenuUI();
   }
@@ -138,12 +141,16 @@ public class PLayerSelector extends JPanel {
     refreshUI();
   }
 
-  // Swap and redraw layers
-  public void swapLayers(int index1, int index2) {
-    // Swap the content in layers ArrayList
-    if(index2 > layers.size()) Collections.swap(layers, index1, layers.size() - 1);
-    else if (index1 < 0) Collections.swap(layers, 0, index2);
-    else Collections.swap(layers, index1, index2);
+  // Insert and redraw layer
+  public void insertLayer(int index1, int index2, LayerMenuItem layer) {
+    if (index1 < index2) 
+      for (int i = index1; i < index2; i++) 
+        layers.set(i, layers.get(i + 1));
+    else 
+      for (int i = index1; i > index2; i--) 
+        layers.set(i, layers.get(i - 1));
+
+    layers.set(index2, layer);
 
     // Flip the content in UI
     removeAll();
@@ -152,9 +159,10 @@ public class PLayerSelector extends JPanel {
     refreshUI();
   }
 
-  // TODO
-  public void setActiveLayer() {
-
+  public void setActiveLayer(LayerMenuItem activeLayer) {
+    if(lastActiveLayerIndex != null) lastActiveLayerIndex.disactivateLayer();
+    activeLayer.activateLayer();
+    lastActiveLayerIndex = activeLayer;
   }
 
   public ArrayList<LayerMenuItem> getLayers() {

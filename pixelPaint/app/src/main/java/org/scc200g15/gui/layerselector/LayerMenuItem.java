@@ -75,11 +75,11 @@ public class LayerMenuItem extends JPanel {
 
     // The "eye open" icon is only used in visible/active states
     private final ImageIcon VISIBLE_EYE_OPEN_ICON = createImageIcon(30, 30, VISIBLE_ICON_COLOUR, eyeOpenIconPath);
-    private final ImageIcon ACTIVE_VISIBLE_ICON = createImageIcon(30, 30, ACTIVE_ICON_COLOUR, eyeOpenIconPath);
+    private final ImageIcon ACTIVE_EYE_OPEN_ICON = createImageIcon(30, 30, ACTIVE_ICON_COLOUR, eyeOpenIconPath);
 
     // The "eye shut" icon is only used in hidden/active states
     private final ImageIcon HIDDEN_EYE_SHUT_ICON = createImageIcon(30, 30, HIDDEN_ICON_COLOUR, eyeShutIconPath);
-    private final ImageIcon ACTIVE_INVISIBLE_ICON = createImageIcon(30, 30, ACTIVE_ICON_COLOUR, eyeShutIconPath);
+    private final ImageIcon ACTIVE_EYE_SHUT_ICON = createImageIcon(30, 30, ACTIVE_ICON_COLOUR, eyeShutIconPath);
 
     // The "trash" icon is used in all states
     private final ImageIcon VISIBLE_TRASH_ICON = createImageIcon(25, 25, VISIBLE_ICON_COLOUR, trashIconPath);
@@ -92,6 +92,7 @@ public class LayerMenuItem extends JPanel {
     private JLabel layerLabel = new JLabel();
 
     private boolean isVisible = true;
+    private boolean isActive = false;
   
     public LayerMenuItem(String layerName, PLayerSelector Manager) {
         // Setup LayerMenuItem configurations (layout, border and background)
@@ -144,6 +145,10 @@ public class LayerMenuItem extends JPanel {
             public void mousePressed(MouseEvent e) {
                 startPoint = e.getPoint().y;
                 originIndex = layers.indexOf((JPanel) e.getSource());
+
+                Manager.setActiveLayer(layers.get(originIndex));
+
+                // Change look
             }
         
             // Swap both frames
@@ -155,28 +160,36 @@ public class LayerMenuItem extends JPanel {
                 int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint); // endPoint = e.getPoint().y
                 destinationIndex = (int) (trueEndPoint / frameHeight);
 
-                Manager.swapLayers(originIndex, destinationIndex);
+                Manager.insertLayer(originIndex, destinationIndex, layers.get(originIndex));
             }
             
         });
 
     }
 
-    // TODO: ADD FUNCTIONALITY FOR ACTIVE COLOURS
+    // TODO: Simplify for clarity
     // Change the look of each layer in the menu to indicate it's current status
     public void changeDisplayState() {  
         // Note: Not an if-else since the "Active" state hasn't yet been implemented
-        if(isVisible) {
-            this.setBackground(HIDDEN_BACKGROUND_COLOUR);
-            displayButton.setIcon(HIDDEN_EYE_SHUT_ICON);
-            layerLabel.setForeground(HIDDEN_ICON_COLOUR);
-            removeButton.setIcon(HIDDEN_TRASH_ICON);
-        } 
-        if(!isVisible) {
-            this.setBackground(VISIBLE_BACKGROUND_COLOUR);
-            displayButton.setIcon(VISIBLE_EYE_OPEN_ICON);
-            layerLabel.setForeground(VISIBLE_ICON_COLOUR);
-            removeButton.setIcon(VISIBLE_TRASH_ICON);
+
+        if(isActive) {
+            this.setBackground(ACTIVE_BACKGROUND_COLOUR);
+            displayButton.setIcon(isVisible ? ACTIVE_EYE_SHUT_ICON : ACTIVE_EYE_OPEN_ICON);
+            layerLabel.setForeground(ACTIVE_ICON_COLOUR);
+            removeButton.setIcon(ACTIVE_TRASH_ICON);
+        } else {
+            if(isVisible) {
+                this.setBackground(HIDDEN_BACKGROUND_COLOUR);
+                displayButton.setIcon(HIDDEN_EYE_SHUT_ICON);
+                layerLabel.setForeground(HIDDEN_ICON_COLOUR);
+                removeButton.setIcon(HIDDEN_TRASH_ICON);
+            } 
+            if(!isVisible) {
+                this.setBackground(VISIBLE_BACKGROUND_COLOUR);
+                displayButton.setIcon(VISIBLE_EYE_OPEN_ICON);
+                layerLabel.setForeground(VISIBLE_ICON_COLOUR);
+                removeButton.setIcon(VISIBLE_TRASH_ICON);
+            }
         }
         isVisible = !isVisible;
         revalidate();
@@ -194,6 +207,33 @@ public class LayerMenuItem extends JPanel {
             null, null
         );
         if (option == JOptionPane.YES_OPTION) Manager.removeLayerMenuItem(this);
+    }
+
+    public void activateLayer() {
+        this.setBackground(ACTIVE_BACKGROUND_COLOUR);
+        displayButton.setIcon(isVisible ? ACTIVE_EYE_OPEN_ICON : ACTIVE_EYE_SHUT_ICON);
+        layerLabel.setForeground(ACTIVE_ICON_COLOUR);
+        removeButton.setIcon(ACTIVE_TRASH_ICON);
+        isActive = true;
+        revalidate();
+        repaint();
+    }
+
+    public void disactivateLayer() {
+        if(isVisible) {
+            this.setBackground(VISIBLE_BACKGROUND_COLOUR);
+            displayButton.setIcon(VISIBLE_EYE_OPEN_ICON);
+            layerLabel.setForeground(VISIBLE_ICON_COLOUR);
+            removeButton.setIcon(VISIBLE_TRASH_ICON);
+        } else {
+            this.setBackground(HIDDEN_BACKGROUND_COLOUR);
+            displayButton.setIcon(HIDDEN_EYE_SHUT_ICON);
+            layerLabel.setForeground(HIDDEN_ICON_COLOUR);
+            removeButton.setIcon(HIDDEN_TRASH_ICON);
+        }
+        isActive = false;
+        revalidate();
+        repaint();
     }
 
 }
