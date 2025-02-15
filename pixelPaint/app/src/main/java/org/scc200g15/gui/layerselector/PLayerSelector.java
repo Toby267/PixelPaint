@@ -10,10 +10,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
+
+import org.scc200g15.image.Image;
 
 /**
  * The right hand side bar which will contain the layers
@@ -26,6 +29,15 @@ public class PLayerSelector extends JPanel {
   private ArrayList<LayerMenuItem> layers = new ArrayList<LayerMenuItem>(16);
 
   private int totalCreatedLayerCount = 1;
+
+  public ImageIcon createImageIcon(int x, int y, String path) {
+    return new ImageIcon(
+      new ImageIcon(getClass().getResource(path))
+        .getImage()
+        .getScaledInstance(x, y, java.awt.Image.SCALE_SMOOTH)
+    );
+  }
+
 
   /**
     SideBar which holds all the Layer Selectors
@@ -55,6 +67,7 @@ public class PLayerSelector extends JPanel {
 
     // Add the ability to scroll
     scroll = new JScrollPane(contentPanel);
+    scroll.getVerticalScrollBar().setUnitIncrement(15);
     this.add(scroll);
 
     // Fix spacing
@@ -77,6 +90,17 @@ public class PLayerSelector extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
           // Creates a new layer
+          System.out.println("CURRENT NUMBER OF LAYERS: " + layers.size());
+          if(layers.size() >= 16) {
+            JOptionPane.showOptionDialog(
+              null, "You have reached the maximum number of layers (16)", "Layer Maximum",
+              JOptionPane.DEFAULT_OPTION,
+              JOptionPane.WARNING_MESSAGE,
+              createImageIcon(40, 40, "/Icons/warning_icon.png"),
+              null, null
+            );
+            return;
+          }
           LayerMenuItem newLayer = new LayerMenuItem("Layer #" + (++totalCreatedLayerCount), Manager);
           Manager.layers.add(newLayer);
           contentPanel.add(newLayer, contentPanel.getComponentCount() - 1);
