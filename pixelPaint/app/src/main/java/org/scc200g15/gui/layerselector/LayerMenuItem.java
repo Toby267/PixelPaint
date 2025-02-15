@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -35,12 +36,18 @@ public class LayerMenuItem extends JPanel {
     private JLabel layerLabel;
   
     public LayerMenuItem(String layerName) {
+        setLayout(new BorderLayout());
+        setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createEmptyBorder(1, 1, 0, 1),
+            BorderFactory.createLineBorder(new Color(197, 197, 197), 1, true)
+        ));
+        setBackground(new Color(227,227,227));
+
         this.layerLabel = new JLabel(layerName);
 
         this.displayButton.setBorder(new LineBorder(new Color(0,0,0,0), 10, true));
         this.removeButton.setBorder(new LineBorder(new Color(0,0,0,0), 10, true));    
 
-        setLayout(new BorderLayout());
         add(this.displayButton, BorderLayout.WEST);
         add(this.layerLabel, BorderLayout.CENTER);
         add(this.removeButton, BorderLayout.EAST);

@@ -15,7 +15,7 @@ public class PLayerSelector extends JPanel {
   private JPanel titleDisplay = new JPanel();
   private JLabel sideLabel = new JLabel("Layer Menu");
 
-  private ArrayList<JPanel> layers = new ArrayList<JPanel>(16);
+  private ArrayList<LayerMenuItem> layers = new ArrayList<LayerMenuItem>(16);
 
   /**
     Placeholder. 
@@ -30,8 +30,6 @@ public class PLayerSelector extends JPanel {
     this.titleDisplay.add(this.sideLabel);
     add(this.titleDisplay);
 
-
-    System.out.println("How many layers: "+layers.size());
     layers.add(new LayerMenuItem("Layer #1"));
     layers.add(new LayerMenuItem("Layer #2"));
     layers.add(new LayerMenuItem("Layer #3"));
@@ -50,6 +48,11 @@ public class PLayerSelector extends JPanel {
 
   public Dimension minimizeSpacing(JPanel panel) {
     return new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height);
+  }
+
+  // TODO
+  public void removeLayerMenuItem() {
+
   }
 
 }
