@@ -35,7 +35,7 @@ public class LayerMenuItem extends JPanel {
     private JButton removeButton = new JButton(this.trashIcon);
     private JLabel layerLabel;
   
-    public LayerMenuItem(String layerName) {
+    public LayerMenuItem(String layerName, PLayerSelector Manager) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createEmptyBorder(1, 1, 0, 1),
@@ -59,20 +59,18 @@ public class LayerMenuItem extends JPanel {
 
         this.removeButton.addActionListener(new ActionListener() { 
             @Override
-            public void actionPerformed(ActionEvent e) { removeLayer(); }
+            public void actionPerformed(ActionEvent e) { removeLayer(Manager); }
         });
 
     }
 
     public void changeDisplayState() {
-        System.out.println(this.layerLabel.getText() + ": VISION SWITCH");
         boolean isVisible = this.displayButton.getIcon().equals(this.visibleIcon);
         this.displayButton.setIcon(isVisible ? this.invisibleIcon : this.visibleIcon); 
     }
 
-
-    public void removeLayer() {
-        System.out.println(this.layerLabel.getText() + ": LAYER REMOVED");
+    public void removeLayer(PLayerSelector Manager) {
+        Manager.removeLayerMenuItem(this);
     }
 
 }
