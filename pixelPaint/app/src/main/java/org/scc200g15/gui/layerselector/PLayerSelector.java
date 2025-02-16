@@ -4,10 +4,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,11 +15,12 @@ import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
-
 /**
  * The right hand side bar which will contain the layers
  */
 public class PLayerSelector extends JPanel {
+  private final LayerMenuTools Tools = new LayerMenuTools();
+
   private JPanel contentPanel;
   private JPanel titleDisplay;
   private JScrollPane scroll;
@@ -30,37 +29,28 @@ public class PLayerSelector extends JPanel {
 
   private int totalCreatedLayerCount = 1;
   private LayerMenuItem lastActiveLayerIndex;
-
-  public ImageIcon createImageIcon(int x, int y, String path) {
-    return new ImageIcon(
-      new ImageIcon(getClass().getResource(path))
-        .getImage()
-        .getScaledInstance(x, y, java.awt.Image.SCALE_SMOOTH)
-    );
-  }
-
-
+  
   /**
-    SideBar which holds all the Layer Selectors
+   SideBar which holds all the Layer Selectors
   */
   public PLayerSelector(JFrame window) {
     // Setting up parameters
     this.setBorder(new BevelBorder(BevelBorder.LOWERED));
     this.setPreferredSize(new Dimension(250, window.getHeight()));
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
     contentPanel = new JPanel();
-
+    
     // JPanel which holds all the content
     contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-
+    
     LayerMenuItem firstLayer = new LayerMenuItem("Layer #1", this);
     layers.add(firstLayer);
     setActiveLayer(firstLayer);
-
+    
     setupMenuUI();
   }
-
+  
+  /* --------------------------------------- [UI SETUP] --------------------------------------- */
 
   public void setupMenuUI() {
     // Adding the title display
@@ -82,24 +72,22 @@ public class PLayerSelector extends JPanel {
     this.add(scroll);
 
     // Fix spacing
-    this.titleDisplay.setMaximumSize(getMaxSize(this.titleDisplay));
-    for (LayerMenuItem panel : layers) panel.setMaximumSize(getMaxSize(panel));
+    this.titleDisplay.setMaximumSize(Tools.getMaxSize(this.titleDisplay));
+    for (LayerMenuItem panel : layers) panel.setMaximumSize(Tools.getMaxSize(panel));
   }
 
+  /* --------------------------------------- [ADD LAYERS] --------------------------------------- */
 
   public JButton createPlusLayerButton(PLayerSelector Manager) {
     // Add new button to create new layer (symbol: +)
-    JButton addLayer = new JButton(new ImageIcon(
-      new ImageIcon(getClass().getResource("/Icons/plus_icon.png"))
-        .getImage()
-        .getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH)
-    ));
+    JButton addLayer = new JButton(Tools.createImageIcon(20, 20, "/Icons/plus_icon.png"));
     addLayer.setBorder(new LineBorder(new Color(0,0,0,0), 10, true));
 
     // Monitor addLayer button press
     addLayer.addActionListener(new ActionListener() { 
         @Override
         public void actionPerformed(ActionEvent e) {
+          // Set layer limit upper bound
           if(layers.size() >= 16) maxLayersErrorMessage();
           else addLayer(Manager);
         }
@@ -113,8 +101,8 @@ public class PLayerSelector extends JPanel {
     LayerMenuItem newLayer = new LayerMenuItem("Layer #" + (++totalCreatedLayerCount), Manager);
     layers.add(newLayer);
     contentPanel.add(newLayer, contentPanel.getComponentCount() - 1);
-    newLayer.setMaximumSize(getMaxSize(newLayer));
-    refreshUI();
+    newLayer.setMaximumSize(Tools.getMaxSize(newLayer));
+    Tools.refreshUI(this);
   }
 
   // ! An alternative to this could be to remove the [+] sign which allows users to add more layers when 16 are reached
@@ -124,31 +112,27 @@ public class PLayerSelector extends JPanel {
       null, "You have reached the maximum number of layers (16)", "Layer Maximum",
       JOptionPane.DEFAULT_OPTION,
       JOptionPane.WARNING_MESSAGE,
-      createImageIcon(40, 40, "/Icons/warning_icon.png"),
+      Tools.createImageIcon(40, 40, "/Icons/warning_icon.png"),
       null, null
     );
   }
 
-  // Get Largest Dimensions of a layer item
-  public Dimension getMaxSize(JPanel panel) {
-    return new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height);
-  }
+  /* --------------------------------------- [REMOVE LAYERS] --------------------------------------- */
 
   // Remove Layer item
   public void removeLayerMenuItem(LayerMenuItem layer) {
     layers.remove(layer);
     contentPanel.remove(layer);
-    refreshUI();
+    Tools.refreshUI(this);
   }
+
+  /* --------------------------------------- [REARRANGE LAYERS] --------------------------------------- */
+
 
   // Insert and redraw layer
   public void insertLayer(int index1, int index2, LayerMenuItem layer) {
-    if (index1 < index2) 
-      for (int i = index1; i < index2; i++) 
-        layers.set(i, layers.get(i + 1));
-    else 
-      for (int i = index1; i > index2; i--) 
-        layers.set(i, layers.get(i - 1));
+    int increment = index1 < index2 ? 1 : -1;
+    for (int i = index1; i != index2; i += increment) layers.set(i, layers.get(i + increment));
 
     layers.set(index2, layer);
 
@@ -156,8 +140,10 @@ public class PLayerSelector extends JPanel {
     removeAll();
     contentPanel.removeAll();
     setupMenuUI();
-    refreshUI();
+    Tools.refreshUI(this);
   }
+
+  /* --------------------------------------- [SET ACTIVE LAYER] --------------------------------------- */
 
   public void setActiveLayer(LayerMenuItem activeLayer) {
     if(lastActiveLayerIndex != null) lastActiveLayerIndex.disactivateLayer();
@@ -165,13 +151,10 @@ public class PLayerSelector extends JPanel {
     lastActiveLayerIndex = activeLayer;
   }
 
+  /* --------------------------------------- [ACCESSORS/MUTATORS] --------------------------------------- */
+
   public ArrayList<LayerMenuItem> getLayers() {
     return layers;
-  }
-
-  public void refreshUI() {
-    revalidate();
-    repaint();
   }
 
 }
