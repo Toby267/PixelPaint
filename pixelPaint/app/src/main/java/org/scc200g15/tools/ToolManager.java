@@ -81,6 +81,13 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
     this.activeTool = getTool(ID);
   }
 
+  /**
+   * sets active tool to the default tool
+   */
+  public void setdefault(){
+    this.activeTool = defaultTool;
+  }
+
   // Pass through to the active or default tool
   @Override
   public void mouseWheelMoved(MouseWheelEvent e) {
