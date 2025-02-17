@@ -16,14 +16,25 @@ import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
 
 /**
- * The JFrame that is the brain of the application Controls the creation of the canvas and the other parts of the UI
+ * The JFrame that is the brain of the application Controls the creation of the
+ * canvas and the other parts of the UI
  */
 public class GUI extends JFrame {
+
+  private static GUI instance;
+
+  public static GUI getInstance() {
+    if (instance == null) {
+      instance = new GUI();
+    }
+
+    return instance;
+  }
 
   PCanvas canvas;
   ToolManager toolManager;
 
-  public GUI() {
+  private GUI() {
     super("Pixel Paint");
 
     setLayout(new BorderLayout());
@@ -43,7 +54,7 @@ public class GUI extends JFrame {
     // Add the SideBar to the JFrame
     PSideBar sideBar = new PSideBar(this);
     add(sideBar, BorderLayout.WEST);
-    
+
     // Add the LayerSelector to the JFrame
     PLayerSelector layerSelector = new PLayerSelector(this);
     add(layerSelector, BorderLayout.EAST);
