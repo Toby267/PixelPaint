@@ -46,6 +46,10 @@ public class Image {
     return Layers.get(i);
   }
 
+  public Layer getActiveLayer() {
+    return activeLayer;
+  }
+
   /**
    * Get the width of the image
    */

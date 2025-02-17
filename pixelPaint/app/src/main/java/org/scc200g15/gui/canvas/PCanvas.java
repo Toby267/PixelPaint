@@ -139,6 +139,9 @@ public class PCanvas extends JPanel {
     activeImage = i;
     repaint();
   }
+  public Image getActiveImage() {
+    return activeImage;
+  }
 
   /**
    * Register the tool managers listeners with to listen to canvas mouse events
