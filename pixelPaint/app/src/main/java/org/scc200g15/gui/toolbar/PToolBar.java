@@ -3,10 +3,11 @@ package org.scc200g15.gui.toolbar;
 import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import org.scc200g15.gui.GUI;
 
 /**
  * The ToolBar at the top of the window that will allow the user to change the active tool
@@ -14,8 +15,8 @@ import javax.swing.SwingConstants;
  * @param window The JFrame to use to size the Panel
  */
 public class PToolBar extends JPanel {
-  public PToolBar(JFrame window) {
-    setPreferredSize(new Dimension(window.getWidth(), 16));
+  public PToolBar() {
+    setPreferredSize(new Dimension(GUI.getInstance().getWidth(), 16));
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
     JLabel toolLabel = new JLabel("status");

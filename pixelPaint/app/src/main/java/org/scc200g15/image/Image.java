@@ -20,8 +20,9 @@ public class Image {
    * Basic constructor that creates a 16x16 blue image
    */
   public Image() {
-    Layers = new ArrayList<>();
-    Layers.add(new Layer(Color.GRAY, width, height));
+    Layers = new ArrayList<>(16);
+    // ! new PLayerSelector(null) --> this (for the current Image)
+    Layers.add(new Layer("LAYER 1", Color.GRAY, width, height));
     activeLayer = Layers.get(0);
 
     //addLayer(new Layer(Color.BLUE, width, height));
@@ -104,12 +105,13 @@ public class Image {
     Layers.add(NewID, l);
     return NewID;
   }
+
   public int addLayer(){
     // Get the ID of the active layer
     int activeLayerID = Layers.indexOf(activeLayer);
 
     // Add a blank layer above the active layer
-    Layers.add(activeLayerID + 1, new Layer(new Color(0,0,0,0), width, height));
+    Layers.add(activeLayerID + 1, new Layer("TEMPORARY", new Color(0,0,0,0), width, height));
 
     // Set active layer to new layer if there is not one
     if(activeLayerID == -1)
@@ -117,6 +119,7 @@ public class Image {
 
     return activeLayerID + 1;
   }
+
   public int addLayer(Layer layer){
     // Get the ID of the active layer
     int activeLayerID = Layers.indexOf(activeLayer);
@@ -150,4 +153,9 @@ public class Image {
     Layers.remove(layer);
     return ID;
   }
+
+  public ArrayList<Layer> getLayers() {
+    return Layers;
+  }
+
 }

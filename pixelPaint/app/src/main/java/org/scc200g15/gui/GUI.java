@@ -33,6 +33,7 @@ public class GUI extends JFrame {
 
   PCanvas canvas;
   ToolManager toolManager;
+  PLayerSelector layerSelector;
 
   private GUI() {
     super("Pixel Paint");
@@ -44,19 +45,19 @@ public class GUI extends JFrame {
     setJMenuBar(menuBar);
 
     // Add Toolbar to the JFrame
-    PToolBar toolBar = new PToolBar(this);
+    PToolBar toolBar = new PToolBar();
     add(toolBar, BorderLayout.NORTH);
 
     // Add the StatusBar to the JFrame
-    PStatusBar statusBar = new PStatusBar(this);
+    PStatusBar statusBar = new PStatusBar();
     add(statusBar, BorderLayout.SOUTH);
 
     // Add the SideBar to the JFrame
-    PSideBar sideBar = new PSideBar(this);
+    PSideBar sideBar = new PSideBar();
     add(sideBar, BorderLayout.WEST);
 
     // Add the LayerSelector to the JFrame
-    PLayerSelector layerSelector = new PLayerSelector(this);
+    layerSelector = new PLayerSelector();
     add(layerSelector, BorderLayout.EAST);
 
     // Canvas
@@ -88,4 +89,9 @@ public class GUI extends JFrame {
   public PCanvas getCanvas() {
     return canvas;
   }
+
+  public PLayerSelector getLayerSelector() {
+    return layerSelector;
+  }
+
 }
