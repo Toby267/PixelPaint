@@ -84,7 +84,7 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
   /**
    * sets active tool to the default tool
    */
-  public void setdefault(){
+  public void setDefault(){
     this.activeTool = defaultTool;
   }
 
