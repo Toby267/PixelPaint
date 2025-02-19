@@ -1,7 +1,5 @@
 package org.scc200g15.gui.menubar;
 
-import java.awt.Window;
-
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;

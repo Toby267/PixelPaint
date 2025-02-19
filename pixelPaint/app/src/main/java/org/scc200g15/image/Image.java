@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * The image class stores all of the relevant info about the image an image
  * including pixel and layer data
  */
-public class Image {
+public final class Image {
   public ArrayList<Layer> Layers;
   public Layer activeLayer;
 
@@ -22,37 +22,7 @@ public class Image {
     Layers = new ArrayList<>(16);
     
     Layers.add(new Layer("LAYER 1", Color.GRAY, width, height));
-    activeLayer = Layers.get(0);
-  }
-
-  public int moveLayerUp(int ID) {
-    if (ID < 0 || ID >= Layers.size()) {
-      // TODO: Handle Error Invalid Layer ID
-      return -1;
-    }
-
-    if (ID + 1 < Layers.size()) {
-      Layer tmp = Layers.get(ID + 1);
-      Layers.set(ID + 1, Layers.get(ID));
-      Layers.set(ID, tmp);
-      return ID + 1;
-    }
-    return ID;
-  }
-
-  public int moveLayerDown(int ID) {
-    if (ID < 0 || ID >= Layers.size()) {
-      // TODO: Handle Error Invalid Layer ID
-      return -1;
-    }
-
-    if (ID - 1 >= 0) {
-      Layer tmp = Layers.get(ID - 1);
-      Layers.set(ID - 1, Layers.get(ID));
-      Layers.set(ID, tmp);
-      return ID - 1;
-    }
-    return ID;
+    setActiveLayer(Layers.get(0), null);
   }
 
   public int moveLayer(int ID, int NewID) {
@@ -126,8 +96,10 @@ public class Image {
     return Layers.size();
   }
 
-  public void setActiveLayer(Layer layer) {
-    activeLayer = layer;
+  public void setActiveLayer(Layer newActiveLayer, Layer oldActiveLayer) {
+    activeLayer = newActiveLayer;
+    newActiveLayer.activateLayer();
+    if (oldActiveLayer != null )oldActiveLayer.deactivateLayer();
   }
 
   /**

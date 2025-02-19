@@ -1,43 +1,34 @@
 package org.scc200g15.image;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 
 import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.layerselector.LayerMenuTools;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
-import javax.swing.border.LineBorder;
-
-import java.awt.event.ActionEvent;
-
 /**
  * A layer of an image, stores a grid of pixels
  */
-public class Layer extends JPanel {
+final public class Layer extends JPanel {
     Color[][] pixels;
 
     private final LayerMenuTools Tools = new LayerMenuTools();
 
-    // This layer
-    private final Layer CurrentLayer;
-
     // Actual Components of a LayerMenuItem
-    private JButton displayButton = new JButton(Tools.VISIBLE_EYE_OPEN_ICON);
-    private JButton removeButton = new JButton(Tools.VISIBLE_TRASH_ICON);
-    private JLabel layerLabel = new JLabel();
-    private JTextField renameLabelField = new JTextField();
+    private final JButton displayButton = new JButton(Tools.VISIBLE_EYE_OPEN_ICON);
+    private final JButton removeButton = new JButton(Tools.VISIBLE_TRASH_ICON);
+    private final JLabel layerLabel = new JLabel();
+    private final JTextField renameLabelField = new JTextField();
 
     // State Variables
     private boolean isVisible = true;
@@ -53,7 +44,6 @@ public class Layer extends JPanel {
      * @param layerName the name of the layer
      */
     public Layer(String layerName, Color c, int w, int h) {
-        this.CurrentLayer = this;
 
         // Formatting
         this.setLayout(new BorderLayout());
@@ -86,19 +76,13 @@ public class Layer extends JPanel {
 
     public void setActionListeners() {
         // Add actions to switch visibility (using the eye open/shut icons)
-        displayButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeDisplayState();
-            }
+        displayButton.addActionListener((ActionEvent e) -> {
+            changeDisplayState();
         });
 
         // Add actions to remove a layer (using the trash icon)
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GUI.getInstance().getLayerSelector().removeLayer(CurrentLayer);
-            }
+        removeButton.addActionListener((ActionEvent e) -> {
+            GUI.getInstance().getLayerSelector().removeLayer(this);
         });
 
         // // Add the ability to switch two layers
@@ -122,29 +106,29 @@ public class Layer extends JPanel {
                 GUI.getInstance().getLayerSelector().setActiveLayer(originIndex);
             }
 
-            // // Move the frame to the correct position
-            // @Override
-            // public void mouseReleased(MouseEvent e) {
-            // int frameHeight = layers.get(0).getHeight() - 1;
-            // int trueStartPoint = (originIndex * frameHeight) + startPoint;
-            // int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint); //
-            // endPoint = e.getPoint().y
-            // GUI.getInstance().getLayerSelector().insertLayer(originIndex, (int)
-            // (trueEndPoint / frameHeight));
+            // Move the frame to the correct position
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                Image image = GUI.getInstance().getActiveImage();
+                if (image == null)
+                    return;
 
-            // // Check if double click to rename layer
-            // switchLabelToTextField(e);
-            // }
+                int frameHeight = image.getLayer(0).getHeight() - 1;
+                int trueStartPoint = (originIndex * frameHeight) + startPoint;
+                int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint);
+                // endPoint = e.getPoint().y
 
-            // });
+                GUI.getInstance().getLayerSelector().moveLayer(originIndex, (int) (trueEndPoint / frameHeight));
+                // Check if double click to rename layer
+                switchLabelToTextField(e);
+            }
 
-            // // Textbox action has finished (User pressed 'Enter' or moved to another
-            // layer)
-            // renameLabelField.addActionListener(new ActionListener() {
-            // @Override
-            // public void actionPerformed(ActionEvent e) {
-            // renameLabelToTextField();
-            // }
+        });
+
+        // Textbox action has finished (User pressed 'Enter' or moved to another
+        // layer)
+        renameLabelField.addActionListener((ActionEvent e) -> {
+            renameLabelToTextField();
         });
 
     }
@@ -176,38 +160,13 @@ public class Layer extends JPanel {
         }
     }
 
-    /*
-     * --------------------------------------- [REMOVE LAYER]
-     * ---------------------------------------
-     */
-
-    // ? Could limit this pop-up on the condition of a layer not being empty (fully
-    // transparent) for usability.
-    // ! COULD ADD A RESTRAINT IN CASE IT'S THE ONLY LAYER
-    // Remove a layer with an aditional pop-up to limit human error
-    public void removeLayer() {
-        int option = JOptionPane.showOptionDialog(
-                null, "Are you sure you want to delete this layer?", "Layer Deletion",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                Tools.createImageIcon(40, 40, "/Icons/question_mark_icon.png"),
-                null, null);
-        if (option == JOptionPane.YES_OPTION)
-            GUI.getInstance().getLayerSelector().removeLayer(this);
-    }
-
-    /*
-     * --------------------------------------- [ACTIVE/INACTIVE]
-     * ---------------------------------------
-     */
-
     public void activateLayer() {
         setLayerStateUI("active");
         isActive = true;
         Tools.refreshUI(this);
     }
 
-    public void disactivateLayer() {
+    public void deactivateLayer() {
         if (isBeingRenamed)
             renameLabelToTextField();
         if (isVisible)
@@ -244,26 +203,25 @@ public class Layer extends JPanel {
 
     public void setLayerStateUI(String state) {
         switch (state.toLowerCase()) {
-            case "active":
+            case "active" -> {
                 this.setBackground(Tools.ACTIVE_BACKGROUND_COLOUR);
                 displayButton.setIcon(isVisible ? Tools.ACTIVE_EYE_OPEN_ICON : Tools.ACTIVE_EYE_SHUT_ICON);
                 layerLabel.setForeground(Tools.ACTIVE_ICON_COLOUR);
                 removeButton.setIcon(Tools.ACTIVE_TRASH_ICON);
-                break;
-            case "visible":
+            }
+            case "visible" -> {
                 this.setBackground(Tools.VISIBLE_BACKGROUND_COLOUR);
                 displayButton.setIcon(Tools.VISIBLE_EYE_OPEN_ICON);
                 layerLabel.setForeground(Tools.VISIBLE_ICON_COLOUR);
                 removeButton.setIcon(Tools.VISIBLE_TRASH_ICON);
-                break;
-            case "hidden":
+            }
+            case "hidden" -> {
                 this.setBackground(Tools.HIDDEN_BACKGROUND_COLOUR);
                 displayButton.setIcon(Tools.HIDDEN_EYE_SHUT_ICON);
                 layerLabel.setForeground(Tools.HIDDEN_ICON_COLOUR);
                 removeButton.setIcon(Tools.HIDDEN_TRASH_ICON);
-                break;
-            default:
-                System.out.println("ERROR - Incorrect state.");
+            }
+            default -> System.out.println("ERROR - Incorrect state.");
         }
     }
 
