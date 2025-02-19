@@ -19,7 +19,7 @@ public class DrawTool implements Tool {
     Layer activeLayer = c.getActiveImage().getActiveLayer();
     int x = (int) point.getX();
     int y = (int) point.getY();
-    activeLayer.setPixel(x, y, Color.white);  // Draw a white pixel     
+    activeLayer.setPixel(x, y, Color.white);       
     c.repaint();
   }
 
@@ -29,7 +29,7 @@ public class DrawTool implements Tool {
     Layer activeLayer = c.getActiveImage().getActiveLayer();     
     int x = (int) point.getX();
     int y = (int) point.getY();
-    activeLayer.setPixel(x, y, Color.white);  // Draw a white pixel     
+    activeLayer.setPixel(x, y, Color.white);    
     c.repaint();
   }
 
