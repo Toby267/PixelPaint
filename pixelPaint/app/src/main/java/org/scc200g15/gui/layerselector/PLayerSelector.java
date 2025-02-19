@@ -189,6 +189,8 @@ public class PLayerSelector extends JPanel {
     Image image = GUI.getInstance().getActiveImage();
     if (image == null)
       return;
+    if (activeLayer == lastActiveLayer)
+      return;
     image.setActiveLayer(activeLayer, lastActiveLayer);
     lastActiveLayer = activeLayer;
   }
