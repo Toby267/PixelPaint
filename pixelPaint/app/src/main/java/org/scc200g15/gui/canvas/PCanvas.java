@@ -26,6 +26,7 @@ public class PCanvas extends JPanel {
 
   Point2D zoomCenter = new Point(0, 0);
   Point2D hoverPixel = new Point(-1, -1);
+  Color hoverColour = Color.WHITE;
 
   Point dif = new Point(0, 0);
 
@@ -100,7 +101,7 @@ public class PCanvas extends JPanel {
       for (int x = (int) startPoint.getX(); x < endPoint.getX(); x++) {
         for (int y = (int) startPoint.getY(); y < endPoint.getY(); y++) {
           if ((int) (hoverPixel.getX()) == x && (int) (hoverPixel.getY()) == y)
-            g2d.setColor(Color.red);
+            g2d.setColor(hoverColour);
           else
             g2d.setColor(pixels[x][y]);
 
@@ -200,5 +201,9 @@ public class PCanvas extends JPanel {
    */
   public void setHoverPixel(Point2D hoverPixel) {
     this.hoverPixel = hoverPixel;
+  }
+
+  public void setHoverColour(Color hoverColour) {
+    this.hoverColour = hoverColour;
   }
 }

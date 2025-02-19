@@ -13,30 +13,40 @@ import org.scc200g15.image.Layer;
  */
 public class DrawTool implements Tool {
 
-  @Override
-  public void mouseDragged(PCanvas c, MouseEvent e) {
+  Color colour = Color.WHITE;
+
+  public void setColour(int r, int g, int b) {
+    colour = new Color(r, g, b, colour.getAlpha());
+  }
+
+  public void setOppacity(int alpha) {
+    colour = new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), alpha);
+  }
+
+  private void draw(PCanvas c, MouseEvent e) {
     Point2D point = c.getPixelPoint(e.getPoint());     
     Layer activeLayer = c.getActiveImage().getActiveLayer();
     int x = (int) point.getX();
     int y = (int) point.getY();
-    activeLayer.setPixel(x, y, Color.white);       
+    activeLayer.setPixel(x, y, colour);
     c.repaint();
+  }
+  
+  @Override
+  public void mouseDragged(PCanvas c, MouseEvent e) {
+    draw(c, e);
   }
 
   @Override
   public void mousePressed(PCanvas c, MouseEvent e) {
-    Point2D point = c.getPixelPoint(e.getPoint());     
-    Layer activeLayer = c.getActiveImage().getActiveLayer();     
-    int x = (int) point.getX();
-    int y = (int) point.getY();
-    activeLayer.setPixel(x, y, Color.white);    
-    c.repaint();
+    draw(c, e);
   }
 
   @Override
   public void mouseMoved(PCanvas c, MouseEvent e) {
     Point2D hoverPoint = c.getPixelPoint(e.getPoint());
     c.setHoverPixel(hoverPoint);
+    c.setHoverColour(colour);
     c.repaint();
   }
 
