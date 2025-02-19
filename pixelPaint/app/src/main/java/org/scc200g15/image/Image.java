@@ -23,9 +23,19 @@ public final class Image {
   public Image() {
     Layers = new ArrayList<>(16);
     
-    Layers.add(new Layer("LAYER 1", Color.GRAY, width, height));
+    // Layers.add(new Layer("LAYER 1", Color.GRAY, width, height));
+    // setActiveLayer(Layers.get(0), null);
+    // GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.get(0));
+
+    Layers.add(new Layer("LAYER 1", new Color(195, 127, 209, 128), width, height));
     setActiveLayer(Layers.get(0), null);
     GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.get(0));
+    
+    Layers.add(new Layer("LAYER 2", new Color(0, 83, 234, 128), width, height));
+
+    Color[][] output = compressImage();
+    displayColour(output[0][0]);
+
   }
 
   public int moveLayer(int index1, int index2) {
@@ -139,5 +149,69 @@ public final class Image {
   public ArrayList<Layer> getLayers() {
     return Layers;
   }
+  
+
+  public Color[][] compressImage() {
+    Color[][] finalImage = new Color[width][height];
+    for(int x = 0; x < width; x++) {
+      for(int y = 0; y < height; y++) {
+        ArrayList<Color> coloursToMix = new ArrayList<>();
+        boolean isFirstLayer = true;
+
+        for(Layer layer : Layers) {
+          Color pixel = layer.getPixel(x, y);
+          if(pixel.getAlpha() == 0) continue;
+          if(pixel.getAlpha() == 255) {
+            if(isFirstLayer) finalImage[x][y] = pixel;
+            else coloursToMix.add(pixel);
+            break;
+          }
+          coloursToMix.add(pixel);
+          isFirstLayer = false;
+        }
+
+        if(coloursToMix.size() != 0) {
+          Color outputColour = coloursToMix.get(0);
+          for(int i = 1; i < coloursToMix.size(); i++) 
+            outputColour = combineColours(outputColour, coloursToMix.get(i));
+          finalImage[x][y] = adjustForAlpha(outputColour);
+        }
+        
+      }
+    }
+    return finalImage;
+  }
+
+
+  public Color combineColours(Color c1, Color c2) {
+    double a1 = c1.getAlpha() / 255.0;
+    double a2 = c2.getAlpha() / 255.0;
+    double alpha = a1 + a2 * (1 - a1);
+
+    int red =   (int) Math.round(((c1.getRed()   * a1) + (c2.getRed()   * a2 * (1 - a1))) / alpha);
+    int green = (int) Math.round(((c1.getGreen() * a1) + (c2.getGreen() * a2 * (1 - a1))) / alpha);
+    int blue =  (int) Math.round(((c1.getBlue()  * a1) + (c2.getBlue()  * a2 * (1 - a1))) / alpha);
+
+    return new Color(red, green, blue, (int) Math.round(alpha * 255));
+  }
+
+
+  public Color adjustForAlpha(Color c) {
+    double alpha = c.getAlpha() / 255.0;
+
+    int red =   (int) Math.round(c.getRed()   * alpha + 255 * (1 - alpha));
+    int green = (int) Math.round(c.getGreen() * alpha + 255 * (1 - alpha));
+    int blue =  (int) Math.round(c.getBlue()  * alpha + 255 * (1 - alpha));
+
+    return new Color(red, green, blue);
+  }
+
+
+  // TEMPORARY
+  public void displayColour(Color c) {
+    System.out.println("("+c.getRed()+", "+c.getGreen()+", "+c.getBlue()+", "+c.getAlpha()+") ");
+  }
+
+
 
 }
