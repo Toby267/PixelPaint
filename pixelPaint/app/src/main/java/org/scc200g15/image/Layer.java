@@ -48,8 +48,8 @@ final public class Layer extends JPanel {
         // Formatting
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(1, 1, 0, 1), // Spacing between each component
-                BorderFactory.createLineBorder(new Color(197, 197, 197), 1, true)));
+            BorderFactory.createEmptyBorder(1, 1, 0, 1), // Spacing between each component
+            BorderFactory.createLineBorder(new Color(197, 197, 197), 1, true)));
         this.setBackground(Tools.VISIBLE_BACKGROUND_COLOUR);
         displayButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
         removeButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
@@ -167,12 +167,9 @@ final public class Layer extends JPanel {
     }
 
     public void deactivateLayer() {
-        if (isBeingRenamed)
-            renameLabelToTextField();
-        if (isVisible)
-            setLayerStateUI("visible");
-        else
-            setLayerStateUI("hidden");
+        if (isBeingRenamed) renameLabelToTextField();
+        if (isVisible) setLayerStateUI("visible");
+        else setLayerStateUI("hidden");
         isActive = false;
         Tools.refreshUI(this);
     }

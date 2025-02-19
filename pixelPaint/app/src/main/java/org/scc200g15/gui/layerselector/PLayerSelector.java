@@ -89,8 +89,7 @@ public class PLayerSelector extends JPanel {
   }
 
   /*
-   * --------------------------------------- [ADD LAYERS]
-   * ---------------------------------------
+   * --------------------------------------- [ADD LAYERS] ---------------------------------------
    */
 
   public JButton createPlusLayerButton(Image image) {
@@ -190,16 +189,14 @@ public class PLayerSelector extends JPanel {
     Image image = GUI.getInstance().getActiveImage();
     if (image == null)
       return;
-
-    
     image.setActiveLayer(activeLayer, lastActiveLayer);
     lastActiveLayer = activeLayer;
   }
+
   public void setActiveLayer(int layerID) {
     Image image = GUI.getInstance().getActiveImage();
     if (image == null)
       return;
-
     Layer activeLayer = image.getLayer(layerID);
     setActiveLayer(activeLayer);
   }
@@ -211,6 +208,10 @@ public class PLayerSelector extends JPanel {
 
   public ArrayList<Layer> getLayers() {
     return GUI.getInstance().getCanvas().getActiveImage().getLayers();
+  }
+
+  public void setLastActiveLayer(Layer lastActiveLayer) {
+      this.lastActiveLayer = lastActiveLayer;
   }
 
 }

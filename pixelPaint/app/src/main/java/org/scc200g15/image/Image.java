@@ -3,6 +3,8 @@ package org.scc200g15.image;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import org.scc200g15.gui.GUI;
+
 /**
  * The image class stores all of the relevant info about the image an image
  * including pixel and layer data
@@ -23,6 +25,7 @@ public final class Image {
     
     Layers.add(new Layer("LAYER 1", Color.GRAY, width, height));
     setActiveLayer(Layers.get(0), null);
+    GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.get(0));
   }
 
   public int moveLayer(int ID, int NewID) {
@@ -99,7 +102,7 @@ public final class Image {
   public void setActiveLayer(Layer newActiveLayer, Layer oldActiveLayer) {
     activeLayer = newActiveLayer;
     newActiveLayer.activateLayer();
-    if (oldActiveLayer != null )oldActiveLayer.deactivateLayer();
+    if (oldActiveLayer != null) oldActiveLayer.deactivateLayer();
   }
 
   /**
