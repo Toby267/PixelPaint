@@ -9,9 +9,9 @@ import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Layer;
 
 /**
- * Tool for drawing pixels on the canvas
+ * Tool for erasing pixels on the canvas by setting them to transparent
  */
-public class DrawTool implements Tool {
+public class EraserTool implements Tool {
 
   @Override
   public void mouseDragged(PCanvas c, MouseEvent e) {
@@ -19,7 +19,8 @@ public class DrawTool implements Tool {
     Layer activeLayer = c.getActiveImage().getActiveLayer();
     int x = (int) point.getX();
     int y = (int) point.getY();
-    activeLayer.setPixel(x, y, Color.white);  // Draw a white pixel     
+    // Create a transparent color (alpha = 0)
+    activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));    
     c.repaint();
   }
 
@@ -29,7 +30,8 @@ public class DrawTool implements Tool {
     Layer activeLayer = c.getActiveImage().getActiveLayer();     
     int x = (int) point.getX();
     int y = (int) point.getY();
-    activeLayer.setPixel(x, y, Color.white);  // Draw a white pixel     
+    // Create a transparent color (alpha = 0)
+    activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
     c.repaint();
   }
 

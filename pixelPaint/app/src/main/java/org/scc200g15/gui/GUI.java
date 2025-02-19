@@ -10,7 +10,8 @@ import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.PToolBar;
-import org.scc200g15.tools.*;
+import org.scc200g15.tools.DrawTool;
+import org.scc200g15.tools.HoverDemoTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
 
@@ -57,14 +58,14 @@ public class GUI extends JFrame {
 
     // Register Tools
     HoverDemoTool hoverDemo = new HoverDemoTool();
-    toolManager.registerTool("hover", hoverDemo);
+    //toolManager.registerTool("hover", hoverDemo);
 
-    toolManager.setActiveTool("hover");
+    //toolManager.setActiveTool("hover");
 
     DrawTool drawDemo = new DrawTool();
-    //toolManager.registerTool("draw", drawDemo);
+    toolManager.registerTool("draw", drawDemo);
 
-    //toolManager.setActiveTool("draw");
+    toolManager.setActiveTool("draw");
 
 
     // General

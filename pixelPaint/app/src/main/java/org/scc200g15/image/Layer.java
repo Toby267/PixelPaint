@@ -36,8 +36,10 @@ public class Layer {
     return pixels[x][y];
   }
 
+
+
   public Color setPixel(int x, int y, Color c) {
-    return pixels[x][y];
+    return pixels[x][y] = c;
   }
 
 
