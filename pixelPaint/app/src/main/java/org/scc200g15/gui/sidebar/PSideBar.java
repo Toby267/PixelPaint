@@ -14,10 +14,10 @@ import org.scc200g15.gui.GUI;
  * The SideBar that will contain the color selector
  */
 public class PSideBar extends JPanel {
-  public PSideBar() {
+  public PSideBar(GUI window) {
     setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-    setPreferredSize(new Dimension(60, GUI.getInstance().getHeight()));
+    setPreferredSize(new Dimension(60, window.getHeight()));
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     JLabel sideLabel = new JLabel("side");

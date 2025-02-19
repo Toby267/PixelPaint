@@ -15,8 +15,8 @@ import org.scc200g15.gui.GUI;
  * @param window The JFrame to use to size the Panel
  */
 public class PToolBar extends JPanel {
-  public PToolBar() {
-    setPreferredSize(new Dimension(GUI.getInstance().getWidth(), 16));
+  public PToolBar(GUI window) {
+    setPreferredSize(new Dimension(window.getWidth(), 16));
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
     JLabel toolLabel = new JLabel("status");

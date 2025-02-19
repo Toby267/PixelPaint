@@ -1,4 +1,5 @@
 package org.scc200g15.gui.layerselector;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -30,43 +31,45 @@ public class PLayerSelector extends JPanel {
 
   private int totalCreatedLayerCount = 1;
   private Layer lastActiveLayerIndex;
-  
-  /**
-   SideBar which holds all the Layer Selectors
-  */
-  public PLayerSelector() {
 
+  /**
+   * SideBar which holds all the Layer Selectors
+   */
+  public PLayerSelector(GUI window) {
     // Setting up parameters
     this.setBorder(new BevelBorder(BevelBorder.LOWERED));
-    this.setPreferredSize(new Dimension(250, GUI.getInstance().getHeight()));
+    this.setPreferredSize(new Dimension(250, window.getHeight()));
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     contentPanel = new JPanel();
-    
+
     // JPanel which holds all the content
     contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-    
-    // // ! TODO: CHANGE HEIGHT/WIDTH (Current colour is transparent).
-    // Layer firstLayer = new Layer("Layer #1", new Color(0,0,0,0), 10, 10, this);
-    // layers.add(firstLayer);
-    // setActiveLayer(firstLayer);
-    
-    setupMenuUI();
-  }
-  
-  /* --------------------------------------- [UI SETUP] --------------------------------------- */
 
-  public void setupMenuUI() {
-    Image image = GUI.getInstance().getCanvas().getActiveImage();
+    drawMenuUI(window);
+  }
+
+  public void redrawMenuUI(GUI window){
+    // Flip the content in UI
+    removeAll();
+    contentPanel.removeAll();
+    drawMenuUI(GUI.getInstance());
+    Tools.refreshUI(this);
+  }
+
+  public void drawMenuUI(GUI window) {
+    Image image = window.getCanvas().getActiveImage();
 
     // Adding the title display
-    titleDisplay = new JPanel();  
+    titleDisplay = new JPanel();
     titleDisplay.add(new JLabel("Layer Menu"));
     contentPanel.add(titleDisplay);
 
-    // Add first layers
-    for(int i = 0; i < image.getLayerCount(); i++)
-      contentPanel.add(image.getLayer(i));
-    
+    if (image != null) {
+      // Add first layers
+      for (int i = 0; i < image.getLayerCount(); i++)
+        contentPanel.add(image.getLayer(i));
+    }
+
     // Add layer adder button
     JPanel plusLayerHolderPanel = new JPanel();
     plusLayerHolderPanel.add(createPlusLayerButton(image));
@@ -79,54 +82,70 @@ public class PLayerSelector extends JPanel {
 
     // Fix spacing
     this.titleDisplay.setMaximumSize(Tools.getMaxSize(this.titleDisplay));
-    for(int i = 0; i < image.getLayerCount(); i++)
-      image.getLayer(i).setMaximumSize(Tools.getMaxSize(image.getLayer(i)));
+    if (image != null) {
+      for (int i = 0; i < image.getLayerCount(); i++)
+        image.getLayer(i).setMaximumSize(Tools.getMaxSize(image.getLayer(i)));
+    }
   }
 
-  /* --------------------------------------- [ADD LAYERS] --------------------------------------- */
+  /*
+   * --------------------------------------- [ADD LAYERS]
+   * ---------------------------------------
+   */
 
   public JButton createPlusLayerButton(Image image) {
     // Add new button to create new layer (symbol: +)
     JButton addLayer = new JButton(Tools.createImageIcon(20, 20, "/Icons/plus_icon.png"));
-    addLayer.setBorder(new LineBorder(new Color(0,0,0,0), 10, true));
+    addLayer.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
 
     // Monitor addLayer button press
-    addLayer.addActionListener(new ActionListener() { 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          // Set layer limit upper bound
-          if(image.getLayerCount() >= 16) maxLayersErrorMessage();
-          else addLayer(image);
-        }
+    addLayer.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Image image = GUI.getInstance().getActiveImage();
+        if(image == null) return;
+        // Set layer limit upper bound
+        if (image.getLayerCount() >= 16)
+          maxLayersErrorMessage();
+        else
+          createLayer();
+      }
     });
 
     return addLayer;
   }
 
-  // Add a new Layer to the layer menu
-  public void addLayer(Image image) {
-    // ! TODO: CHANGE THE WIDTH/HEIGHT OF THE LAYER (Currently uses transparent colour)
-    Layer newLayer = new Layer("Layer #" + (++totalCreatedLayerCount), new Color(0,0,0,0), 10, 10);
+  public void createLayer(){
+    Image image = GUI.getInstance().getActiveImage();
+    if(image == null) 
+    {
+      //TODO: Handle Error
+      return;
+    }
+    Layer newLayer = new Layer("TEMP", new Color(0, 0, 0, 0), image.getWidth(), image.getHeight());
+  
     image.addLayer(newLayer);
-    // layers.add(newLayer);
-    contentPanel.add(newLayer, contentPanel.getComponentCount() - 1);
-    newLayer.setMaximumSize(Tools.getMaxSize(newLayer));
+    redrawMenuUI(GUI.getInstance());
+
     Tools.refreshUI(this);
   }
 
-  // ! An alternative to this could be to remove the [+] sign which allows users to add more layers when 16 are reached
+  // ! An alternative to this could be to remove the [+] sign which allows users
+  // to add more layers when 16 are reached
   // ! This might be cleaner...
   public void maxLayersErrorMessage() {
     JOptionPane.showOptionDialog(
-      null, "You have reached the maximum number of layers (16)", "Layer Maximum",
-      JOptionPane.DEFAULT_OPTION,
-      JOptionPane.WARNING_MESSAGE,
-      Tools.createImageIcon(40, 40, "/Icons/warning_icon.png"),
-      null, null
-    );
+        null, "You have reached the maximum number of layers (16)", "Layer Maximum",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.WARNING_MESSAGE,
+        Tools.createImageIcon(40, 40, "/Icons/warning_icon.png"),
+        null, null);
   }
 
-  /* --------------------------------------- [REMOVE LAYERS] --------------------------------------- */
+  /*
+   * --------------------------------------- [REMOVE LAYERS]
+   * ---------------------------------------
+   */
 
   // Remove Layer item
   public void removeLayer(Layer layer) {
@@ -136,11 +155,13 @@ public class PLayerSelector extends JPanel {
     Tools.refreshUI(this);
   }
 
-  /* --------------------------------------- [REARRANGE LAYERS] --------------------------------------- */
-
+  /*
+   * --------------------------------------- [REARRANGE LAYERS]
+   * ---------------------------------------
+   */
 
   // Insert and redraw layer
-  // ! RENAME TO MOVE LAYER 
+  // ! RENAME TO MOVE LAYER
   public void insertLayer(int index1, int index2) {
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
@@ -152,22 +173,32 @@ public class PLayerSelector extends JPanel {
 
     image.moveLayer(index2, index1);
 
-    // Flip the content in UI
-    removeAll();
-    contentPanel.removeAll();
-    setupMenuUI();
-    Tools.refreshUI(this);
+    redrawMenuUI(GUI.getInstance());
   }
 
-  /* --------------------------------------- [SET ACTIVE LAYER] --------------------------------------- */
+  /*
+   * --------------------------------------- [SET ACTIVE LAYER]
+   * ---------------------------------------
+   */
 
   public void setActiveLayer(Layer activeLayer) {
-    if(lastActiveLayerIndex != null) lastActiveLayerIndex.disactivateLayer();
-    activeLayer.activateLayer();
-    lastActiveLayerIndex = activeLayer;
+    Image image = GUI.getInstance().getActiveImage();
+    if (image == null)
+      return;
+    image.setActiveLayer(activeLayer);
+  }
+  public void setActiveLayer(int layerID) {
+    Image image = GUI.getInstance().getActiveImage();
+    if (image == null)
+      return;
+
+    image.setActiveLayer(image.getLayer(layerID));
   }
 
-  /* --------------------------------------- [ACCESSORS/MUTATORS] --------------------------------------- */
+  /*
+   * --------------------------------------- [ACCESSORS/MUTATORS]
+   * ---------------------------------------
+   */
 
   public ArrayList<Layer> getLayers() {
     return GUI.getInstance().getCanvas().getActiveImage().getLayers();

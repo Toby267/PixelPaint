@@ -11,6 +11,7 @@ import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.tools.DrawTool;
+import org.scc200g15.image.Image;
 import org.scc200g15.tools.HoverDemoTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
@@ -41,28 +42,28 @@ public class GUI extends JFrame {
     setLayout(new BorderLayout());
 
     // Add the MenuBar to the JFrame
-    PMenuBar menuBar = new PMenuBar();
+    PMenuBar menuBar = new PMenuBar(this);
     setJMenuBar(menuBar);
 
     // Add Toolbar to the JFrame
-    PToolBar toolBar = new PToolBar();
+    PToolBar toolBar = new PToolBar(this);
     add(toolBar, BorderLayout.NORTH);
 
     // Add the StatusBar to the JFrame
-    PStatusBar statusBar = new PStatusBar();
+    PStatusBar statusBar = new PStatusBar(this);
     add(statusBar, BorderLayout.SOUTH);
 
     // Add the SideBar to the JFrame
-    PSideBar sideBar = new PSideBar();
+    PSideBar sideBar = new PSideBar(this);
     add(sideBar, BorderLayout.WEST);
-
-    // Add the LayerSelector to the JFrame
-    layerSelector = new PLayerSelector();
-    add(layerSelector, BorderLayout.EAST);
 
     // Canvas
     canvas = new PCanvas();
     add(canvas);
+
+    // Add the LayerSelector to the JFrame
+    layerSelector = new PLayerSelector(this);
+    add(layerSelector, BorderLayout.EAST);
 
     // ToolManager
     PanZoomTool defaultTool = new PanZoomTool();
@@ -84,6 +85,14 @@ public class GUI extends JFrame {
     setSize(1250, 750);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setVisible(true);
+  }
+
+  public void setActiveImage(Image i){
+    this.canvas.setActiveImage(i);
+    layerSelector.redrawMenuUI(this);
+  }
+  public Image getActiveImage(){
+    return canvas.getActiveImage();
   }
 
   public PCanvas getCanvas() {
