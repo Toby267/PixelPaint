@@ -175,7 +175,7 @@ public class PLayerSelector extends JPanel {
   public void moveLayer(int index1, int index2) {
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
-    image.moveLayer(index2, index1);
+    image.moveLayer(index1, index2);
 
     redrawMenuUI(GUI.getInstance());
   }

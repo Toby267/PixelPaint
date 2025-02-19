@@ -28,16 +28,20 @@ public final class Image {
     GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.get(0));
   }
 
-  public int moveLayer(int ID, int NewID) {
-    if (ID < 0 || ID >= Layers.size() || NewID < 0 || NewID >= Layers.size()) {
+  public int moveLayer(int index1, int index2) {
+    if (index1 < 0 || index1 >= Layers.size() || index2 < 0 || index2 >= Layers.size()) {
       // TODO: Handle Error Invalid Layer ID
       return -1;
     }
+    Layer tempLayer = Layers.get(index1);
 
-    Layer l = Layers.get(ID);
-    Layers.remove(ID);
-    Layers.add(NewID, l);
-    return NewID;
+    int increment = index1 < index2 ? 1 : -1;
+    for (int i = index1; i != index2; i += increment) 
+      Layers.set(i, Layers.get(i + increment));
+
+    Layers.set(index2, tempLayer);
+    return index2;
+
   }
 
   public int addLayer() {

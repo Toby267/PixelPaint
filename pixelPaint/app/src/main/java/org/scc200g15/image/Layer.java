@@ -117,8 +117,11 @@ final public class Layer extends JPanel {
                 int trueStartPoint = (originIndex * frameHeight) + startPoint;
                 int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint);
                 // endPoint = e.getPoint().y
-
-                GUI.getInstance().getLayerSelector().moveLayer(originIndex, (int) (trueEndPoint / frameHeight));
+                int destinationIndex = (int) (trueEndPoint / frameHeight);
+                
+                if (originIndex != destinationIndex) 
+                    GUI.getInstance().getLayerSelector().moveLayer(originIndex, destinationIndex);
+                
                 // Check if double click to rename layer
                 switchLabelToTextField(e);
             }
