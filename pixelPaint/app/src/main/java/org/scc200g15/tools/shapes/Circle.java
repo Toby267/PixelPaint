@@ -10,6 +10,8 @@ import java.util.ArrayList;
 public class Circle implements Shape {
     /**
      * returns the pixels for a circle of size diameter around center
+     * 
+     * TODO: implement Bresenham’s Circle Algorithm to find the outline, then scan each line filling them in - just more efficient
      */
     @Override
     public ArrayList<Point2D> returnPixels(Point2D center, int diameter)
@@ -18,26 +20,21 @@ public class Circle implements Shape {
             add(center);
         }};
 
-        int radius = (diameter-1)/2;
+        int radius = diameter/2;
+
         int x = (int)center.getX();
         int y = (int)center.getY();
-
-        // adds the points for the center row & column
-        // otherwise they will be repeated when the rest of the points are computed
-        for (int i = 1; i <= radius; i++) {
-            points.add(new Point(x+i, y));
-            points.add(new Point(x-i, y));
-            points.add(new Point(x, y+i));
-            points.add(new Point(x, y-i));
-        }
         
-        //adds the points of each quadrant of the circle
-        for (int j = 1; j <= radius; j++) {
-            for (int i = 1; i <= radius-j; i++) {
-                points.add(new Point(x+i, y+j));
-                points.add(new Point(x+i, y-j));
-                points.add(new Point(x-i, y+j));
-                points.add(new Point(x-i, y-j));
+        int startX = x - radius;
+        int startY = y - radius;
+
+        // loops through each point in the surrounding box, checking whether they are in the circle
+        for (int i = 0; i < diameter; i++) {
+            for (int j = 0; j < diameter; j++) {
+                double dist = Math.pow((x - (startX+i)), 2) + Math.pow((y - (startY+j)), 2);
+                if (dist <= (Math.pow(radius, 2))) {
+                    points.add(new Point(startX+i, startY+j));
+                }
             }
         }
 
