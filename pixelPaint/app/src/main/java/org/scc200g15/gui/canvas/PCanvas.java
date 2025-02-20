@@ -118,6 +118,8 @@ public class PCanvas extends JPanel {
    * @return returns the pixel pos for the given mouse position on screen
    */
   public Point2D getPixelPoint(Point p) {
+    if(currentTransform == null) return new Point(0, 0);
+    
     // Define a point to put the result in
     Point2D dsPoint = new Point2D.Float();
     try {

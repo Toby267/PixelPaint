@@ -16,6 +16,8 @@ public class HoverDemoTool implements Tool {
    */
   @Override
   public void mouseMoved(PCanvas c, MouseEvent e) {
+    if(c.getActiveImage() == null) return;
+
     Point2D hoverPoint = c.getPixelPoint(e.getPoint());
 
     c.setHoverPixel(hoverPoint);

@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
+import org.scc200g15.config.Config;
 import org.scc200g15.gui.GUI;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
@@ -87,8 +88,8 @@ public final class PLayerSelector extends JPanel {
     contentPanel.add(addLayerPanel);
 
     // Disable the add layer button if there are 16 Layers
-    // TODO: Make this a config option
-    if(image != null) addLayerPanel.setVisible(image.getLayerCount() <= 15);
+    if(image != null) addLayerPanel.setVisible(image.getLayerCount() <= (Config.MAX_LAYERS - 1));
+    else addLayerPanel.setVisible(false);
 
     // Add the ability to scroll through the list of layers
     scroll = new JScrollPane(contentPanel);
@@ -116,15 +117,13 @@ public final class PLayerSelector extends JPanel {
     addLayer.addActionListener((ActionEvent e) -> {
         Image image = GUI.getInstance().getActiveImage();
 
-        // TODO: Dissable button / Layer menu if no image active
         // If no active image do nothing
         if (image == null) {
             return;
         }
 
-        // TODO: Make this limit a config option
         // Set layer limit upper bound
-        if (image.getLayerCount() >= 16) {
+        if (image.getLayerCount() >= Config.MAX_LAYERS) {
             // Should not happen as the button should be hidden when 16 layers exist in the image
             return;
         }
@@ -146,7 +145,7 @@ public final class PLayerSelector extends JPanel {
     Image image = GUI.getInstance().getActiveImage();
     if(image == null) 
     {
-      //TODO: Handle Error
+      addLayerPanel.setVisible(false);
       return;
     }
     // Create a new layer with a TEMP na,e
