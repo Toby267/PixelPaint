@@ -23,7 +23,7 @@ import org.scc200g15.image.Layer;
 /**
  * The right hand side bar which will contain the layers
  */
-public final class PLayerSelector extends JPanel {
+public final class LayerSelectorPanel extends JPanel {
   private final LayerMenuTools Tools = new LayerMenuTools();
 
   private final JPanel contentPanel = new JPanel();;
@@ -36,7 +36,7 @@ public final class PLayerSelector extends JPanel {
   /**
    * SideBar which holds all the Layer Selectors
    */
-  public PLayerSelector(GUI window) {
+  public LayerSelectorPanel(GUI window) {
     // Setting up parameters
     this.setBorder(new BevelBorder(BevelBorder.LOWERED));
     this.setPreferredSize(new Dimension(250, window.getHeight()));

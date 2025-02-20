@@ -5,7 +5,7 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
 import org.scc200g15.gui.canvas.PCanvas;
-import org.scc200g15.gui.layerselector.PLayerSelector;
+import org.scc200g15.gui.layerselector.LayerSelectorPanel;
 import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
@@ -34,7 +34,7 @@ public class GUI extends JFrame {
 
   PCanvas canvas;
   ToolManager toolManager;
-  PLayerSelector layerSelector;
+  LayerSelectorPanel layerSelector;
 
   private GUI() {
     super("Pixel Paint");
@@ -62,7 +62,7 @@ public class GUI extends JFrame {
     add(canvas);
 
     // Add the LayerSelector to the JFrame
-    layerSelector = new PLayerSelector(this);
+    layerSelector = new LayerSelectorPanel(this);
     add(layerSelector, BorderLayout.EAST);
 
     // ToolManager
@@ -99,7 +99,7 @@ public class GUI extends JFrame {
     return canvas;
   }
 
-  public PLayerSelector getLayerSelector() {
+  public LayerSelectorPanel getLayerSelector() {
     return layerSelector;
   }
 
