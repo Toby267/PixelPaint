@@ -11,6 +11,7 @@ import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Layer;
 import org.scc200g15.tools.shapes.Circle;
 import org.scc200g15.tools.shapes.Shape;
+import org.scc200g15.tools.shapes.Square;
 
 /**
  * Tool for drawing pixels on the canvas
@@ -22,15 +23,16 @@ public class DrawTool implements Tool {
 
   private Shape activeShape;
   private Color colour = Color.WHITE;
-  private int size = 1;
+  private int size = 3;
 
   /**
    * Constructor that sets up all the shapes, and the active shape
    */
   public DrawTool() {
     shapes.put("Circle", new Circle());
+    shapes.put("Square", new Square());
 
-    activeShape = shapes.get("Circle");
+    activeShape = shapes.get("Square");
   }
 
   /**
