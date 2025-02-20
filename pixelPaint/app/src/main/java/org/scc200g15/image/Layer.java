@@ -35,6 +35,19 @@ final public class Layer extends JPanel {
     private boolean isActive = false;
     private boolean isBeingRenamed = false;
 
+
+     /**
+     * Basic constructor that creates a layer with a 2D array of pixels
+     * 
+     * @param layerName The name of the layer
+     * @param pixels The 2D array of pixels to use
+     */
+    public Layer(String layerName, Color[][] pixels){
+        setupLayerMenuPanel(layerName);        
+
+        this.pixels = pixels;
+    }
+
     /**
      * Basic constructor that creates a layer with a given size that is one color
      * 
@@ -43,16 +56,31 @@ final public class Layer extends JPanel {
      * @param h         the height of the layer
      * @param layerName the name of the layer
      */
-    public Layer(String layerName, Color c, int w, int h) {
+    public Layer(String layerName, Color c, int w, int h) {   
+        setupLayerMenuPanel(layerName);
+        
+        pixels = new Color[w][h];
 
-        // Formatting
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                pixels[x][y] = c;
+            }
+        }
+    }
+
+    private void setupLayerMenuPanel(String layerName){
         this.setLayout(new BorderLayout());
+
         this.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createEmptyBorder(1, 1, 0, 1), // Spacing between each component
-            BorderFactory.createLineBorder(new Color(197, 197, 197), 1, true)));
+            BorderFactory.createLineBorder(new Color(197, 197, 197), 1, true))
+        );
+
         this.setBackground(Tools.VISIBLE_BACKGROUND_COLOUR);
+
         displayButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
         removeButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
+
         layerLabel.setText(layerName);
         layerLabel.setForeground(Tools.VISIBLE_ICON_COLOUR);
 
@@ -62,16 +90,6 @@ final public class Layer extends JPanel {
         this.add(removeButton, BorderLayout.EAST);
 
         setActionListeners();
-
-        // * ----- ACTUAL LAYER PIXELS ----- * //
-        pixels = new Color[w][h];
-
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                pixels[x][y] = c;
-            }
-        }
-
     }
 
     public void setActionListeners() {
@@ -183,6 +201,7 @@ final public class Layer extends JPanel {
      */
 
     // Change the look of each layer in the menu to indicate it's current status
+    // TODO: Look at refactoring
     public void changeDisplayState() {
         isLayerVisible = !isLayerVisible;
         if (isActive)
@@ -193,6 +212,7 @@ final public class Layer extends JPanel {
             else
                 setLayerStateUI("visible");
         }
+
         Tools.refreshUI(this);
         GUI.getInstance().getCanvas().repaint();
     }

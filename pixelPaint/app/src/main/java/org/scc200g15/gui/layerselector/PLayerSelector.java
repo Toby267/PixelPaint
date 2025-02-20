@@ -18,10 +18,11 @@ import org.scc200g15.gui.GUI;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
 
+// TODO: Refactor to call LayerSelectorPanel
 /**
  * The right hand side bar which will contain the layers
  */
-public class PLayerSelector extends JPanel {
+public final class PLayerSelector extends JPanel {
   private final LayerMenuTools Tools = new LayerMenuTools();
 
   private final JPanel contentPanel = new JPanel();;
@@ -43,18 +44,29 @@ public class PLayerSelector extends JPanel {
     // JPanel which holds all the content
     contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
+    // Draw the layer selection menu
     drawMenuUI(window);
   }
 
   public void redrawMenuUI(GUI window){
-    // Flip the content in UI
+    // Remove all of the old items from the JPanel
     removeAll();
     contentPanel.removeAll();
+
+    // Draw the Layer Selection Menu
     drawMenuUI(GUI.getInstance());
-    Tools.refreshUI(this);
+
+    // Repaint Layer Selection Menu 
+    revalidate();
+    repaint();
   }
 
+  /**
+   * drawMenuUI - Draws the LayerSelectionGUI
+   * @param window
+   */
   public void drawMenuUI(GUI window) {
+    // Get the active image
     Image image = window.getCanvas().getActiveImage();
 
     // Adding the title display
@@ -63,7 +75,7 @@ public class PLayerSelector extends JPanel {
     contentPanel.add(titleDisplay);
 
     if (image != null) {
-      // Add first layers
+      // Add Existing layers to the Layer Menu
       for (int i = 0; i < image.getLayerCount(); i++)
         contentPanel.add(image.getLayer(i));
     }
@@ -71,16 +83,19 @@ public class PLayerSelector extends JPanel {
     // Add layer adder button
     addLayerPanel = new JPanel();
 
-    addLayerPanel.add(createPlusLayerButton(image));
+    addLayerPanel.add(createPlusLayerButton());
     contentPanel.add(addLayerPanel);
+
+    // Disable the add layer button if there are 16 Layers
+    // TODO: Make this a config option
     if(image != null) addLayerPanel.setVisible(image.getLayerCount() <= 15);
 
-    // Add the ability to scroll
+    // Add the ability to scroll through the list of layers
     scroll = new JScrollPane(contentPanel);
     scroll.getVerticalScrollBar().setUnitIncrement(15);
     this.add(scroll);
 
-    // Fix spacing
+    // Fix the spacing of the layer menu
     this.titleDisplay.setMaximumSize(Tools.getMaxSize(this.titleDisplay));
     if (image != null) {
       for (int i = 0; i < image.getLayerCount(); i++)
@@ -88,34 +103,45 @@ public class PLayerSelector extends JPanel {
     }
   }
 
-  /*
-   * --------------------------------------- [ADD LAYERS] ---------------------------------------
+  /**
+   * createPlusLayerButton - Creates the button that allows a user to add a layer to the image
+   * @return returns the new JButton
    */
-
-  public JButton createPlusLayerButton(Image image) {
+  public JButton createPlusLayerButton() {
     // Add new button to create new layer (symbol: +)
     JButton addLayer = new JButton(Tools.createImageIcon(20, 20, "/Icons/plus_icon.png"));
     addLayer.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
 
     // Monitor addLayer button press
     addLayer.addActionListener((ActionEvent e) -> {
-        Image image1 = GUI.getInstance().getActiveImage();
-        if (image1 == null) {
+        Image image = GUI.getInstance().getActiveImage();
+
+        // TODO: Dissable button / Layer menu if no image active
+        // If no active image do nothing
+        if (image == null) {
             return;
         }
+
+        // TODO: Make this limit a config option
         // Set layer limit upper bound
-        if (image1.getLayerCount() >= 16) {
-            // TODO: Handle Error
+        if (image.getLayerCount() >= 16) {
+            // Should not happen as the button should be hidden when 16 layers exist in the image
             return;
         }
+
+        // Call the create layer function
         createLayer();
 
+        // Redraw the canvas
         GUI.getInstance().getCanvas().repaint();
     });
 
     return addLayer;
   }
 
+  /**
+   * createLayer - Creates a new transparent layer and adds it to the current image
+   */
   public void createLayer(){
     Image image = GUI.getInstance().getActiveImage();
     if(image == null) 
@@ -123,13 +149,18 @@ public class PLayerSelector extends JPanel {
       //TODO: Handle Error
       return;
     }
+    // Create a new layer with a TEMP na,e
     Layer newLayer = new Layer("TEMP", new Color(0, 0, 0, 0), image.getWidth(), image.getHeight());
   
+    // Add the layer to the active image
     image.addLayer(newLayer);
+
+    // Redraw the layer menu
     redrawMenuUI(GUI.getInstance());
 
     addLayerPanel.setVisible(image.getLayerCount() <= 15);
 
+    // TODO: add this to redrawMenuUI?
     Tools.refreshUI(this);
   }
 
@@ -138,7 +169,6 @@ public class PLayerSelector extends JPanel {
    * ---------------------------------------
    */
 
-  // Remove Layer item
   public void removeLayer(Layer layer) {
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
