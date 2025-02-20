@@ -31,7 +31,7 @@ final public class Layer extends JPanel {
     private final JTextField renameLabelField = new JTextField();
 
     // State Variables
-    private boolean isVisible = true;
+    private boolean isLayerVisible = true;
     private boolean isActive = false;
     private boolean isBeingRenamed = false;
 
@@ -171,7 +171,7 @@ final public class Layer extends JPanel {
 
     public void deactivateLayer() {
         if (isBeingRenamed) renameLabelToTextField();
-        if (isVisible) setLayerStateUI("visible");
+        if (isLayerVisible) setLayerStateUI("visible");
         else setLayerStateUI("hidden");
         isActive = false;
         Tools.refreshUI(this);
@@ -184,16 +184,17 @@ final public class Layer extends JPanel {
 
     // Change the look of each layer in the menu to indicate it's current status
     public void changeDisplayState() {
-        isVisible = !isVisible;
+        isLayerVisible = !isLayerVisible;
         if (isActive)
             setLayerStateUI("active");
         else {
-            if (!isVisible)
+            if (!isLayerVisible)
                 setLayerStateUI("hidden");
             else
                 setLayerStateUI("visible");
         }
         Tools.refreshUI(this);
+        GUI.getInstance().getCanvas().repaint();
     }
 
     /*
@@ -205,7 +206,7 @@ final public class Layer extends JPanel {
         switch (state.toLowerCase()) {
             case "active" -> {
                 this.setBackground(Tools.ACTIVE_BACKGROUND_COLOUR);
-                displayButton.setIcon(isVisible ? Tools.ACTIVE_EYE_OPEN_ICON : Tools.ACTIVE_EYE_SHUT_ICON);
+                displayButton.setIcon(isLayerVisible ? Tools.ACTIVE_EYE_OPEN_ICON : Tools.ACTIVE_EYE_SHUT_ICON);
                 layerLabel.setForeground(Tools.ACTIVE_ICON_COLOUR);
                 removeButton.setIcon(Tools.ACTIVE_TRASH_ICON);
             }
@@ -251,6 +252,7 @@ final public class Layer extends JPanel {
     public Boolean getIsActive() {
         return isActive;
     }
+    public Boolean getIsLayerVisible(){return  isLayerVisible; }
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;

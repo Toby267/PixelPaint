@@ -109,6 +109,8 @@ public class PLayerSelector extends JPanel {
             return;
         }
         createLayer();
+
+        GUI.getInstance().getCanvas().repaint();
     });
 
     return addLayer;
@@ -166,6 +168,7 @@ public class PLayerSelector extends JPanel {
     addLayerPanel.setVisible(image.getLayerCount() <= 15);
 
     Tools.refreshUI(this);
+    GUI.getInstance().getCanvas().repaint();
   }
 
   /*
@@ -178,6 +181,7 @@ public class PLayerSelector extends JPanel {
     image.moveLayer(index1, index2);
 
     redrawMenuUI(GUI.getInstance());
+    GUI.getInstance().getCanvas().repaint();
   }
 
   /*

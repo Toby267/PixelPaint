@@ -93,7 +93,7 @@ public class PCanvas extends JPanel {
     // Render the pixels onto the screen
     for (int l = 0; l < activeImage.getLayerCount(); l++) {
       Layer layer = activeImage.getLayer(l);
-      if (!layer.getIsActive())
+      if (!layer.getIsLayerVisible())
         continue;
 
       Color[][] pixels = layer.getPixels();
