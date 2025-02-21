@@ -3,6 +3,7 @@ package org.scc200g15.gui;
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.gui.layerselector.LayerSelectorPanel;
@@ -15,6 +16,9 @@ import org.scc200g15.image.Image;
 import org.scc200g15.tools.HoverDemoTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
+
+import com.formdev.flatlaf.FlatLightLaf;
+
 
 /**
  * The JFrame that is the brain of the application Controls the creation of the
@@ -38,6 +42,12 @@ public class GUI extends JFrame {
 
   private GUI() {
     super("Pixel Paint");
+
+    try {
+    UIManager.setLookAndFeel( new FlatLightLaf() );
+} catch( Exception ex ) {
+    System.err.println( "Failed to initialize LaF" );
+}
 
     setLayout(new BorderLayout());
 
