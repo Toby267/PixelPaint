@@ -81,6 +81,12 @@ final public class Layer extends JPanel {
         displayButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
         removeButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
 
+        displayButton.setOpaque(false);
+        removeButton.setOpaque(false);
+
+        displayButton.setContentAreaFilled(false);
+        removeButton.setContentAreaFilled(false);
+
         layerLabel.setText(layerName);
         layerLabel.setForeground(Tools.VISIBLE_ICON_COLOUR);
 
