@@ -94,12 +94,8 @@ public class DrawTool implements Tool {
 
     ArrayList<Point2D> points = activeShape.returnPixels(point, size);
     
-    for (int i = 0; i < points.size(); i++) {
-      int x = (int) points.get(i).getX();
-      int y = (int) points.get(i).getY();
-
-      activeLayer.setPixel(x, y, colour);
-    }
+    for (Point2D p : points)
+      activeLayer.setPixel((int)p.getX(), (int)p.getY(), colour);
 
     c.repaint();
   }

@@ -16,9 +16,7 @@ public class Circle implements Shape {
     @Override
     public ArrayList<Point2D> returnPixels(Point2D center, int diameter)
     {
-        ArrayList<Point2D> points = new ArrayList<Point2D>() {{
-            add(center);
-        }};
+        ArrayList<Point2D> points = new ArrayList<Point2D>();
 
         int radius = diameter/2;
 
