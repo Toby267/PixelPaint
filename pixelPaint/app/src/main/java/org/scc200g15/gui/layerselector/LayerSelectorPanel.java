@@ -132,6 +132,7 @@ public final class LayerSelectorPanel extends JPanel {
 
         // Redraw the canvas
         GUI.getInstance().getCanvas().repaint();
+        GUI.getInstance().getCanvas().canvasUpdated();
     });
 
     return addLayer;
@@ -197,6 +198,7 @@ public final class LayerSelectorPanel extends JPanel {
 
     Tools.refreshUI(this);
     GUI.getInstance().getCanvas().repaint();
+    GUI.getInstance().getCanvas().canvasUpdated();
   }
 
   /*
@@ -210,6 +212,7 @@ public final class LayerSelectorPanel extends JPanel {
 
     redrawMenuUI(GUI.getInstance());
     GUI.getInstance().getCanvas().repaint();
+    GUI.getInstance().getCanvas().canvasUpdated();
   }
 
   /*

@@ -31,7 +31,7 @@ public class PCanvas extends JPanel {
   Point dif = new Point(0, 0);
 
   BufferedImage imageBuffer;
-  boolean pixelsChanged = true;
+  boolean canvasChanged = true;
 
   /**
    * Default constructor, with no image active to start
@@ -93,7 +93,7 @@ public class PCanvas extends JPanel {
     Point2D startPoint = new Point(sx, sy);
     Point2D endPoint = new Point(ex, ey);
 
-    if(pixelsChanged){
+    if(canvasChanged){
       imageBuffer = new BufferedImage(activeImage.getWidth(), activeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
       Color[][] pixelData = activeImage.compressVisibleLayers();
@@ -124,7 +124,7 @@ public class PCanvas extends JPanel {
 //        }
 //      }
 
-      pixelsChanged = false;
+      canvasChanged = false;
     }
 
     g2d.drawImage(imageBuffer, null, 0,0);
@@ -228,4 +228,8 @@ public class PCanvas extends JPanel {
   public void setHoverColour(Color hoverColour) {
     this.hoverColour = hoverColour;
   }
+  public void canvasUpdated(){
+    canvasChanged = true;
+  }
+
 }

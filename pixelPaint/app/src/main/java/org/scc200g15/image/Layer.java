@@ -220,7 +220,9 @@ final public class Layer extends JPanel {
         }
 
         Tools.refreshUI(this);
+
         GUI.getInstance().getCanvas().repaint();
+        GUI.getInstance().getCanvas().canvasUpdated();
     }
 
     /*

@@ -143,9 +143,8 @@ public final class Image {
   public ArrayList<Layer> getLayers() {
     return Layers;
   }
-  
 
-  public Color[][] compressImage() {
+  public  Color[][] compressAllLayers(boolean skipInvisibleLayers){
     Color[][] finalImage = new Color[width][height];
     for(int x = 0; x < width; x++) {
       for(int y = 0; y < height; y++) {
@@ -155,6 +154,7 @@ public final class Image {
         for(Layer layer : Layers) {
           Color pixel = layer.getPixel(x, y);
           if(pixel.getAlpha() == 0) continue;
+          if(!layer.getIsLayerVisible() && skipInvisibleLayers) continue;
           if(pixel.getAlpha() == 255) {
             if(isFirstLayer) finalImage[x][y] = pixel;
             else coloursToMix.add(pixel);
@@ -171,43 +171,16 @@ public final class Image {
             outputColour = combineColours(outputColour, coloursToMix.get(i));
           finalImage[x][y] = adjustForAlpha(outputColour);
         }
-        
+
       }
     }
     return finalImage;
   }
-  // TODO: Remove Redundancy
+  public Color[][] compressImage() {
+    return  compressAllLayers(false);
+  }
   public Color[][] compressVisibleLayers() {
-    Color[][] finalImage = new Color[width][height];
-    for(int x = 0; x < width; x++) {
-      for(int y = 0; y < height; y++) {
-        ArrayList<Color> coloursToMix = new ArrayList<>();
-        boolean isFirstLayer = true;
-
-        for(Layer layer : Layers) {
-          Color pixel = layer.getPixel(x, y);
-          if(pixel.getAlpha() == 0) continue;
-          if(!layer.getIsLayerVisible()) continue;
-          if(pixel.getAlpha() == 255) {
-            if(isFirstLayer) finalImage[x][y] = pixel;
-            else coloursToMix.add(pixel);
-            break;
-          }
-          coloursToMix.add(pixel);
-          isFirstLayer = false;
-        }
-
-        if(coloursToMix.size() != 0) {
-          coloursToMix = new ArrayList<Color>(coloursToMix.reversed());
-          Color outputColour = coloursToMix.get(0);
-          for(int i = 1; i < coloursToMix.size(); i++)
-            outputColour = combineColours(outputColour, coloursToMix.get(i));
-          finalImage[x][y] = adjustForAlpha(outputColour);
-        }
-
-      }
-    }
-    return finalImage;
+    return  compressAllLayers(true);
   }
 
 
