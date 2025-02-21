@@ -19,7 +19,6 @@ import org.scc200g15.gui.GUI;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
 
-// TODO: Refactor to call LayerSelectorPanel
 /**
  * The right hand side bar which will contain the layers
  */

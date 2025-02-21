@@ -14,8 +14,8 @@ public final class Image {
   public Layer activeLayer;
 
   // The width and height of the image
-  private int width = 16;
-  private int height = 16;
+  private int width = 512;
+  private int height = 512;
 
   /**
    * Basic constructor that creates a 16x16 blue image
@@ -93,12 +93,6 @@ public final class Image {
     }
 
     Layer layer = Layers.get(ID);
-
-    // Cannot remove active layer
-    if (activeLayer == layer) {
-      // TODO: Handle Error Invalid Layer ID
-      return -1;
-    }
 
     Layers.remove(layer);
     return ID;
