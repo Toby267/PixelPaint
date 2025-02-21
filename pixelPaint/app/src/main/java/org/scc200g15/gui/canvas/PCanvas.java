@@ -37,7 +37,7 @@ public class PCanvas extends JPanel {
    * Default constructor, with no image active to start
    */
   public PCanvas() {
-    this.setBackground(Color.WHITE);
+    this.setBackground(Color.BLACK);
   }
 
   /**

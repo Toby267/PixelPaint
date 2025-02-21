@@ -2,6 +2,7 @@ package org.scc200g15.image;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.scc200g15.gui.GUI;
 
@@ -146,6 +147,11 @@ public final class Image {
 
   public  Color[][] compressAllLayers(boolean skipInvisibleLayers){
     Color[][] finalImage = new Color[width][height];
+
+    Color transparent = new Color(0,0,0,0);
+    for (Color[] row: finalImage)
+      Arrays.fill(row, transparent);
+
     for(int x = 0; x < width; x++) {
       for(int y = 0; y < height; y++) {
         ArrayList<Color> coloursToMix = new ArrayList<>();
