@@ -99,7 +99,7 @@ public class GUI extends JFrame {
 
   public void setActiveImage(Image i){
     this.canvas.setActiveImage(i);
-    layerSelector.redrawMenuUI(this);
+    layerSelector.redrawMenuUI();
   }
   public Image getActiveImage(){
     return canvas.getActiveImage();

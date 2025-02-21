@@ -29,8 +29,8 @@ public final class Image {
     // GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.get(0));
 
     Layers.add(new Layer("LAYER 1", new Color(195, 127, 209, 128), width, height));
-    setActiveLayer(Layers.get(0), null);
-    GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.get(0));
+    setActiveLayer(Layers.getFirst(), null);
+    GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.getFirst());
     
     Layers.add(new Layer("LAYER 2", new Color(0, 83, 234, 128), width, height));
 

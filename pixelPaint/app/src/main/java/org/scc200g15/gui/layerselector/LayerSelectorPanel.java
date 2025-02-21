@@ -25,12 +25,10 @@ import org.scc200g15.image.Layer;
 public final class LayerSelectorPanel extends JPanel {
   private final LayerMenuTools Tools = new LayerMenuTools();
 
-  private final JPanel contentPanel = new JPanel();;
-  private JPanel titleDisplay;
-  private JPanel addLayerPanel;
-  private JScrollPane scroll;
+  private final JPanel contentPanel = new JPanel();
+    private JPanel addLayerPanel;
 
-  private Layer lastActiveLayer;
+    private Layer lastActiveLayer;
 
   /**
    * SideBar which holds all the Layer Selectors
@@ -48,7 +46,7 @@ public final class LayerSelectorPanel extends JPanel {
     drawMenuUI(window);
   }
 
-  public void redrawMenuUI(GUI window){
+  public void redrawMenuUI(){
     // Remove all of the old items from the JPanel
     removeAll();
     contentPanel.removeAll();
@@ -70,7 +68,7 @@ public final class LayerSelectorPanel extends JPanel {
     Image image = window.getCanvas().getActiveImage();
 
     // Adding the title display
-    titleDisplay = new JPanel();
+      JPanel titleDisplay = new JPanel();
     titleDisplay.add(new JLabel("Layer Menu"));
     contentPanel.add(titleDisplay);
 
@@ -91,12 +89,12 @@ public final class LayerSelectorPanel extends JPanel {
     else addLayerPanel.setVisible(false);
 
     // Add the ability to scroll through the list of layers
-    scroll = new JScrollPane(contentPanel);
+    JScrollPane scroll = new JScrollPane(contentPanel);
     scroll.getVerticalScrollBar().setUnitIncrement(15);
     this.add(scroll);
 
     // Fix the spacing of the layer menu
-    this.titleDisplay.setMaximumSize(Tools.getMaxSize(this.titleDisplay));
+    titleDisplay.setMaximumSize(Tools.getMaxSize(titleDisplay));
     if (image != null) {
       for (int i = 0; i < image.getLayerCount(); i++)
         image.getLayer(i).setMaximumSize(Tools.getMaxSize(image.getLayer(i)));
@@ -155,7 +153,7 @@ public final class LayerSelectorPanel extends JPanel {
     image.addLayer(newLayer);
 
     // Redraw the layer menu
-    redrawMenuUI(GUI.getInstance());
+    redrawMenuUI();
 
     addLayerPanel.setVisible(image.getLayerCount() <= 15);
 
@@ -210,7 +208,7 @@ public final class LayerSelectorPanel extends JPanel {
 
     image.moveLayer(index1, index2);
 
-    redrawMenuUI(GUI.getInstance());
+    redrawMenuUI();
     GUI.getInstance().getCanvas().repaint();
     GUI.getInstance().getCanvas().canvasUpdated();
   }
