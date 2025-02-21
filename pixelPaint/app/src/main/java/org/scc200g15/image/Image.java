@@ -15,8 +15,8 @@ public final class Image {
   public Layer activeLayer;
 
   // The width and height of the image
-  private int width = 512;
-  private int height = 512;
+  private int width = 1024;
+  private int height = 1024;
 
   /**
    * Basic constructor that creates a 16x16 blue image

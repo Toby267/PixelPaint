@@ -57,8 +57,8 @@ public class PCanvas extends JPanel {
       return;
 
     // Calculate the X and Y SF to make the image fill the screen
-    float XSF = this.getWidth() / activeImage.getWidth();
-    float YSF = this.getHeight() / activeImage.getHeight();
+    float XSF = (float)this.getWidth() / activeImage.getWidth();
+    float YSF = (float)this.getHeight() / activeImage.getHeight();
 
     // Pick the smaller of the X and Y SF to make sure that the full image fits on the screen
     float SF = XSF > YSF ? YSF : XSF;
