@@ -7,11 +7,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
 import org.scc200g15.image.Image;
-import org.scc200g15.image.Layer;
 import org.scc200g15.tools.ToolManager;
 
 /**
@@ -29,6 +29,9 @@ public class PCanvas extends JPanel {
   Color hoverColour = Color.WHITE;
 
   Point dif = new Point(0, 0);
+
+  BufferedImage imageBuffer;
+  boolean pixelsChanged = true;
 
   /**
    * Default constructor, with no image active to start
@@ -90,25 +93,41 @@ public class PCanvas extends JPanel {
     Point2D startPoint = new Point(sx, sy);
     Point2D endPoint = new Point(ex, ey);
 
-    // Render the pixels onto the screen
-    for (int l = 0; l < activeImage.getLayerCount(); l++) {
-      Layer layer = activeImage.getLayer(l);
-      if (!layer.getIsLayerVisible())
-        continue;
+    if(pixelsChanged){
+      imageBuffer = new BufferedImage(activeImage.getWidth(), activeImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
-      Color[][] pixels = layer.getPixels();
+      Color[][] pixelData = activeImage.compressVisibleLayers();
 
-      for (int x = (int) startPoint.getX(); x < endPoint.getX(); x++) {
-        for (int y = (int) startPoint.getY(); y < endPoint.getY(); y++) {
-          if ((int) (hoverPixel.getX()) == x && (int) (hoverPixel.getY()) == y)
-            g2d.setColor(hoverColour);
-          else
-            g2d.setColor(pixels[x][y]);
-
-          g2d.fillRect(x, y, 1, 1);
+      for(int x = 0; x < pixelData.length; x++){
+        for(int y = 0; y < pixelData[0].length; y++){
+          imageBuffer.setRGB(x,y,pixelData[x][y].getRGB());
         }
       }
+//      // Render the pixels onto the screen
+//      for (int l = 0; l < activeImage.getLayerCount(); l++) {
+//        Layer layer = activeImage.getLayer(l);
+//        if (!layer.getIsLayerVisible())
+//          continue;
+//
+//        Color[][] pixels = layer.getPixels();
+//
+//        for (int x = (int) startPoint.getX(); x < endPoint.getX(); x++) {
+//          for (int y = (int) startPoint.getY(); y < endPoint.getY(); y++) {
+//            if ((int) (hoverPixel.getX()) == x && (int) (hoverPixel.getY()) == y)
+//              g2d.setColor(Color.red);
+//            else
+//              g2d.setColor(pixels[x][y]);
+//
+//            imageBuffer.
+//            g2d.fillRect(x, y, 1, 1);
+//          }
+//        }
+//      }
+
+      pixelsChanged = false;
     }
+
+    g2d.drawImage(imageBuffer, null, 0,0);
   }
 
   /**

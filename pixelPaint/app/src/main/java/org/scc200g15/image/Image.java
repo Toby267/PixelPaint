@@ -176,6 +176,39 @@ public final class Image {
     }
     return finalImage;
   }
+  // TODO: Remove Redundancy
+  public Color[][] compressVisibleLayers() {
+    Color[][] finalImage = new Color[width][height];
+    for(int x = 0; x < width; x++) {
+      for(int y = 0; y < height; y++) {
+        ArrayList<Color> coloursToMix = new ArrayList<>();
+        boolean isFirstLayer = true;
+
+        for(Layer layer : Layers) {
+          Color pixel = layer.getPixel(x, y);
+          if(pixel.getAlpha() == 0) continue;
+          if(!layer.getIsLayerVisible()) continue;
+          if(pixel.getAlpha() == 255) {
+            if(isFirstLayer) finalImage[x][y] = pixel;
+            else coloursToMix.add(pixel);
+            break;
+          }
+          coloursToMix.add(pixel);
+          isFirstLayer = false;
+        }
+
+        if(coloursToMix.size() != 0) {
+          coloursToMix = new ArrayList<Color>(coloursToMix.reversed());
+          Color outputColour = coloursToMix.get(0);
+          for(int i = 1; i < coloursToMix.size(); i++)
+            outputColour = combineColours(outputColour, coloursToMix.get(i));
+          finalImage[x][y] = adjustForAlpha(outputColour);
+        }
+
+      }
+    }
+    return finalImage;
+  }
 
 
   public Color combineColours(Color c1, Color c2) {
