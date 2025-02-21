@@ -94,8 +94,10 @@ public class DrawTool implements Tool {
 
     ArrayList<Point2D> points = activeShape.returnPixels(point, size);
     
-    for (Point2D p : points)
+    for (Point2D p : points) {
+      //TODO: discard pixels that are out of bounds of the image
       activeLayer.setPixel((int)p.getX(), (int)p.getY(), colour);
+    }
 
     c.repaint();
   }
