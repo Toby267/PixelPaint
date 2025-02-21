@@ -175,6 +175,12 @@ public final class LayerSelectorPanel extends JPanel {
       return;
     }
 
+    System.out.println(image.getLayerCount());
+    if(image.getLayerCount() == 1){
+      //TODO: Handle Error Message
+      return;
+    }
+
     int option = JOptionPane.showOptionDialog(
       null, "Are you sure you want to delete this layer?", "Layer Deletion",
       JOptionPane.YES_NO_OPTION,
@@ -183,12 +189,6 @@ public final class LayerSelectorPanel extends JPanel {
       null, null);
     
     if (option != JOptionPane.YES_OPTION) return;
-
-    System.out.println(image.getLayerCount());
-    if(image.getLayerCount() == 1){
-      //TODO: Handle Error Message
-      return;
-    }
 
     image.removeLayer(layer);
     contentPanel.remove(layer);
