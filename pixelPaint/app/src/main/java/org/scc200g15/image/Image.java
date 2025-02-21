@@ -171,6 +171,7 @@ public final class Image {
         }
 
         if(coloursToMix.size() != 0) {
+          coloursToMix = new ArrayList<Color>(coloursToMix.reversed());
           Color outputColour = coloursToMix.get(0);
           for(int i = 1; i < coloursToMix.size(); i++) 
             outputColour = combineColours(outputColour, coloursToMix.get(i));
