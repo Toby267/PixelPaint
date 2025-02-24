@@ -4,11 +4,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import org.scc200g15.gui.GUI;
+
 /**
  * The MenuBar that will appear at the very top of the menu
  */
 public class PMenuBar extends JMenuBar {
-  public PMenuBar() {
+  public PMenuBar(GUI window) {
     // Create Menus
     JMenu fileMenu = new JMenu("file");
     JMenu editMenu = new JMenu("edit");

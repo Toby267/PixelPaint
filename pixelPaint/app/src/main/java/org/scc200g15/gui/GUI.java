@@ -3,33 +3,56 @@ package org.scc200g15.gui;
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 import org.scc200g15.gui.canvas.PCanvas;
-import org.scc200g15.gui.layerselector.PLayerSelector;
+import org.scc200g15.gui.layerselector.LayerSelectorPanel;
 import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.tools.DrawTool;
+import org.scc200g15.image.Image;
 import org.scc200g15.tools.HoverDemoTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
 
+import com.formdev.flatlaf.FlatLightLaf;
+
+
 /**
- * The JFrame that is the brain of the application Controls the creation of the canvas and the other parts of the UI
+ * The JFrame that is the brain of the application Controls the creation of the
+ * canvas and the other parts of the UI
  */
 public class GUI extends JFrame {
 
+  private static GUI instance;
+
+  public static GUI getInstance() {
+    if (instance == null) {
+      instance = new GUI();
+    }
+
+    return instance;
+  }
+
   PCanvas canvas;
   ToolManager toolManager;
+  LayerSelectorPanel layerSelector;
 
-  public GUI() {
+  private GUI() {
     super("Pixel Paint");
+
+    try {
+    UIManager.setLookAndFeel( new FlatLightLaf() );
+} catch( Exception ex ) {
+    System.err.println( "Failed to initialize LaF" );
+}
 
     setLayout(new BorderLayout());
 
     // Add the MenuBar to the JFrame
-    PMenuBar menuBar = new PMenuBar();
+    PMenuBar menuBar = new PMenuBar(this);
     setJMenuBar(menuBar);
 
     // Add Toolbar to the JFrame
@@ -43,14 +66,14 @@ public class GUI extends JFrame {
     // Add the SideBar to the JFrame
     PSideBar sideBar = new PSideBar(this);
     add(sideBar, BorderLayout.WEST);
-    
-    // Add the LayerSelector to the JFrame
-    PLayerSelector layerSelector = new PLayerSelector(this);
-    add(layerSelector, BorderLayout.EAST);
 
     // Canvas
     canvas = new PCanvas();
     add(canvas);
+
+    // Add the LayerSelector to the JFrame
+    layerSelector = new LayerSelectorPanel(this);
+    add(layerSelector, BorderLayout.EAST);
 
     // ToolManager
     PanZoomTool defaultTool = new PanZoomTool();
@@ -69,12 +92,25 @@ public class GUI extends JFrame {
 
 
     // General
-    setSize(500, 500);
+    setSize(1250, 750);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setVisible(true);
+  }
+
+  public void setActiveImage(Image i){
+    this.canvas.setActiveImage(i);
+    layerSelector.redrawMenuUI();
+  }
+  public Image getActiveImage(){
+    return canvas.getActiveImage();
   }
 
   public PCanvas getCanvas() {
     return canvas;
   }
+
+  public LayerSelectorPanel getLayerSelector() {
+    return layerSelector;
+  }
+
 }
