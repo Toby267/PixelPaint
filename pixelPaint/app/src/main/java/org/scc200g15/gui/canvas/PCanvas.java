@@ -79,6 +79,10 @@ public class PCanvas extends JPanel {
     g2d.transform(currentTransform);
 
     g2d.drawImage(imageBuffer, null, 0,0);
+
+    // Draw Hover Pixel
+    g2d.setColor(hoverColour);
+    g2d.fillRect((int)hoverPixel.getX(), (int)hoverPixel.getY(), 1, 1);
   }
 
   /**
