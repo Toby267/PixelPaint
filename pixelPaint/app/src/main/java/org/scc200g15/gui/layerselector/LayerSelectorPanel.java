@@ -134,8 +134,8 @@ public final class LayerSelectorPanel extends JPanel {
         createLayer();
 
         // Redraw the canvas
-        GUI.getInstance().getCanvas().repaint();
-        GUI.getInstance().getCanvas().canvasUpdated();
+        GUI.getInstance().getCanvas().recalculateAllPixels();
+        GUI.getInstance().getCanvas().repaint();        
     });
 
     return addLayer;
@@ -190,8 +190,8 @@ public final class LayerSelectorPanel extends JPanel {
     addLayerPanel.setVisible(image.getLayerCount() <= 15);
 
     Tools.refreshUI(this);
+    GUI.getInstance().getCanvas().recalculateAllPixels();
     GUI.getInstance().getCanvas().repaint();
-    GUI.getInstance().getCanvas().canvasUpdated();
   }
 
 
@@ -222,8 +222,8 @@ public final class LayerSelectorPanel extends JPanel {
     image.moveLayer(index1, index2);
 
     redrawMenuUI();
+    GUI.getInstance().getCanvas().recalculateAllPixels();
     GUI.getInstance().getCanvas().repaint();
-    GUI.getInstance().getCanvas().canvasUpdated();
   }
 
   // * ----------------------- [SET ACTIVE LAYER]  ----------------------- * //
