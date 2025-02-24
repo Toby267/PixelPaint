@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
 import org.scc200g15.tools.shapes.Circle;
 import org.scc200g15.tools.shapes.Shape;
@@ -89,13 +90,17 @@ public class DrawTool implements Tool {
    * @param e the mouse event that caused the interupt
    */
   private void draw(PCanvas c, MouseEvent e) {
-    Point2D point = c.getPixelPoint(e.getPoint());     
-    Layer activeLayer = c.getActiveImage().getActiveLayer();
+    Point2D point = c.getPixelPoint(e.getPoint());
+    Image image = c.getActiveImage();
+    Layer activeLayer = image.getActiveLayer();
+    int height = image.getHeight(), width = image.getHeight();
 
     ArrayList<Point2D> points = activeShape.returnPixels(point, size);
     
     for (Point2D p : points) {
-      //TODO: discard pixels that are out of bounds of the image
+      if (p.getX() < 0 || p.getX() >= width) continue;
+      if (p.getY() < 0 || p.getY() >= height) continue;
+
       activeLayer.setPixel((int)p.getX(), (int)p.getY(), colour);
     }
 
