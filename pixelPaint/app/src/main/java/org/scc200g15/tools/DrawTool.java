@@ -20,13 +20,12 @@ import org.scc200g15.tools.shapes.Triangle;
  * Tool for drawing pixels on the canvas
  */
 public class DrawTool implements Tool {
-  
   // map of all shapes
   private HashMap<String, Shape> shapes = new HashMap<>();
 
   private Shape activeShape;
   private Color colour = Color.WHITE;
-  private int size = 5;
+  private int size = 1;
 
   /**
    * Constructor that sets up all the shapes, and the active shape
@@ -55,12 +54,26 @@ public class DrawTool implements Tool {
   }
 
   /**
+   * gets the shape of the draw tool
+   */
+  public Shape getShape() {
+    return activeShape;
+  }
+
+  /**
    * sets the size of the draw tool to the one specified by size
    * 
    * @param size the new size value
    */
   public void setSize(int size) {
     this.size = size;
+  }
+
+  /**
+   * gets the size of the draw tool
+   */
+  public int getSize() {
+    return size;
   }
 
   /**
@@ -75,12 +88,26 @@ public class DrawTool implements Tool {
   }
 
   /**
+   * gets the colour of the draw tool
+   */
+  public Color getColour() {
+    return colour;
+  }
+
+  /**
    * sets the oppacity of the draw tool to the one specified by the alpha value
    * 
    * @param alpha the new oppacity value
    */
   public void setOppacity(int alpha) {
     colour = new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), alpha);
+  }
+
+  /**
+   * gets the oppacity of the draw tool
+   */
+  public int getOppacity() {
+    return colour.getAlpha();
   }
 
   /**
