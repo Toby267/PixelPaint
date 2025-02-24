@@ -234,12 +234,15 @@ public final class Image {
 
   public void addSelectedLayer(Layer layer) {
     selectedLayers.add(layer);
-    System.out.println("selectedLayers size = "+selectedLayers.size());
   }
   
   public void removeSelectedLayer(Layer layer) {
     selectedLayers.remove(layer);
-    System.out.println("selectedLayers size = "+selectedLayers.size());
+  }
+
+  public void disableSeletedLayers() {
+    for(Layer layer : selectedLayers) layer.switchSelectedLayerState();
+    selectedLayers = new ArrayList<>(16); // Effectively removes all elements
   }
 
   public void mergeSelectedLayers() {
@@ -252,16 +255,14 @@ public final class Image {
     Color[][] output = compressSelectedLayers(orderedLayers);
 
     Layer compressedLayer = orderedLayers.get(0);
-    compressedLayer.activateLayer();
     compressedLayer.setPixels(output);
+    compressedLayer.activateLayer();
+    compressedLayer.switchSelectedLayerState();
     
     for(int i = 1; i < orderedLayers.size(); i++)
       GUI.getInstance().getLayerSelector().removeLayerWithoutWarning(orderedLayers.get(i));
     
     selectedLayers = new ArrayList<>(16); // Effectively removes all elements
-
-    System.out.println("selectedLayers.size() = " + selectedLayers.size());
-    System.out.println("Layers.size() = " + Layers.size());
   }
 
 

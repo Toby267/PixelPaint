@@ -126,14 +126,15 @@ final public class Layer extends JPanel {
                 originIndex = image.getLayerIndex((Layer) e.getSource());
 
                 if(e.isAltDown()) {
-                    // Change layer at originIndex to "isSelected" + blue outline
                     GUI.getInstance().getLayerSelector().switchSelectedLayerState(originIndex);
                     return;
                 } else {
-                    // DISABLE ALL SELECTED LAYERS
+                    if(!e.isPopupTrigger()) 
+                        GUI.getInstance().getActiveImage().disableSeletedLayers();
                 }
-
+                
                 checkDisplayContextMenu(e);
+                
                 GUI.getInstance().getLayerSelector().setActiveLayer(originIndex);
             }
 
@@ -164,7 +165,7 @@ final public class Layer extends JPanel {
             }
 
             private void checkDisplayContextMenu(MouseEvent e) {
-                if (e.isPopupTrigger()) 
+                if (e.isPopupTrigger())
                     layerContextMenu().show(e.getComponent(), e.getX(), e.getY());
             }    
 
