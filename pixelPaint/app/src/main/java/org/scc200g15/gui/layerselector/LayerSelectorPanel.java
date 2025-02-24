@@ -166,10 +166,7 @@ public final class LayerSelectorPanel extends JPanel {
     Tools.refreshUI(this);
   }
 
-  /*
-   * --------------------------------------- [REMOVE LAYERS]
-   * ---------------------------------------
-   */
+  // * ----------------------- [REMOVE LAYERS] ----------------------- * //
 
   public void removeLayer(Layer layer) {
     Image image = GUI.getInstance().getCanvas().getActiveImage();
@@ -204,10 +201,8 @@ public final class LayerSelectorPanel extends JPanel {
     GUI.getInstance().getCanvas().canvasUpdated();
   }
 
-  /*
-   * --------------------------------------- [REARRANGE LAYERS]
-   * ---------------------------------------
-   */
+  // * ----------------------- [REARRANGE LAYERS] ----------------------- * //
+   
   public void moveLayer(int index1, int index2) {
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
@@ -218,10 +213,7 @@ public final class LayerSelectorPanel extends JPanel {
     GUI.getInstance().getCanvas().canvasUpdated();
   }
 
-  /*
-   * --------------------------------------- [SET ACTIVE LAYER]
-   * ---------------------------------------
-   */
+  // * ----------------------- [SET ACTIVE LAYER]  ----------------------- * //
 
   public void setActiveLayer(Layer activeLayer) {
     Image image = GUI.getInstance().getActiveImage();
@@ -245,14 +237,17 @@ public final class LayerSelectorPanel extends JPanel {
     Image image = GUI.getInstance().getActiveImage();
     if (image == null)
       return;
-    image.getLayer(layerID).switchSelectedLayerState();
+
+    Layer layer = image.getLayer(layerID);
+
+    // add/remove layer from arraylist containing selected layers
+    if (layer.isSelected()) image.removeSelectedLayer(layer);
+    else image.addSelectedLayer(layer);
+
+    layer.switchSelectedLayerState();
   }
-  
-  
-  /*
-  * --------------------------------------- [ACCESSORS/MUTATORS]
-   * ---------------------------------------
-   */
+
+  // * ----------------------- [ACCESSORS/MUTATORS]  ----------------------- * //
 
   public ArrayList<Layer> getLayers() {
     return GUI.getInstance().getCanvas().getActiveImage().getLayers();

@@ -12,7 +12,9 @@ import org.scc200g15.gui.GUI;
  */
 public final class Image {
   public ArrayList<Layer> Layers;
+
   public Layer activeLayer;
+  public ArrayList<Layer> selectedLayers;
 
   // The width and height of the image
   private int width = 32;
@@ -23,7 +25,10 @@ public final class Image {
    */
   public Image() {
     Layers = new ArrayList<>(16);
-    
+
+    // Selected layers to be merged
+    selectedLayers = new ArrayList<>(16);
+
     // Layers.add(new Layer("LAYER 1", Color.GRAY, width, height));
     // setActiveLayer(Layers.get(0), null);
     // GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.get(0));
@@ -225,7 +230,17 @@ public final class Image {
   }
 
   public Layer getActiveLayer() {
-      return activeLayer;
+    return activeLayer;
+  }
+
+  public void addSelectedLayer(Layer layer) {
+    selectedLayers.add(layer);
+    System.out.println("selectedLayers size = "+selectedLayers.size());
+  }
+  
+  public void removeSelectedLayer(Layer layer) {
+    selectedLayers.remove(layer);
+    System.out.println("selectedLayers size = "+selectedLayers.size());
   }
 
 }

@@ -8,7 +8,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
@@ -73,16 +75,16 @@ final public class Layer extends JPanel {
 
         displayButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
         removeButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
-
+        
         displayButton.setOpaque(false);
         removeButton.setOpaque(false);
-
+        
         displayButton.setContentAreaFilled(false);
         removeButton.setContentAreaFilled(false);
-
+        
         layerLabel.setText(layerName);
         layerLabel.setForeground(Tools.VISIBLE_ICON_COLOUR);
-
+        
         // Add all components to the LayerMenuItem (JPanel)
         this.add(displayButton, BorderLayout.WEST);
         this.add(layerLabel, BorderLayout.CENTER);
@@ -119,10 +121,11 @@ final public class Layer extends JPanel {
                 Image image = GUI.getInstance().getActiveImage();
                 if (image == null)
                     return;
+                
                 startPoint = e.getPoint().y;
                 originIndex = image.getLayerIndex((Layer) e.getSource());
 
-                if(e.isControlDown()) {
+                if(e.isAltDown()) {
                     // Change layer at originIndex to "isSelected" + blue outline
                     GUI.getInstance().getLayerSelector().switchSelectedLayerState(originIndex);
                     return;
@@ -130,6 +133,7 @@ final public class Layer extends JPanel {
                     // DISABLE ALL SELECTED LAYERS
                 }
 
+                checkDisplayContextMenu(e);
                 GUI.getInstance().getLayerSelector().setActiveLayer(originIndex);
             }
 
@@ -153,9 +157,16 @@ final public class Layer extends JPanel {
                 if (originIndex != destinationIndex) 
                     GUI.getInstance().getLayerSelector().moveLayer(originIndex, destinationIndex);
                 
+                checkDisplayContextMenu(e);
+
                 // Check if double click to rename layer
                 switchLabelToTextField(e);
             }
+
+            private void checkDisplayContextMenu(MouseEvent e) {
+                if (e.isPopupTrigger()) 
+                    layerContextMenu().show(e.getComponent(), e.getX(), e.getY());
+            }    
 
         });
 
@@ -167,10 +178,7 @@ final public class Layer extends JPanel {
 
     }
 
-    /*
-     * --------------------------------------- [RENAME LAYERS]
-     * ---------------------------------------
-     */
+    // * ----------------------- [RENAME LAYERS] ----------------------- * //
 
     // Apply the new name from the text field to the layer's label
     public void renameLabelToTextField() {
@@ -208,10 +216,7 @@ final public class Layer extends JPanel {
         Tools.refreshUI(this);
     }
 
-    /*
-     * --------------------------------------- [VISIBILITY STATE]
-     * ---------------------------------------
-     */
+    // * ----------------------- [VISIBILITY STATE] ----------------------- * //
 
     // Change the look of each layer in the menu to indicate it's current status
     // TODO: Look at refactoring
@@ -227,10 +232,29 @@ final public class Layer extends JPanel {
         GUI.getInstance().getCanvas().canvasUpdated();
     }
 
-    /*
-     * --------------------------------------- [CHANGE LAYER UI LOOK]
-     * ---------------------------------------
-     */
+
+    // * ----------------------- [CONTEXT MENU] ----------------------- * //
+
+    // ! TODO: MOVE TO ANOTHER FILE AND EXPAND
+    public JPopupMenu layerContextMenu() {
+        JPopupMenu menu = new JPopupMenu();
+
+        JMenuItem temporary = new JMenuItem("TEMPORARY");
+        menu.add(temporary);
+
+        if(isSelected) {
+            JMenuItem mergeOption = new JMenuItem("Merge");
+            mergeOption.addActionListener((ActionEvent e) -> {
+                System.out.println("RUN FUNCTION TO COMBINE LAYERS");
+                // REFRESH UI
+            });
+            menu.add(mergeOption);
+        }
+
+        return menu;
+    }
+
+    // * ----------------------- [CHANGE LAYER UI LOOK] ----------------------- * //
 
     public void setLayerStateUI(String state) {
         switch (state.toLowerCase()) {
@@ -256,6 +280,8 @@ final public class Layer extends JPanel {
         }
     }
 
+    // * ----------------------- [ACCESSORS / MUTATORS] ----------------------- * //
+
     /**
      * Get the color of a given pixel
      * 
@@ -265,8 +291,6 @@ final public class Layer extends JPanel {
     public Color getPixel(int x, int y) {
         return pixels[x][y];
     }
-
-
 
     public Color setPixel(int x, int y, Color c) {
         return pixels[x][y] = c;
@@ -294,6 +318,10 @@ final public class Layer extends JPanel {
         this.isSelected = !isSelected;
         if (isSelected) this.setBorder(Tools.IS_SELECTED_BORDER);
         else this.setBorder(Tools.DEFAULT_BORDER);
+    }
+
+    public boolean isSelected() {
+        return isSelected;
     }
 
 }
