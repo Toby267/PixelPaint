@@ -101,7 +101,7 @@ final public class Layer extends JPanel {
 
         // Add actions to remove a layer (using the trash icon)
         removeButton.addActionListener((ActionEvent e) -> {
-            GUI.getInstance().getLayerSelector().removeLayer(this);
+            GUI.getInstance().getLayerSelector().removeLayerWithWarning(this);
         });
 
         // Add the ability to move layers around
@@ -237,6 +237,8 @@ final public class Layer extends JPanel {
 
     // ! TODO: MOVE TO ANOTHER FILE AND EXPAND
     public JPopupMenu layerContextMenu() {
+        Image image = GUI.getInstance().getActiveImage();
+        
         JPopupMenu menu = new JPopupMenu();
 
         JMenuItem temporary = new JMenuItem("TEMPORARY");
@@ -245,8 +247,7 @@ final public class Layer extends JPanel {
         if(isSelected) {
             JMenuItem mergeOption = new JMenuItem("Merge");
             mergeOption.addActionListener((ActionEvent e) -> {
-                System.out.println("RUN FUNCTION TO COMBINE LAYERS");
-                // REFRESH UI
+                image.mergeSelectedLayers();
             });
             menu.add(mergeOption);
         }
@@ -296,10 +297,12 @@ final public class Layer extends JPanel {
         return pixels[x][y] = c;
     }
 
-    /*
-    */
     public Color[][] getPixels() {
         return pixels;
+    }
+
+    public void setPixels(Color[][] pixels) {
+        this.pixels = pixels;
     }
 
     public Boolean getIsActive() {
@@ -308,10 +311,6 @@ final public class Layer extends JPanel {
 
     public Boolean getIsLayerVisible(){ 
         return isLayerVisible; 
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
     }
 
     public void switchSelectedLayerState() {

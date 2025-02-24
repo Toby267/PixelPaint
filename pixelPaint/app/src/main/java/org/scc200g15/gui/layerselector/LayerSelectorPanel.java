@@ -168,28 +168,21 @@ public final class LayerSelectorPanel extends JPanel {
 
   // * ----------------------- [REMOVE LAYERS] ----------------------- * //
 
-  public void removeLayer(Layer layer) {
+
+  public void removeLayer(Layer layer) { 
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
     if(image == null){
-      //TODO: Handle Error
+      // TODO: Handle Error
+      System.out.println("ERROR: removeLayerReferences image is null");
       return;
     }
 
-    System.out.println(image.getLayerCount());
-    if(image.getLayerCount() == 1){
+    if(image.getLayerCount() == 1) {
       //TODO: Handle Error Message
+      System.out.println("ERROR: last layer remaining");
       return;
     }
-
-    int option = JOptionPane.showOptionDialog(
-      null, "Are you sure you want to delete this layer?", "Layer Deletion",
-      JOptionPane.YES_NO_OPTION,
-      JOptionPane.QUESTION_MESSAGE,
-      Tools.createImageIcon(40, 40, "/Icons/question_mark_icon.png"),
-      null, null);
-    
-    if (option != JOptionPane.YES_OPTION) return;
 
     image.removeLayer(layer);
     contentPanel.remove(layer);
@@ -200,6 +193,26 @@ public final class LayerSelectorPanel extends JPanel {
     GUI.getInstance().getCanvas().repaint();
     GUI.getInstance().getCanvas().canvasUpdated();
   }
+
+
+  public void removeLayerWithWarning(Layer layer) {
+    int option = JOptionPane.showOptionDialog(
+      null, "Are you sure you want to delete this layer?", "Layer Deletion",
+      JOptionPane.YES_NO_OPTION,
+      JOptionPane.QUESTION_MESSAGE,
+      Tools.createImageIcon(40, 40, "/Icons/question_mark_icon.png"),
+      null, null);
+    
+    if (option != JOptionPane.YES_OPTION) return;
+
+    removeLayer(layer);
+  }
+
+  public void removeLayerWithoutWarning(Layer layer) {
+    removeLayer(layer);
+  }
+
+
 
   // * ----------------------- [REARRANGE LAYERS] ----------------------- * //
    
