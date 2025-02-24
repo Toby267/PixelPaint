@@ -5,9 +5,11 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 public class LayerMenuTools {
 
@@ -40,6 +42,9 @@ public class LayerMenuTools {
     public final ImageIcon HIDDEN_TRASH_ICON = createImageIcon(25, 25, HIDDEN_ICON_COLOUR, TRASH_ICON_PATH);
     public final ImageIcon ACTIVE_TRASH_ICON = createImageIcon(25, 25, ACTIVE_ICON_COLOUR, TRASH_ICON_PATH);
 
+    // Borders
+    public final Border DEFAULT_BORDER = BorderFactory.createLineBorder(new Color(197, 197, 197), 1, true);
+    public final Border IS_SELECTED_BORDER = BorderFactory.createLineBorder(new Color(160, 175, 255), 3, false);
     
     /* --------------------------------------- [ICON GENERATION] --------------------------------------- */
 
@@ -70,7 +75,7 @@ public class LayerMenuTools {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 Color imageColor = new Color(image.getRGB(x, y), true);
-                // New Colours but maintain the originally transparent pixels.
+                // New colours but maintain the originally transparent pixels.
                 Color newPixelColor = new Color(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), imageColor.getAlpha());
                 image.setRGB(x, y, newPixelColor.getRGB());
             }

@@ -28,11 +28,10 @@ public class DrawTool implements Tool {
     Layer activeLayer = c.getActiveImage().getActiveLayer();
     int x = (int) point.getX();
     int y = (int) point.getY();
-    System.out.println(point);
     activeLayer.setPixel(x, y, colour);
 
+    c.recalculatePixel(x, y);
     c.repaint();
-    c.canvasUpdated();
   }
   
   @Override

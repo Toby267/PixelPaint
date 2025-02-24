@@ -6,10 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
@@ -26,7 +27,7 @@ final public class Layer extends JPanel {
 
     // Actual Components of a LayerMenuItem
     private final JButton displayButton = new JButton(Tools.VISIBLE_EYE_OPEN_ICON);
-    private final JButton removeButton = new JButton(Tools.VISIBLE_TRASH_ICON);
+    private final JButton removeButton = new JButton(Tools.VISIBLE_TRASH_ICON); // ! TODO: REMOVE VISIBILITY WHEN LAST LAYER
     private final JLabel layerLabel = new JLabel();
     private final JTextField renameLabelField = new JTextField();
 
@@ -34,7 +35,7 @@ final public class Layer extends JPanel {
     private boolean isLayerVisible = true;
     private boolean isActive = false;
     private boolean isBeingRenamed = false;
-
+    private boolean isSelected = false;
 
      /**
      * Basic constructor that creates a layer with a 2D array of pixels
@@ -44,7 +45,6 @@ final public class Layer extends JPanel {
      */
     public Layer(String layerName, Color[][] pixels){
         setupLayerMenuPanel(layerName);        
-
         this.pixels = pixels;
     }
 
@@ -70,26 +70,21 @@ final public class Layer extends JPanel {
 
     private void setupLayerMenuPanel(String layerName){
         this.setLayout(new BorderLayout());
-
-        this.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createEmptyBorder(1, 1, 0, 1), // Spacing between each component
-            BorderFactory.createLineBorder(new Color(197, 197, 197), 1, true))
-        );
-
+        this.setBorder(Tools.DEFAULT_BORDER);
         this.setBackground(Tools.VISIBLE_BACKGROUND_COLOUR);
 
         displayButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
         removeButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
-
+        
         displayButton.setOpaque(false);
         removeButton.setOpaque(false);
-
+        
         displayButton.setContentAreaFilled(false);
         removeButton.setContentAreaFilled(false);
-
+        
         layerLabel.setText(layerName);
         layerLabel.setForeground(Tools.VISIBLE_ICON_COLOUR);
-
+        
         // Add all components to the LayerMenuItem (JPanel)
         this.add(displayButton, BorderLayout.WEST);
         this.add(layerLabel, BorderLayout.CENTER);
@@ -106,10 +101,10 @@ final public class Layer extends JPanel {
 
         // Add actions to remove a layer (using the trash icon)
         removeButton.addActionListener((ActionEvent e) -> {
-            GUI.getInstance().getLayerSelector().removeLayer(this);
+            GUI.getInstance().getLayerSelector().removeLayerWithWarning(this);
         });
 
-        // // Add the ability to switch two layers
+        // Add the ability to move layers around
         this.addMouseListener(new MouseAdapter() {
             int startPoint, originIndex;
 
@@ -117,6 +112,7 @@ final public class Layer extends JPanel {
             // would be moved if mouseReleased
             @Override
             public void mouseDragged(MouseEvent e) {
+
             }
 
             // ? Change border to blue when hovered
@@ -125,16 +121,32 @@ final public class Layer extends JPanel {
                 Image image = GUI.getInstance().getActiveImage();
                 if (image == null)
                     return;
+                
                 startPoint = e.getPoint().y;
                 originIndex = image.getLayerIndex((Layer) e.getSource());
+
+                if(e.isAltDown()) {
+                    GUI.getInstance().getLayerSelector().switchSelectedLayerState(originIndex);
+                    return;
+                } else {
+                    if(!e.isPopupTrigger()) 
+                        GUI.getInstance().getActiveImage().disableSeletedLayers();
+                }
+                
+                checkDisplayContextMenu(e);
+                
                 GUI.getInstance().getLayerSelector().setActiveLayer(originIndex);
             }
 
             // Move the frame to the correct position
+            // ! TODO: ASSUME IF MOVED LAYER IS UNDER 0 OR OVER MAX IT GOES TO FIRST/LAST POSITION
             @Override
             public void mouseReleased(MouseEvent e) {
                 Image image = GUI.getInstance().getActiveImage();
                 if (image == null)
+                    return;
+
+                if(e.isControlDown())
                     return;
 
                 int frameHeight = image.getLayer(0).getHeight() - 1;
@@ -146,9 +158,16 @@ final public class Layer extends JPanel {
                 if (originIndex != destinationIndex) 
                     GUI.getInstance().getLayerSelector().moveLayer(originIndex, destinationIndex);
                 
+                checkDisplayContextMenu(e);
+
                 // Check if double click to rename layer
                 switchLabelToTextField(e);
             }
+
+            private void checkDisplayContextMenu(MouseEvent e) {
+                if (e.isPopupTrigger())
+                    layerContextMenu().show(e.getComponent(), e.getX(), e.getY());
+            }    
 
         });
 
@@ -160,10 +179,7 @@ final public class Layer extends JPanel {
 
     }
 
-    /*
-     * --------------------------------------- [RENAME LAYERS]
-     * ---------------------------------------
-     */
+    // * ----------------------- [RENAME LAYERS] ----------------------- * //
 
     // Apply the new name from the text field to the layer's label
     public void renameLabelToTextField() {
@@ -201,34 +217,46 @@ final public class Layer extends JPanel {
         Tools.refreshUI(this);
     }
 
-    /*
-     * --------------------------------------- [VISIBILITY STATE]
-     * ---------------------------------------
-     */
+    // * ----------------------- [VISIBILITY STATE] ----------------------- * //
 
     // Change the look of each layer in the menu to indicate it's current status
     // TODO: Look at refactoring
     public void changeDisplayState() {
         isLayerVisible = !isLayerVisible;
-        if (isActive)
-            setLayerStateUI("active");
-        else {
-            if (!isLayerVisible)
-                setLayerStateUI("hidden");
-            else
-                setLayerStateUI("visible");
-        }
+
+        String state = isActive ? "active" : (isLayerVisible ? "visible" : "hidden");        
+        setLayerStateUI(state);
 
         Tools.refreshUI(this);
 
         GUI.getInstance().getCanvas().repaint();
-        GUI.getInstance().getCanvas().canvasUpdated();
+        GUI.getInstance().getCanvas().recalculateAllPixels();
     }
 
-    /*
-     * --------------------------------------- [CHANGE LAYER UI LOOK]
-     * ---------------------------------------
-     */
+
+    // * ----------------------- [CONTEXT MENU] ----------------------- * //
+
+    // ! TODO: MOVE TO ANOTHER FILE AND EXPAND
+    public JPopupMenu layerContextMenu() {
+        Image image = GUI.getInstance().getActiveImage();
+        
+        JPopupMenu menu = new JPopupMenu();
+
+        JMenuItem temporary = new JMenuItem("TEMPORARY");
+        menu.add(temporary);
+
+        if(isSelected) {
+            JMenuItem mergeOption = new JMenuItem("Merge");
+            mergeOption.addActionListener((ActionEvent e) -> {
+                image.mergeSelectedLayers();
+            });
+            menu.add(mergeOption);
+        }
+
+        return menu;
+    }
+
+    // * ----------------------- [CHANGE LAYER UI LOOK] ----------------------- * //
 
     public void setLayerStateUI(String state) {
         switch (state.toLowerCase()) {
@@ -254,36 +282,46 @@ final public class Layer extends JPanel {
         }
     }
 
-  /**
-   * Get the color of a given pixel
-   * 
-   * @param x xPos of the pixel
-   * @param y yPos of the pixel
-   */
-  public Color getPixel(int x, int y) {
-    return pixels[x][y];
-  }
+    // * ----------------------- [ACCESSORS / MUTATORS] ----------------------- * //
 
+    /**
+     * Get the color of a given pixel
+     * 
+     * @param x xPos of the pixel
+     * @param y yPos of the pixel
+     */
+    public Color getPixel(int x, int y) {
+        return pixels[x][y];
+    }
 
+    public Color setPixel(int x, int y, Color c) {
+        return pixels[x][y] = c;
+    }
 
-  public Color setPixel(int x, int y, Color c) {
-    return pixels[x][y] = c;
-  }
-
-
-    /*
-    */
     public Color[][] getPixels() {
         return pixels;
+    }
+
+    public void setPixels(Color[][] pixels) {
+        this.pixels = pixels;
     }
 
     public Boolean getIsActive() {
         return isActive;
     }
-    public Boolean getIsLayerVisible(){return  isLayerVisible; }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public Boolean getIsLayerVisible(){ 
+        return isLayerVisible; 
+    }
+
+    public void switchSelectedLayerState() {
+        this.isSelected = !isSelected;
+        if (isSelected) this.setBorder(Tools.IS_SELECTED_BORDER);
+        else this.setBorder(Tools.DEFAULT_BORDER);
+    }
+
+    public boolean isSelected() {
+        return isSelected;
     }
 
 }

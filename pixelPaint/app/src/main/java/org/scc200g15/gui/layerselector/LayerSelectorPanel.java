@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -68,14 +69,22 @@ public final class LayerSelectorPanel extends JPanel {
     Image image = window.getCanvas().getActiveImage();
 
     // Adding the title display
-      JPanel titleDisplay = new JPanel();
+    JPanel titleDisplay = new JPanel();
     titleDisplay.add(new JLabel("Layer Menu"));
     contentPanel.add(titleDisplay);
 
     if (image != null) {
-      // Add Existing layers to the Layer Menu
-      for (int i = 0; i < image.getLayerCount(); i++)
-        contentPanel.add(image.getLayer(i));
+      // Add existing layers to the Layer Menu
+      for (int i = 0; i < image.getLayerCount(); i++) {
+        Layer currentLayer = image.getLayer(i);
+        currentLayer.setMaximumSize(Tools.getMaxSize(currentLayer));
+        contentPanel.add(currentLayer);
+
+        // Add spacing between layers
+        if (i < image.getLayerCount() - 1)
+          contentPanel.add(Box.createRigidArea(new Dimension(0, 1)));
+      }
+        
     }
 
     // Add layer adder button
@@ -95,10 +104,6 @@ public final class LayerSelectorPanel extends JPanel {
 
     // Fix the spacing of the layer menu
     titleDisplay.setMaximumSize(Tools.getMaxSize(titleDisplay));
-    if (image != null) {
-      for (int i = 0; i < image.getLayerCount(); i++)
-        image.getLayer(i).setMaximumSize(Tools.getMaxSize(image.getLayer(i)));
-    }
   }
 
   /**
@@ -129,8 +134,8 @@ public final class LayerSelectorPanel extends JPanel {
         createLayer();
 
         // Redraw the canvas
-        GUI.getInstance().getCanvas().repaint();
-        GUI.getInstance().getCanvas().canvasUpdated();
+        GUI.getInstance().getCanvas().recalculateAllPixels();
+        GUI.getInstance().getCanvas().repaint();        
     });
 
     return addLayer;
@@ -161,25 +166,36 @@ public final class LayerSelectorPanel extends JPanel {
     Tools.refreshUI(this);
   }
 
-  /*
-   * --------------------------------------- [REMOVE LAYERS]
-   * ---------------------------------------
-   */
+  // * ----------------------- [REMOVE LAYERS] ----------------------- * //
 
-  public void removeLayer(Layer layer) {
+
+  public void removeLayer(Layer layer) { 
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
     if(image == null){
-      //TODO: Handle Error
+      // TODO: Handle Error
+      System.out.println("ERROR: removeLayerReferences image is null");
       return;
     }
 
-    System.out.println(image.getLayerCount());
-    if(image.getLayerCount() == 1){
+    if(image.getLayerCount() == 1) {
       //TODO: Handle Error Message
+      System.out.println("ERROR: last layer remaining");
       return;
     }
 
+    image.removeLayer(layer);
+    contentPanel.remove(layer);
+
+    addLayerPanel.setVisible(image.getLayerCount() <= 15);
+
+    Tools.refreshUI(this);
+    GUI.getInstance().getCanvas().recalculateAllPixels();
+    GUI.getInstance().getCanvas().repaint();
+  }
+
+
+  public void removeLayerWithWarning(Layer layer) {
     int option = JOptionPane.showOptionDialog(
       null, "Are you sure you want to delete this layer?", "Layer Deletion",
       JOptionPane.YES_NO_OPTION,
@@ -189,34 +205,28 @@ public final class LayerSelectorPanel extends JPanel {
     
     if (option != JOptionPane.YES_OPTION) return;
 
-    image.removeLayer(layer);
-    contentPanel.remove(layer);
-
-    addLayerPanel.setVisible(image.getLayerCount() <= 15);
-
-    Tools.refreshUI(this);
-    GUI.getInstance().getCanvas().repaint();
-    GUI.getInstance().getCanvas().canvasUpdated();
+    removeLayer(layer);
   }
 
-  /*
-   * --------------------------------------- [REARRANGE LAYERS]
-   * ---------------------------------------
-   */
+  public void removeLayerWithoutWarning(Layer layer) {
+    removeLayer(layer);
+  }
+
+
+
+  // * ----------------------- [REARRANGE LAYERS] ----------------------- * //
+   
   public void moveLayer(int index1, int index2) {
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
     image.moveLayer(index1, index2);
 
     redrawMenuUI();
+    GUI.getInstance().getCanvas().recalculateAllPixels();
     GUI.getInstance().getCanvas().repaint();
-    GUI.getInstance().getCanvas().canvasUpdated();
   }
 
-  /*
-   * --------------------------------------- [SET ACTIVE LAYER]
-   * ---------------------------------------
-   */
+  // * ----------------------- [SET ACTIVE LAYER]  ----------------------- * //
 
   public void setActiveLayer(Layer activeLayer) {
     Image image = GUI.getInstance().getActiveImage();
@@ -236,10 +246,21 @@ public final class LayerSelectorPanel extends JPanel {
     setActiveLayer(activeLayer);
   }
 
-  /*
-   * --------------------------------------- [ACCESSORS/MUTATORS]
-   * ---------------------------------------
-   */
+  public void switchSelectedLayerState(int layerID) {
+    Image image = GUI.getInstance().getActiveImage();
+    if (image == null)
+      return;
+
+    Layer layer = image.getLayer(layerID);
+
+    // add/remove layer from arraylist containing selected layers
+    if (layer.isSelected()) image.removeSelectedLayer(layer);
+    else image.addSelectedLayer(layer);
+
+    layer.switchSelectedLayerState();
+  }
+
+  // * ----------------------- [ACCESSORS/MUTATORS]  ----------------------- * //
 
   public ArrayList<Layer> getLayers() {
     return GUI.getInstance().getCanvas().getActiveImage().getLayers();

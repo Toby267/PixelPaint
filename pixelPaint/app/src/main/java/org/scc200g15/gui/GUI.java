@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.gui.layerselector.LayerSelectorPanel;
@@ -11,9 +12,8 @@ import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.PToolBar;
-import org.scc200g15.tools.DrawTool;
 import org.scc200g15.image.Image;
-import org.scc200g15.tools.HoverDemoTool;
+import org.scc200g15.tools.DrawTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
 
@@ -40,12 +40,18 @@ public class GUI extends JFrame {
   ToolManager toolManager;
   LayerSelectorPanel layerSelector;
 
+  private void registerTools(){
+    // Draw Tool
+    DrawTool drawDemo = new DrawTool();
+    toolManager.registerTool("draw", drawDemo);
+  }
+
   private GUI() {
     super("Pixel Paint");
 
     try {
     UIManager.setLookAndFeel( new FlatLightLaf() );
-} catch( Exception ex ) {
+} catch( UnsupportedLookAndFeelException ex ) {
     System.err.println( "Failed to initialize LaF" );
 }
 
@@ -79,17 +85,9 @@ public class GUI extends JFrame {
     PanZoomTool defaultTool = new PanZoomTool();
     toolManager = new ToolManager(canvas, defaultTool);
 
-    // Register Tools
-    HoverDemoTool hoverDemo = new HoverDemoTool();
-    //toolManager.registerTool("hover", hoverDemo);
-
-    //toolManager.setActiveTool("hover");
-
-    DrawTool drawDemo = new DrawTool();
-    toolManager.registerTool("draw", drawDemo);
+    registerTools();
 
     toolManager.setActiveTool("draw");
-
 
     // General
     setSize(1250, 750);
@@ -101,6 +99,7 @@ public class GUI extends JFrame {
     this.canvas.setActiveImage(i);
     layerSelector.redrawMenuUI();
   }
+  
   public Image getActiveImage(){
     return canvas.getActiveImage();
   }

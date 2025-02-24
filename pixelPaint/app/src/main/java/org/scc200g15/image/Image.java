@@ -1,6 +1,7 @@
 package org.scc200g15.image;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -12,7 +13,9 @@ import org.scc200g15.gui.GUI;
  */
 public final class Image {
   public ArrayList<Layer> Layers;
+
   public Layer activeLayer;
+  public ArrayList<Layer> selectedLayers;
 
   // The width and height of the image
   private int width = 32;
@@ -23,20 +26,15 @@ public final class Image {
    */
   public Image() {
     Layers = new ArrayList<>(16);
-    
-    // Layers.add(new Layer("LAYER 1", Color.GRAY, width, height));
-    // setActiveLayer(Layers.get(0), null);
-    // GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.get(0));
+
+    // Selected layers to be merged
+    selectedLayers = new ArrayList<>(16);
 
     Layers.add(new Layer("LAYER 1", new Color(195, 127, 209, 128), width, height));
     setActiveLayer(Layers.getFirst(), null);
     GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.getFirst());
     
     Layers.add(new Layer("LAYER 2", new Color(0, 83, 234, 128), width, height));
-
-    Color[][] output = compressImage();
-    displayColour(output[0][0]);
-
   }
 
   public int moveLayer(int index1, int index2) {
@@ -113,7 +111,7 @@ public final class Image {
     newActiveLayer.activateLayer();
     if (oldActiveLayer != null) oldActiveLayer.deactivateLayer();
   }
-
+  
   /**
    * Get the layer with the given index
    * 
@@ -145,37 +143,39 @@ public final class Image {
     return Layers;
   }
 
-  public  Color[][] compressAllLayers(boolean skipInvisibleLayers){
-    Color[][] finalImage = new Color[width][height];
+  private Color[][] compressAllLayers(ArrayList<Layer> layersToCompress, boolean skipInvisibleLayers, boolean adjustAlpha, int startX, int startY, int w, int h){
+    Color[][] finalImage = new Color[w][h];
 
     Color transparent = new Color(0,0,0,0);
     for (Color[] row: finalImage)
       Arrays.fill(row, transparent);
 
-    for(int x = 0; x < width; x++) {
-      for(int y = 0; y < height; y++) {
-        ArrayList<Color> coloursToMix = new ArrayList<>();
+    for(int x = startX; x < startX + w; x++) {
+      for(int y = startY; y < startY + h; y++) {
+        ArrayList<Color> colorsToMix = new ArrayList<>();
         boolean isFirstLayer = true;
 
-        for(Layer layer : Layers) {
+        for(Layer layer : layersToCompress) {
           Color pixel = layer.getPixel(x, y);
           if(pixel.getAlpha() == 0) continue;
           if(!layer.getIsLayerVisible() && skipInvisibleLayers) continue;
           if(pixel.getAlpha() == 255) {
-            if(isFirstLayer) finalImage[x][y] = pixel;
-            else coloursToMix.add(pixel);
+            if(isFirstLayer) finalImage[x - startX][y - startY] = pixel;
+            else colorsToMix.add(pixel);
             break;
           }
-          coloursToMix.add(pixel);
+          colorsToMix.add(pixel);
           isFirstLayer = false;
         }
 
-        if(coloursToMix.size() != 0) {
-          coloursToMix = new ArrayList<Color>(coloursToMix.reversed());
-          Color outputColour = coloursToMix.get(0);
-          for(int i = 1; i < coloursToMix.size(); i++) 
-            outputColour = combineColours(outputColour, coloursToMix.get(i));
-          finalImage[x][y] = adjustForAlpha(outputColour);
+        if(!colorsToMix.isEmpty()) {
+          colorsToMix = new ArrayList<>(colorsToMix.reversed());
+          Color outputColour = colorsToMix.get(0);
+          for(int i = 1; i < colorsToMix.size(); i++) 
+            outputColour = combineColors(outputColour, colorsToMix.get(i));
+
+          if(adjustAlpha) finalImage[x - startX][y-startY] = adjustForAlpha(outputColour);
+          else finalImage[x - startX][y - startY] = outputColour;
         }
 
       }
@@ -183,14 +183,40 @@ public final class Image {
     return finalImage;
   }
   public Color[][] compressImage() {
-    return  compressAllLayers(false);
+    return compressAllLayers(Layers, false, true, 0, 0, width, height);
   }
   public Color[][] compressVisibleLayers() {
-    return  compressAllLayers(true);
+    return compressAllLayers(Layers, true, true, 0, 0, width, height);
+  }
+  public Color[][] compressSelectedLayers(ArrayList<Layer> layers) {
+    return compressAllLayers(layers, false, false, 0, 0, width, height);
+  }
+  public Color[][] compressVisiblePixels(int x, int y, int w, int h) {
+    return compressAllLayers(Layers, true, true, x, y, w, h);
+  }
+  public Color compressVisiblePixel(int x, int y) {
+    return compressAllLayers(Layers, true, true, x, y, 1, 1)[0][0];
   }
 
+  public BufferedImage calculateImageBuffer() {
+    BufferedImage imageBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    updateImageBuffer(imageBuffer, 0, 0, width, height);
 
-  public Color combineColours(Color c1, Color c2) {
+    return  imageBuffer;
+  }
+  public BufferedImage updateImageBuffer(BufferedImage imageBuffer, int startX, int startY, int w, int h) {
+    Color[][] pixelData = compressVisiblePixels(startX, startY, w, h);
+
+    for(int x = startX; x < startX + w; x++){
+      for(int y = startY; y < startY + h; y++){
+        imageBuffer.setRGB(x,y, pixelData[x - startX][y - startY].getRGB());
+      }
+    }
+
+    return  imageBuffer;
+  }
+
+  public Color combineColors(Color c1, Color c2) {
     double a1 = c1.getAlpha() / 255.0;
     double a2 = c2.getAlpha() / 255.0;
     double alpha = a1 + a2 * (1 - a1);
@@ -202,7 +228,6 @@ public final class Image {
     return new Color(red, green, blue, (int) Math.round(alpha * 255));
   }
 
-
   public Color adjustForAlpha(Color c) {
     double alpha = c.getAlpha() / 255.0;
 
@@ -213,14 +238,43 @@ public final class Image {
     return new Color(red, green, blue);
   }
 
-
-  // TEMPORARY
-  public void displayColour(Color c) {
-    System.out.println("("+c.getRed()+", "+c.getGreen()+", "+c.getBlue()+", "+c.getAlpha()+") ");
-  }
-
   public Layer getActiveLayer() {
-      return activeLayer;
+    return activeLayer;
   }
+
+  public void addSelectedLayer(Layer layer) {
+    selectedLayers.add(layer);
+  }
+  
+  public void removeSelectedLayer(Layer layer) {
+    selectedLayers.remove(layer);
+  }
+
+  public void disableSeletedLayers() {
+    for(Layer layer : selectedLayers) layer.switchSelectedLayerState();
+    selectedLayers = new ArrayList<>(16); // Effectively removes all elements
+  }
+
+  public void mergeSelectedLayers() {
+    // Reorder the layers so they're compressed in the correct order
+    ArrayList<Layer> orderedLayers = new ArrayList<>();
+    for(Layer layer : Layers)
+      for(Layer selectedLayer : selectedLayers)
+        if (selectedLayer == layer) orderedLayers.add(layer);
+
+    Color[][] output = compressSelectedLayers(orderedLayers);
+
+    Layer compressedLayer = orderedLayers.get(0);
+    compressedLayer.setPixels(output);
+    compressedLayer.activateLayer();
+    compressedLayer.switchSelectedLayerState();
+    
+    for(int i = 1; i < orderedLayers.size(); i++)
+      GUI.getInstance().getLayerSelector().removeLayerWithoutWarning(orderedLayers.get(i));
+    
+    selectedLayers = new ArrayList<>(16); // Effectively removes all elements
+  }
+
+
 
 }
