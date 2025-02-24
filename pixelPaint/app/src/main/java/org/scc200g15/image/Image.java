@@ -15,8 +15,8 @@ public final class Image {
   public Layer activeLayer;
 
   // The width and height of the image
-  private int width = 1024;
-  private int height = 1024;
+  private int width = 32;
+  private int height = 32;
 
   /**
    * Basic constructor that creates a 16x16 blue image
@@ -219,6 +219,8 @@ public final class Image {
     System.out.println("("+c.getRed()+", "+c.getGreen()+", "+c.getBlue()+", "+c.getAlpha()+") ");
   }
 
-
+  public Layer getActiveLayer() {
+      return activeLayer;
+  }
 
 }
