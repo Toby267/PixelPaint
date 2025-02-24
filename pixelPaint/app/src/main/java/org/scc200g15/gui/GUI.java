@@ -17,6 +17,7 @@ import org.scc200g15.tools.HoverDemoTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 
@@ -44,10 +45,11 @@ public class GUI extends JFrame {
     super("Pixel Paint");
 
     try {
-    UIManager.setLookAndFeel( new FlatLightLaf() );
-} catch( Exception ex ) {
-    System.err.println( "Failed to initialize LaF" );
-}
+      // UIManager.setLookAndFeel( new FlatDarkLaf() );
+      UIManager.setLookAndFeel( new FlatLightLaf() );
+    } catch( Exception ex ) {
+        System.err.println( "Failed to initialize LaF" );
+    }
 
     setLayout(new BorderLayout());
 
@@ -101,6 +103,7 @@ public class GUI extends JFrame {
     this.canvas.setActiveImage(i);
     layerSelector.redrawMenuUI();
   }
+  
   public Image getActiveImage(){
     return canvas.getActiveImage();
   }

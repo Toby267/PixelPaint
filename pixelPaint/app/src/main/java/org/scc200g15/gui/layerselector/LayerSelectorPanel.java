@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -68,14 +69,22 @@ public final class LayerSelectorPanel extends JPanel {
     Image image = window.getCanvas().getActiveImage();
 
     // Adding the title display
-      JPanel titleDisplay = new JPanel();
+    JPanel titleDisplay = new JPanel();
     titleDisplay.add(new JLabel("Layer Menu"));
     contentPanel.add(titleDisplay);
 
     if (image != null) {
-      // Add Existing layers to the Layer Menu
-      for (int i = 0; i < image.getLayerCount(); i++)
-        contentPanel.add(image.getLayer(i));
+      // Add existing layers to the Layer Menu
+      for (int i = 0; i < image.getLayerCount(); i++) {
+        Layer currentLayer = image.getLayer(i);
+        currentLayer.setMaximumSize(Tools.getMaxSize(currentLayer));
+        contentPanel.add(currentLayer);
+
+        // Add spacing between layers
+        if (i < image.getLayerCount() - 1)
+          contentPanel.add(Box.createRigidArea(new Dimension(0, 1)));
+      }
+        
     }
 
     // Add layer adder button
@@ -95,10 +104,6 @@ public final class LayerSelectorPanel extends JPanel {
 
     // Fix the spacing of the layer menu
     titleDisplay.setMaximumSize(Tools.getMaxSize(titleDisplay));
-    if (image != null) {
-      for (int i = 0; i < image.getLayerCount(); i++)
-        image.getLayer(i).setMaximumSize(Tools.getMaxSize(image.getLayer(i)));
-    }
   }
 
   /**
@@ -236,8 +241,16 @@ public final class LayerSelectorPanel extends JPanel {
     setActiveLayer(activeLayer);
   }
 
+  public void switchSelectedLayerState(int layerID) {
+    Image image = GUI.getInstance().getActiveImage();
+    if (image == null)
+      return;
+    image.getLayer(layerID).switchSelectedLayerState();
+  }
+  
+  
   /*
-   * --------------------------------------- [ACCESSORS/MUTATORS]
+  * --------------------------------------- [ACCESSORS/MUTATORS]
    * ---------------------------------------
    */
 

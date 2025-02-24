@@ -113,7 +113,7 @@ public final class Image {
     newActiveLayer.activateLayer();
     if (oldActiveLayer != null) oldActiveLayer.deactivateLayer();
   }
-
+  
   /**
    * Get the layer with the given index
    * 
@@ -145,7 +145,7 @@ public final class Image {
     return Layers;
   }
 
-  public  Color[][] compressAllLayers(boolean skipInvisibleLayers){
+  private Color[][] compressAllLayers(boolean skipInvisibleLayers, ArrayList<Layer> layersToCompress){
     Color[][] finalImage = new Color[width][height];
 
     Color transparent = new Color(0,0,0,0);
@@ -157,7 +157,7 @@ public final class Image {
         ArrayList<Color> coloursToMix = new ArrayList<>();
         boolean isFirstLayer = true;
 
-        for(Layer layer : Layers) {
+        for(Layer layer : layersToCompress) {
           Color pixel = layer.getPixel(x, y);
           if(pixel.getAlpha() == 0) continue;
           if(!layer.getIsLayerVisible() && skipInvisibleLayers) continue;
@@ -183,11 +183,16 @@ public final class Image {
     return finalImage;
   }
   public Color[][] compressImage() {
-    return  compressAllLayers(false);
+    return  compressAllLayers(false, Layers);
   }
   public Color[][] compressVisibleLayers() {
-    return  compressAllLayers(true);
+    return  compressAllLayers(true, Layers);
   }
+
+  // ! TODO: FIGURE OUT SPECIFIC LAYERS TO SELECT
+  // public Color[][] temp() {
+  //   return  compressAllLayers(false);
+  // }
 
 
   public Color combineColours(Color c1, Color c2) {
