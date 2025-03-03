@@ -2,8 +2,8 @@ package org.scc200g15.gui.layerselector;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
