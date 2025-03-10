@@ -179,8 +179,14 @@ public class ColourPicker extends JComponent {
     public Color paintHoverSB(Graphics2D g2, int x, int y) {
         g2.setStroke(new BasicStroke(3));
 
-        if (x == -1 && y == -1) 
-            return new Color(0, 0, 0, 0);
+        if (x <= 0 && y <= 0) {
+            System.out.println("HAS TRIGGERED");
+            x = getWidth() / 2;
+            y = (int) Math.round(RADIUS_OUTER_H * 1.25);    
+        }
+            
+        System.out.println("x = "+x);
+        System.out.println("y = "+y);
 
         int radius = (int) Math.round(RADIUS_SB / 5f);
         int color = IMAGE_SB.getRGB(x, y);
