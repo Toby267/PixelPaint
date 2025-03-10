@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 
 import org.scc200g15.config.Config;
 import org.scc200g15.gui.GUI;
+import org.scc200g15.gui.icons.IconManager;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
 
@@ -112,7 +113,7 @@ public final class LayerSelectorPanel extends JPanel {
    */
   public JButton createPlusLayerButton() {
     // Add new button to create new layer (symbol: +)
-    JButton addLayer = new JButton(Tools.createImageIcon(20, 20, "/Icons/plus_icon.png"));
+    JButton addLayer = new JButton(IconManager.createImageIcon(20, 20, "/Icons/plus_icon.png"));
     addLayer.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
 
     // Monitor addLayer button press
@@ -200,7 +201,7 @@ public final class LayerSelectorPanel extends JPanel {
       null, "Are you sure you want to delete this layer?", "Layer Deletion",
       JOptionPane.YES_NO_OPTION,
       JOptionPane.QUESTION_MESSAGE,
-      Tools.createImageIcon(40, 40, "/Icons/question_mark_icon.png"),
+      IconManager.createImageIcon(40, 40, "/Icons/question_mark_icon.png"),
       null, null);
     
     if (option != JOptionPane.YES_OPTION) return;

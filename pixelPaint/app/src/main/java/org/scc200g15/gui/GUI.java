@@ -4,20 +4,23 @@ import java.awt.BorderLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.gui.icons.IconManager;
 import org.scc200g15.gui.layerselector.LayerSelectorPanel;
 import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
+import org.scc200g15.gui.toolbar.DrawSubPanel;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.DrawTool;
+import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.Tool;
-import org.scc200g15.tools.ToolIcons;
 import org.scc200g15.tools.ToolManager;
 
 import com.formdev.flatlaf.FlatLightLaf;
@@ -50,11 +53,20 @@ public class GUI extends JFrame {
     toolBar.addTool(tool, icon);
     menuBar.addTool(tool, name);
   }
+  private void registerTool(Tool tool, ImageIcon icon, String toolID, String name, JPanel subPanel){
+    toolManager.registerTool(toolID, tool);
+    toolBar.addTool(tool, icon, subPanel);
+    menuBar.addTool(tool, name);
+  }
 
   private void registerTools(){
     // Draw Tool
-    DrawTool drawDemo = new DrawTool();
-    registerTool(drawDemo, ToolIcons.DRAW_ICON, "draw", "Pencil Draw");
+    DrawTool drawTool = new DrawTool();
+    DrawSubPanel jsp = new DrawSubPanel(PToolBar.height, drawTool);
+    registerTool(drawTool, IconManager.DRAW_ICON, "draw", "Draw Tool", jsp);
+
+    EraserTool eraserTool = new EraserTool();
+    registerTool(eraserTool, IconManager.ERASE_ICON, "erase", "Erase Tool");
   }
 
   private GUI() {
@@ -94,7 +106,7 @@ public class GUI extends JFrame {
 
     // ToolManager
     PanZoomTool defaultTool = new PanZoomTool();
-    toolBar.addTool(defaultTool, ToolIcons.PAN_ZOOM_ICON);
+    toolBar.addTool(defaultTool, IconManager.PAN_ZOOM_ICON);
     menuBar.addTool(defaultTool, "Pan Zoom");
     toolManager = new ToolManager(canvas, defaultTool);
 

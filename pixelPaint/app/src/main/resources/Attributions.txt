@@ -4,3 +4,15 @@
 [plus_icon.png]: Plus icons created by Freepik - Flaticon (https://www.flaticon.com/free-icons/plus)
 [question_mark_icon.png]: Question icons created by Muhammad Ali - Flaticon (https://www.flaticon.com/free-icons/question)
 [warning_icon.png]: Error icons created by Gregor Cresnar - Flaticon (https://www.flaticon.com/free-icons/error)
+
+[Pan_zoom.png] Pan Zoom icons created by berkahicon - Flaticon: (https://www.flaticon.com/free-icons/zoom-i)
+[Draw.png] Pencil icons created by Those Icons - Flaticon: (https://www.flaticon.com/free-icons/pencil)
+
+
+<a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by hirschwolf - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/triangle" title="triangle icons">Triangle icons created by rukanicon - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/rectangle" title="rectangle icons">Rectangle icons created by Vitaly Gorbachev - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/star" title="star icons">Star icons created by Pixel perfect - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/eraser" title="eraser icons">Eraser icons created by Those Icons - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/paint-bucket" title="paint bucket icons">Paint bucket icons created by Bharat Icons - Flaticon</a>
+
