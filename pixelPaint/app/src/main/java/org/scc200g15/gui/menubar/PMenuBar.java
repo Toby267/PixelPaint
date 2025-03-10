@@ -1,8 +1,11 @@
 package org.scc200g15.gui.menubar;
 
 import java.awt.Graphics;
+import java.awt.MenuItem;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
+import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
@@ -22,12 +25,23 @@ public class PMenuBar extends JMenuBar {
     // Create Menus
     JMenu fileMenu = new JMenu("file");
     editMenu = new JMenu("edit");
+    JMenu viewMenu = new JMenu("view");
     JMenu helpMenu = new JMenu("help");
+
+    viewMenu.add(new AbstractAction("Toggle Dark Mode") {
+
+		  @Override
+		  public void actionPerformed(ActionEvent e) {
+			  GUI.getInstance().toggleDarkMode();
+		  }
+
+    });
 
     // Add Menus to MenuBar
     add(fileMenu);
     add(editMenu);
     add(helpMenu);
+    add(viewMenu);
   }
 
   @Override
