@@ -7,9 +7,9 @@ import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
-
 
 public class ColourPicker extends JComponent {
     // Hue component
@@ -17,31 +17,39 @@ public class ColourPicker extends JComponent {
     private final int RADIUS_INNER_H = 68;
 
     // Saturation + Brigthness components
-    private final int RADIUS_SB = 49;
+    private final int RADIUS_SB = 50;
 
-    private float hue = (float) 0;
-    private float saturation = (float) 1;
-    private float brightness = (float) 1;
-
-
+    // Mouse Position
     private int mouseX = -1;
     private int mouseY = -1;
+    
+    // Saved Hue Mouse Position
+    private int pastX_H;
+    private int pastY_H;
 
-    private int pastMouseX;
-    private int pastMouseY;
+    // Saved Saturation + Brigthness Mouse Position
+    private int pastX_BS;
+    private int pastY_BS;
+
+    // Stores Saturation + Brigthness to search by pixel
+    private BufferedImage IMAGE_SB;
+
+    private final ColourPickerTools Tools = new ColourPickerTools();
 
     public ColourPicker() {
 
+        // Mouse Listener
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                System.out.println("PRESSED (" + e.getX() + "," + e.getY() + ")");
+                super.mousePressed(e);
                 mouseX = e.getX();
                 mouseY = e.getY();
                 repaint();
             }
         });
 
+        // Mouse Listener
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -53,6 +61,7 @@ public class ColourPicker extends JComponent {
         });    
     }
 
+    // * ---------------------------------- [ PAINT ] ---------------------------------- * //
 
     @Override
     public void paintComponent(Graphics g) {
@@ -60,57 +69,79 @@ public class ColourPicker extends JComponent {
         Graphics2D g2 = (Graphics2D) g;
         Color c;
 
+        // Colour wheel center points
         int x = getWidth() / 2;
         int y = (int) Math.round(RADIUS_OUTER_H * 1.25);
 
-        paintHPicker(g2, x, y);
+        // Draw the hue color ring
+        paintPickerH(g2, x, y);
 
-        if (outerRingClicked(mouseX, mouseY, x, y)) {
-            c = paintHHover(g2, mouseX, mouseY, x, y);
-            pastMouseX = mouseX;
-            pastMouseY = mouseY;
-        } else {
-            c = paintHHover(g2, pastMouseX, pastMouseY, x, y);
-        }
+        // Draw the hue hover tool
+        if(clickedH(mouseX, mouseY, x, y)) {
+            c = paintHoverH(g2, mouseX, mouseY, x, y);
+            pastX_H = mouseX;
+            pastY_H = mouseY;
+        } else 
+            c = paintHoverH(g2, pastX_H, pastY_H, x, y);
 
-        paintSBPicker(g2, x, y, c);
+        // Setup the bufferImage to use getPixel
+        IMAGE_SB = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d_temp = IMAGE_SB.createGraphics();
+        g2d_temp.setColor(getBackground());
 
+        // Draw the saturation + brightness color ring
+        paintPickerSB(g2d_temp, x, y, c);
+        g2d_temp.dispose();
+        g2.drawImage(IMAGE_SB, 0, 0, null);
+
+        // Draw the saturation + brightness hover tool
+        if(clickedBS(mouseX, mouseY, x, y)) {
+            c = paintHoverSB(g2, mouseX, mouseY);
+            pastX_BS = mouseX;
+            pastY_BS = mouseY;
+        } else 
+            c = paintHoverSB(g2, pastX_BS, pastY_BS);
 
     }
 
+    // * ---------------------------------- [ HUE ] ---------------------------------- * //
+
     // ! TODO: STOP FROM BEING REPAINTED FOR OPTIMISATION
-    public void paintHPicker(Graphics2D g2, int x, int y) {
+    public void paintPickerH(Graphics2D g2, int x, int y) {
         // Draw a line for each colour over a 360° donut.
         for (int i = 0; i < 360; i++) {
             double θ = Math.toRadians(i);
-            float hue = i / (float) 360;
+            double hue = Tools.getHue(θ);
             g2.setStroke(new BasicStroke(10));
-            g2.setColor(Color.getHSBColor(hue, (float) 1, (float) 1));
+            g2.setColor(Color.getHSBColor((float) hue, 1.0f, 1.0f));
             g2.drawLine(
-                (int) Math.round(x + RADIUS_OUTER_H * Math.cos(θ)), // x1 = r1 * cos(θ)
-                (int) Math.round(y + RADIUS_OUTER_H * Math.sin(θ)), // y1 = r1 * sin(θ)
-                (int) Math.round(x + RADIUS_INNER_H * Math.cos(θ)), // x2 = r2 * cos(θ)
-                (int) Math.round(y + RADIUS_INNER_H * Math.sin(θ))  // y2 = r2 * sin(θ)
+                x + Tools.newXint(RADIUS_OUTER_H, θ),
+                y + Tools.newYint(RADIUS_OUTER_H, θ),
+                x + Tools.newXint(RADIUS_INNER_H, θ),
+                y + Tools.newYint(RADIUS_INNER_H, θ)
             );
         }
     }
 
-    public Color paintHHover(Graphics2D g2, int x, int y, int centerX, int centerY) {
-        g2.setStroke(new BasicStroke(5));
+    public Color paintHoverH(Graphics2D g2, int x, int y, int centerX, int centerY) {
+        g2.setStroke(new BasicStroke(4));
 
+        // Calculate radius of the circle and width of the ring
         int ringWidth = 5 + (RADIUS_OUTER_H - RADIUS_INNER_H) * 2;
         int radius = (RADIUS_OUTER_H + RADIUS_INNER_H) / 2;
 
-        double θ =  Math.atan2(y - centerY, x - centerX); 
-        double hue = (Math.toDegrees(θ) % 360) / (float) 360;
+        // Find angle (θ) to use in calcuating hue (normalise 0-1)
+        double θ = Tools.getθ(y - centerY, x - centerX); 
+        double hue = Tools.getHue(θ);
 
-        int destinationX = (int) Math.round(centerX + radius * Math.cos(θ));
-        int destinationY = (int) Math.round(centerY + radius * Math.sin(θ));
+        // Find correct coordinates using trigonometry / unit circle
+        int destinationX = centerX + Tools.newXint(radius, θ); // x = r * cos(θ) 
+        int destinationY = centerX + Tools.newYint(radius, θ); // y = r * sin(θ) 
 
-        Color fillColor = Color.getHSBColor((float) hue, (float) 1, (float) 1);
+        // Create hover bubble
+        Color fillColor = Color.getHSBColor((float) hue, 1.0f, 1.0f);
         g2.setColor(fillColor);
         g2.fillOval(destinationX - ringWidth / 2, destinationY - ringWidth / 2, ringWidth, ringWidth);
-
         g2.setColor(Color.GRAY);
         g2.drawOval(destinationX - ringWidth / 2, destinationY - ringWidth / 2, ringWidth, ringWidth);
 
@@ -118,67 +149,80 @@ public class ColourPicker extends JComponent {
     }
 
 
-    private boolean outerRingClicked(int x, int y, int centerX, int centerY) {
+    private boolean clickedH(int x, int y, int centerX, int centerY) {
+        double distance = Tools.getDistance(x - centerX, y - centerY);
+        int tolerance = 13;
         if (mouseX == -1 && mouseY == -1) 
             return false;
-
-        int o = x - centerX;
-        int a = y - centerY;
-        double h = Math.sqrt(Math.pow(o, 2) + Math.pow(a, 2));
-            
-        int clickTolerance = 13;
-
-        if(h >= RADIUS_INNER_H - clickTolerance && h <= RADIUS_OUTER_H + clickTolerance)
-            return true;
-
-        return false;
+        return distance >= RADIUS_INNER_H - tolerance && distance <= RADIUS_OUTER_H + tolerance;
     }
-    
 
-    public void paintSBPicker(Graphics2D g2, int x, int y, Color c) {
-        // Inspired by: https://stackoverflow.com/questions/64876600/circular-saturation-brightness-gradient-for-color-wheel
+    // * ------------------------- [ SATURATION / BRIGHTNESS ] ------------------------- * //
+    
+    // Inspired by: https://stackoverflow.com/questions/64876600/circular-saturation-brightness-gradient-for-color-wheel
+    public void paintPickerSB(Graphics2D g2, int x, int y, Color c) {
         g2.setColor(c);
         g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
         
         int θ_black = 75;
         int θ_white = 200;
 
+        // Add gradients from outside, which fades as distance increases
         addGradient(g2, x, y, Math.toRadians(θ_black), new Color(0, 0, 0), false);
         addGradient(g2, x, y, Math.toRadians(θ_white), new Color(255, 255, 255), false);
         
+        // Add gradients from outside opposite side, which intensifies as distance increases
         addGradient(g2, x, y, Math.toRadians(θ_black), new Color(0, 0, 0), true);
         addGradient(g2, x, y, Math.toRadians(θ_white), new Color(255, 255, 255), true);
     }
 
+    public Color paintHoverSB(Graphics2D g2, int x, int y) {
+        g2.setStroke(new BasicStroke(3));
+
+        if (x == -1 && y == -1) 
+            return new Color(0, 0, 0, 0);
+
+        int radius = (int) Math.round(RADIUS_SB / 5f);
+        int color = IMAGE_SB.getRGB(x, y);
+
+        // Create hover bubble
+        // From: https://stackoverflow.com/questions/25761438/understanding-bufferedimage-getrgb-output-values
+        Color fillColor = new Color((color & 0xff0000) >> 16, (color & 0xff00) >> 8, color & 0xff);
+        g2.setColor(fillColor);
+        g2.fillOval(x - radius, y - radius, radius * 2, radius * 2);
+        g2.setColor(Color.GRAY);
+        g2.drawOval(x - radius, y - radius, radius * 2, radius * 2);
+
+        return fillColor;
+    }
+
+    private boolean clickedBS(int x, int y, int centerX, int centerY) {
+        double distance = Tools.getDistance(x - centerX, y - centerY);
+        int tolerance = 5;
+        if (mouseX == -1 && mouseY == -1) 
+            return false;
+        return distance <= RADIUS_SB - tolerance;
+    }
+
+
 
     private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
         return new RadialGradientPaint(
-            x - RADIUS_SB * (float) (Math.cos(θ) * 2.5), 
-            y - RADIUS_SB * (float) (Math.sin(θ) * 2.5), 
-            (int) Math.round(RADIUS_SB * 3.45),
-            new float[] {0.0f, 0.8f, 0.85f, 0.9f, 0.95f, 1.0f},
-            new Color[] {
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 0), 
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 3), 
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 5), 
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 10), 
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 70), 
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 255), 
-            }
+            x - Tools.newX(RADIUS_SB, θ) * 2.5f,
+            y - Tools.newY(RADIUS_SB, θ) * 2.5f,
+            RADIUS_SB * 3.5f,
+            Tools.inverseGradientSteps,
+            Tools.inverseGradientColors(c)
         );
     }
 
     private RadialGradientPaint createGradient(int x, int y, double θ, Color c) {
         return new RadialGradientPaint(
-            x + RADIUS_SB * (float) Math.cos(θ) * 2,
-            y + RADIUS_SB * (float) Math.sin(θ) * 2, 
-            (int) Math.round(RADIUS_SB * 2.6),
-            new float[] {0.0f, 0.5f, 1.0f},
-            new Color[] {
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 255), 
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 150), 
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 0), 
-            }
+            x + Tools.newX(RADIUS_SB, θ) * 2.f,
+            y + Tools.newY(RADIUS_SB, θ) * 2.f,
+            RADIUS_SB * 2.6f,
+            Tools.gradientSteps,
+            Tools.gradientColors(c)
         );
     }
 
@@ -187,6 +231,5 @@ public class ColourPicker extends JComponent {
         g2.setPaint(gradient);
         g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
     }
-    
     
 }
