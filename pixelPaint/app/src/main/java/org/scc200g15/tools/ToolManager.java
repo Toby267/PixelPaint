@@ -1,5 +1,7 @@
 package org.scc200g15.tools;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -14,7 +16,7 @@ import org.scc200g15.gui.canvas.PCanvas;
 /**
  * The toolManager is responsible for passing the mouse events to the current active tool or the default tool if no tool is active
  */
-public class ToolManager implements MouseMotionListener, MouseListener, MouseWheelListener {
+public class ToolManager implements MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
 
   // Map of all tools
   private Map<String, Tool> tools;
@@ -180,4 +182,27 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
       defaultTool.mouseMoved(canvas, e);
   }
 
+  @Override
+  public void keyTyped(KeyEvent e) {
+    if (activeTool != null)
+      activeTool.keyTyped(canvas, e);
+    else
+      defaultTool.keyTyped(canvas, e);
+  }
+
+  @Override
+  public void keyPressed(KeyEvent e) {
+    if (activeTool != null)
+      activeTool.keyPressed(canvas, e);
+    else
+      defaultTool.keyPressed(canvas, e);
+  }
+
+  @Override
+  public void keyReleased(KeyEvent e) {
+    if (activeTool != null)
+      activeTool.keyReleased(canvas, e);
+    else
+      defaultTool.keyReleased(canvas, e);
+  }
 }
