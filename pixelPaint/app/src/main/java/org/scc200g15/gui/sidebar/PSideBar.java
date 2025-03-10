@@ -17,12 +17,17 @@ public class PSideBar extends JPanel {
   public PSideBar(GUI window) {
     setBorder(new BevelBorder(BevelBorder.LOWERED));
 
-    setPreferredSize(new Dimension(60, window.getHeight()));
+    setPreferredSize(new Dimension(200, window.getHeight()));
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     JLabel sideLabel = new JLabel("side");
     sideLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
     add(sideLabel);
+
+    ColourPicker colourPicker = new ColourPicker();
+    add(colourPicker);
   }
+
+
 }
