@@ -129,6 +129,7 @@ public class DrawTool implements Tool {
       if (p.getY() < 0 || p.getY() >= height) continue;
 
       activeLayer.setPixel((int)p.getX(), (int)p.getY(), colour);
+      c.recalculatePixel((int)p.getX(), (int)p.getY());
     }
 
     c.repaint();
@@ -146,16 +147,10 @@ public class DrawTool implements Tool {
     draw(c, e);
   }
 
-  // TODO: make it so it hovers all points in the shape
-  @Override
-  public void mouseMoved(PCanvas c, MouseEvent e) {
-    Point2D hoverPoint = c.getPixelPoint(e.getPoint());
-    c.setHoverPixel(hoverPoint);
-    c.setHoverColour(colour);
-    c.repaint();
-  }
-
+  
   // Required interface methods that we don't need
+  @Override
+  public void mouseMoved(PCanvas c, MouseEvent e) {}
   @Override
   public void mouseWheelMoved(PCanvas c, MouseWheelEvent e) {}
   @Override

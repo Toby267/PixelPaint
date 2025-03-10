@@ -42,8 +42,14 @@ public class GUI extends JFrame {
 
   private void registerTools(){
     // Draw Tool
-    DrawTool drawDemo = new DrawTool();
-    toolManager.registerTool("draw", drawDemo);
+    DrawTool drawTool = new DrawTool();
+    
+    drawTool.setColour(255, 0, 0);
+    drawTool.setOppacity(200);
+    drawTool.setSize(9);
+    drawTool.setShape("Circle");
+
+    toolManager.registerTool("DrawTool", drawTool);
   }
 
   private GUI() {
@@ -87,7 +93,7 @@ public class GUI extends JFrame {
 
     registerTools();
 
-    toolManager.setActiveTool("draw");
+    toolManager.setActiveTool("DrawTool");
 
     // General
     setSize(1250, 750);
