@@ -11,9 +11,39 @@ import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
 
 public class SquareSelectTool implements Tool {
-  Point2D startPoint;
-  int width, height;
-  boolean areaSelected = false;
+  protected enum State{
+    NOTHING,
+    SELECTING,
+    MOVING,
+    RESIZING
+  }
+
+  State state = State.NOTHING;
+  
+  Point2D startPoint, endPoint;
+
+  Point2D dragStartPoint;
+  Point2D dragEndPoint;
+
+  /**
+   * methods for calculating the true start, width and height based of the start and end points of the drag
+   */
+  private Point2D calcTrueStart() {
+    return new Point2D.Double(
+      Double.min(startPoint.getX(), endPoint.getX()),
+      Double.min(startPoint.getY(), endPoint.getY())
+    );
+  }
+  private int calcWidth() {
+    int width = (int)endPoint.getX() - (int)startPoint.getX();
+    if (width < 0) width = -width;
+    return width;
+  }
+  private int calcHeight() {
+    int height = (int)endPoint.getY() - (int)startPoint.getY();
+    if (height < 0) height = -height;
+    return height;
+  }
 
   /**
    * deletes the selected pixels for the given canvas
@@ -25,10 +55,11 @@ public class SquareSelectTool implements Tool {
     Layer activeLayer = image.getActiveLayer();
     int maxHeight = image.getHeight(), maxWidth = image.getHeight();
 
-    for (int i = 0; i < width; i++){
-      for (int j = 0; j < height; j++){
-        int x = (int)startPoint.getX() + i;
-        int y = (int)startPoint.getY() + j;
+
+    for (int i = 0; i < calcWidth(); i++){
+      for (int j = 0; j < calcHeight(); j++){
+        int x = (int)calcTrueStart().getX() + i;
+        int y = (int)calcTrueStart().getY() + j;
 
         if (x < 0 || x >= maxWidth) continue;
         if (y < 0 || y >= maxHeight) continue;
@@ -47,7 +78,7 @@ public class SquareSelectTool implements Tool {
    * @param c the canvas that has the selected pixels
    */
   private void deselect(PCanvas c) {
-    areaSelected = false;
+    state = State.NOTHING;
     c.setHoverDimensions(0, 0);
     c.repaint();
   }
@@ -59,7 +90,7 @@ public class SquareSelectTool implements Tool {
    */
   @Override
   public void keyPressed(PCanvas c, KeyEvent e) {
-    if (!areaSelected) return;
+    if (state == State.NOTHING) return;
 
     switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE:
@@ -67,42 +98,51 @@ public class SquareSelectTool implements Tool {
         deselect(c);
       case KeyEvent.VK_ESCAPE:
         deselect(c);
+      case KeyEvent.VK_ENTER:
+        deselect(c);
+    }
+  }
+
+  /**
+   * event for moving the selected area, or resizing it depending on where it was dragged from
+   * 
+   * if dragged from outline, resize, if dragged from center, move
+   */
+  @Override
+  public void mouseDragged(PCanvas c, MouseEvent e) {
+    if (state == State.SELECTING) {
+      endPoint = c.getPixelPoint(e.getPoint());
+
+      c.setHoverPixel(calcTrueStart());
+      c.setHoverDimensions(calcWidth(), calcHeight());
+      
+      c.repaint();
+    }
+    else if (state == State.MOVING) {
+
+    }
+    else if (state == State.RESIZING) {
+
     }
   }
   
   /**
-   * event for when the user starts selecting an area
+   * event for determining what drag action to perform
    * 
    * records the start pixel
    */
   @Override
   public void mousePressed(PCanvas c, MouseEvent e) {
-    startPoint = c.getPixelPoint(e.getPoint());
-    System.out.println("x: " + (int)startPoint.getX() + "y: " + (int)startPoint.getY());
-  }
-  
-  /**
-   * event for when the user finishes selcting an area
-   * 
-   * calculates the width, and height based on the start pixel and end pixel
-   */
-  @Override
-  public void mouseReleased(PCanvas c, MouseEvent e) {
-    areaSelected = true;
-
-    Point2D point = c.getPixelPoint(e.getPoint());
-    width = (int)point.getX() - (int)startPoint.getX();
-    height = (int)point.getY() - (int)startPoint.getY();
-
-    c.setHoverPixel(startPoint);
-    c.setHoverDimensions(width, height);
-    
-    c.repaint();
+    if (state == State.NOTHING) {
+      state = State.SELECTING;
+      startPoint = c.getPixelPoint(e.getPoint());
+    }
+    else if (state == State.SELECTING){
+      state = State.MOVING;
+    }
   }
   
   // Required interface methods that we don't need
-  @Override
-  public void mouseDragged(PCanvas c, MouseEvent e) {}
   @Override
   public void mouseMoved(PCanvas c, MouseEvent e) {}
   @Override
@@ -111,6 +151,8 @@ public class SquareSelectTool implements Tool {
   public void mouseClicked(PCanvas c, MouseEvent e) {}
   @Override
   public void mouseExited(PCanvas c, MouseEvent e) {}
+  @Override
+  public void mouseReleased(PCanvas c, MouseEvent e) {}
   @Override
   public void mouseEntered(PCanvas c, MouseEvent e) {}
   @Override
