@@ -19,10 +19,12 @@ public class SquareSelectTool implements Tool {
   public void mouseReleased(PCanvas c, MouseEvent e) {
     Point2D point = c.getPixelPoint(e.getPoint());
     width = (int)point.getX() - (int)startPoint.getX();
-    height = (int)point.getX() - (int)startPoint.getX();
+    height = (int)point.getY() - (int)startPoint.getY();
 
-    System.out.println("Width: " + width + "height: " + height);
-    System.out.println("start point: " + startPoint.getX() + " " + startPoint.getY());
+    c.setHoverPixel(startPoint);
+    c.setHoverDimensions(width, height);
+    
+    c.repaint();
   }
   
   // Required interface methods that we don't need
