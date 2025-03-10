@@ -1,5 +1,6 @@
 package org.scc200g15.gui.sidebar;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
@@ -14,6 +15,8 @@ import org.scc200g15.gui.GUI;
  * The SideBar that will contain the color selector
  */
 public class PSideBar extends JPanel {
+  ColourPicker colourPicker = new ColourPicker();
+
   public PSideBar(GUI window) {
     setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -25,9 +28,11 @@ public class PSideBar extends JPanel {
 
     add(sideLabel);
 
-    ColourPicker colourPicker = new ColourPicker();
-    add(colourPicker);
+    add(this.colourPicker);
   }
 
+  public Color getActiveColor() {
+    return this.colourPicker.getActiveColor();
+  }
 
 }

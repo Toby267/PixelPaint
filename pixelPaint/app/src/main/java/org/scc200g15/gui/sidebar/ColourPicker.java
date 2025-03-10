@@ -19,15 +19,18 @@ public class ColourPicker extends JComponent {
     // Saturation + Brigthness components
     private final int RADIUS_SB = 50;
 
+    // Current selected colour
+    private Color currentColor;
+
     // Mouse Position
     private int mouseX = -1;
     private int mouseY = -1;
     
-    // Saved Hue Mouse Position
+    // Saved Hue mouse position
     private int pastX_H;
     private int pastY_H;
 
-    // Saved Saturation + Brigthness Mouse Position
+    // Saved Saturation + Brigthness mouse position
     private int pastX_BS;
     private int pastY_BS;
 
@@ -35,6 +38,7 @@ public class ColourPicker extends JComponent {
     private BufferedImage IMAGE_SB;
 
     private final ColourPickerTools Tools = new ColourPickerTools();
+
 
     public ColourPicker() {
 
@@ -67,7 +71,6 @@ public class ColourPicker extends JComponent {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        Color c;
 
         // Colour wheel center points
         int x = getWidth() / 2;
@@ -77,31 +80,30 @@ public class ColourPicker extends JComponent {
         paintPickerH(g2, x, y);
 
         // Draw the hue hover tool
-        if(clickedH(mouseX, mouseY, x, y)) {
-            c = paintHoverH(g2, mouseX, mouseY, x, y);
-            pastX_H = mouseX;
-            pastY_H = mouseY;
+        if(clickedH(this.mouseX, this.mouseY, x, y)) {
+            this.currentColor = paintHoverH(g2, this.mouseX, this.mouseY, x, y);
+            this.pastX_H = this.mouseX;
+            this.pastY_H = this.mouseY;
         } else 
-            c = paintHoverH(g2, pastX_H, pastY_H, x, y);
+            this.currentColor = paintHoverH(g2, this.pastX_H, this.pastY_H, x, y);
 
         // Setup the bufferImage to use getPixel
-        IMAGE_SB = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d_temp = IMAGE_SB.createGraphics();
+        this.IMAGE_SB = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d_temp = this.IMAGE_SB.createGraphics();
         g2d_temp.setColor(getBackground());
 
         // Draw the saturation + brightness color ring
-        paintPickerSB(g2d_temp, x, y, c);
+        paintPickerSB(g2d_temp, x, y, this.currentColor);
         g2d_temp.dispose();
-        g2.drawImage(IMAGE_SB, 0, 0, null);
+        g2.drawImage(this.IMAGE_SB, 0, 0, null);
 
         // Draw the saturation + brightness hover tool
-        if(clickedBS(mouseX, mouseY, x, y)) {
-            c = paintHoverSB(g2, mouseX, mouseY);
-            pastX_BS = mouseX;
-            pastY_BS = mouseY;
+        if(clickedBS(this.mouseX, this.mouseY, x, y)) {
+            this.currentColor = paintHoverSB(g2, this.mouseX, this.mouseY);
+            this.pastX_BS = this.mouseX;
+            this.pastY_BS = this.mouseY;
         } else 
-            c = paintHoverSB(g2, pastX_BS, pastY_BS);
-
+            this.currentColor = paintHoverSB(g2, this.pastX_BS, this.pastY_BS);
     }
 
     // * ---------------------------------- [ HUE ] ---------------------------------- * //
@@ -142,7 +144,7 @@ public class ColourPicker extends JComponent {
         Color fillColor = Color.getHSBColor((float) hue, 1.0f, 1.0f);
         g2.setColor(fillColor);
         g2.fillOval(destinationX - ringWidth / 2, destinationY - ringWidth / 2, ringWidth, ringWidth);
-        g2.setColor(Color.GRAY);
+        g2.setColor(Color.WHITE);
         g2.drawOval(destinationX - ringWidth / 2, destinationY - ringWidth / 2, ringWidth, ringWidth);
 
         return fillColor;
@@ -151,8 +153,8 @@ public class ColourPicker extends JComponent {
 
     private boolean clickedH(int x, int y, int centerX, int centerY) {
         double distance = Tools.getDistance(x - centerX, y - centerY);
-        int tolerance = 13;
-        if (mouseX == -1 && mouseY == -1) 
+        int tolerance = 10;
+        if (this.mouseX == -1 && this.mouseY == -1) 
             return false;
         return distance >= RADIUS_INNER_H - tolerance && distance <= RADIUS_OUTER_H + tolerance;
     }
@@ -180,23 +182,19 @@ public class ColourPicker extends JComponent {
         g2.setStroke(new BasicStroke(3));
 
         if (x <= 0 && y <= 0) {
-            System.out.println("HAS TRIGGERED");
             x = getWidth() / 2;
             y = (int) Math.round(RADIUS_OUTER_H * 1.25);    
         }
             
-        System.out.println("x = "+x);
-        System.out.println("y = "+y);
-
         int radius = (int) Math.round(RADIUS_SB / 5f);
-        int color = IMAGE_SB.getRGB(x, y);
+        int color = this.IMAGE_SB.getRGB(x, y);
 
         // Create hover bubble
         // From: https://stackoverflow.com/questions/25761438/understanding-bufferedimage-getrgb-output-values
         Color fillColor = new Color((color & 0xff0000) >> 16, (color & 0xff00) >> 8, color & 0xff);
         g2.setColor(fillColor);
         g2.fillOval(x - radius, y - radius, radius * 2, radius * 2);
-        g2.setColor(Color.GRAY);
+        g2.setColor(Color.WHITE);
         g2.drawOval(x - radius, y - radius, radius * 2, radius * 2);
 
         return fillColor;
@@ -204,12 +202,11 @@ public class ColourPicker extends JComponent {
 
     private boolean clickedBS(int x, int y, int centerX, int centerY) {
         double distance = Tools.getDistance(x - centerX, y - centerY);
-        int tolerance = 5;
-        if (mouseX == -1 && mouseY == -1) 
+        int tolerance = 0;
+        if (this.mouseX == -1 && this.mouseY == -1) 
             return false;
-        return distance <= RADIUS_SB - tolerance;
+        return distance <= RADIUS_SB + tolerance;
     }
-
 
 
     private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
@@ -237,5 +234,11 @@ public class ColourPicker extends JComponent {
         g2.setPaint(gradient);
         g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
     }
-    
+
+    // * ------------------------- [ SATURATION / BRIGHTNESS ] ------------------------- * //
+
+    public Color getActiveColor() {
+        return this.currentColor;
+    }
+
 }
