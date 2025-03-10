@@ -24,7 +24,7 @@ public class DrawTool implements Tool {
   private HashMap<String, Shape> shapes = new HashMap<>();
 
   private Shape activeShape;
-  private Color colour = Color.BLACK;
+  private Color colour = Color.RED;
   private int size = 1;
 
   /**
