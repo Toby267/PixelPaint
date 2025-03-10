@@ -1,5 +1,6 @@
 package org.scc200g15.gui.sidebar;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -28,11 +29,12 @@ public class ColourPicker extends JComponent {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-
+                System.out.println("PRESSED (" + e.getX() + "," + e.getY() + ")");
             }
-
+            
             @Override
             public void mouseReleased(MouseEvent e) {
+                System.out.println("RELEASED (" + e.getX() + "," + e.getY() + ")");
 
             }
 
@@ -72,26 +74,51 @@ public class ColourPicker extends JComponent {
         g2.setColor(Color.RED);
         g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
         
-        RadialGradientPaint gradient_black = new RadialGradientPaint(
-            x + RADIUS_SB * (float) Math.cos(Math.toRadians(60)),
-            y + RADIUS_SB * (float) Math.sin(Math.toRadians(60)), 
-            (int) Math.round(RADIUS_SB * 1.75),
-            new float[] {0, 1},
-            new Color[] {Color.BLACK, new Color(0, 0, 0, 0)}
-        );
-        g2.setPaint(gradient_black);
-        g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
+        int θ_black = 75;
+        int θ_white = 200;
 
-        RadialGradientPaint gradient_white = new RadialGradientPaint(
-            x + RADIUS_SB * (float) Math.cos(Math.toRadians(120)),
-            y + RADIUS_SB * (float) Math.sin(Math.toRadians(120)), 
-            (int) Math.round(RADIUS_SB * 1.75),
-            new float[] {0, 1},
-            new Color[] {Color.WHITE, new Color(0, 0, 0, 0)}
-        );
-        g2.setPaint(gradient_white);
-        g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
+        addGradient(g2, x, y, Math.toRadians(θ_black), new Color(0, 0, 0), false);
+        addGradient(g2, x, y, Math.toRadians(θ_white), new Color(255, 255, 255), false);
+        
+        addGradient(g2, x, y, Math.toRadians(θ_black), new Color(0, 0, 0), true);
+        addGradient(g2, x, y, Math.toRadians(θ_white), new Color(255, 255, 255), true);
+    }
 
+    private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
+        return new RadialGradientPaint(
+            x - RADIUS_SB * (float) (Math.cos(θ) * 2.5), 
+            y - RADIUS_SB * (float) (Math.sin(θ) * 2.5), 
+            (int) Math.round(RADIUS_SB * 3.45),
+            new float[] {0.0f, 0.8f, 0.85f, 0.9f, 0.95f, 1.0f},
+            new Color[] {
+                new Color(c.getRed(), c.getGreen(), c.getBlue(), 0), 
+                new Color(c.getRed(), c.getGreen(), c.getBlue(), 3), 
+                new Color(c.getRed(), c.getGreen(), c.getBlue(), 5), 
+                new Color(c.getRed(), c.getGreen(), c.getBlue(), 10), 
+                new Color(c.getRed(), c.getGreen(), c.getBlue(), 70), 
+                new Color(c.getRed(), c.getGreen(), c.getBlue(), 255), 
+            }
+        );
+    }
+
+    private RadialGradientPaint createGradient(int x, int y, double θ, Color c) {
+        return new RadialGradientPaint(
+            x + RADIUS_SB * (float) Math.cos(θ) * 2,
+            y + RADIUS_SB * (float) Math.sin(θ) * 2, 
+            (int) Math.round(RADIUS_SB * 2.6),
+            new float[] {0.0f, 0.5f, 1.0f},
+            new Color[] {
+                new Color(c.getRed(), c.getGreen(), c.getBlue(), 255), 
+                new Color(c.getRed(), c.getGreen(), c.getBlue(), 150), 
+                new Color(c.getRed(), c.getGreen(), c.getBlue(), 0), 
+            }
+        );
+    }
+
+    private void addGradient(Graphics2D g2, int x, int y, double θ, Color c, boolean isInverted) {
+        RadialGradientPaint gradient = isInverted ? createInverseGradient(x, y, θ, c) : createGradient(x, y, θ, c);
+        g2.setPaint(gradient);
+        g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
     }
     
     
