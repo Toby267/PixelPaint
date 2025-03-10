@@ -21,6 +21,7 @@ import org.scc200g15.tools.DrawTool;
 import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.Tool;
+import org.scc200g15.tools.ToolIcons;
 import org.scc200g15.tools.ToolManager;
 
 import com.formdev.flatlaf.FlatLightLaf;
