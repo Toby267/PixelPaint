@@ -23,20 +23,31 @@ public class ColourPicker extends JComponent {
     private float saturation = (float) 1;
     private float brightness = (float) 1;
 
+
+    private int mouseX = -1;
+    private int mouseY = -1;
+
+
     public ColourPicker() {
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 System.out.println("PRESSED (" + e.getX() + "," + e.getY() + ")");
+                mouseX = e.getX();
+                mouseY = e.getY();
+                repaint();
             }
-            
+        });
+
+        addMouseMotionListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent e) {
-                System.out.println("RELEASED (" + e.getX() + "," + e.getY() + ")");
-
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                mouseX = e.getX();
+                mouseY = e.getY();
+                repaint();
             }
-
         });    
     }
 
@@ -48,14 +59,20 @@ public class ColourPicker extends JComponent {
 
         int x = getWidth() / 2;
         int y = (int) Math.round(RADIUS_OUTER_H * 1.25);
+
         paintHPicker(g2, x, y);
-        paintHHover(g2, x, y);
+        // paintHHover(g2, x, y);
+
+        if (mouseX != -1 && mouseY != -1) {
+            paintHHover(g2, mouseX, mouseY, x, y);
+        }    
 
         paintSBPicker(g2, x, y);
 
 
     }
 
+    // ! TODO: STOP FROM BEING REPAINTED FOR OPTIMISATION
     public void paintHPicker(Graphics2D g2, int x, int y) {
         // Draw a line for each colour over a 360° donut.
         for (int i = 0; i < 360; i++) {
@@ -72,24 +89,25 @@ public class ColourPicker extends JComponent {
         }
     }
 
-    public void paintHHover(Graphics2D g2, int x, int y) {
+    public void paintHHover(Graphics2D g2, int x, int y, int centerX, int centerY) {
         g2.setStroke(new BasicStroke(5));
-        // g2.setColor(Color.getHSBColor(0, (float) 1, (float) 1));
+
         int diameter = 5 + (RADIUS_OUTER_H - RADIUS_INNER_H) * 2;
+        int radius = diameter / 2;
+        int midPointRadius = (RADIUS_OUTER_H + RADIUS_INNER_H) / 2;
 
-        int _x = x + (RADIUS_OUTER_H + RADIUS_INNER_H) / 2 - diameter / 2;
-        int _y = y - diameter / 2;
+        double θ =  Math.atan2(y - centerY, x - centerX); 
+        double hue = ((Math.toDegrees(θ) + 360) % 360) / (float) 360;
 
-        double θ =  Math.toDegrees(Math.tan((x - _x) / (double) (y - _y))) - 90; // ! -90 IS TEMPORARY
-        double hue = Math.toDegrees(θ) / (float) 360;
-        System.out.println("ANGLE = " + Math.toDegrees(θ));
-        System.out.println("Hue = " + (Math.toDegrees(θ) / (float) 360));
+        int destinationX = (int) Math.round(centerX + midPointRadius * Math.cos(θ));
+        int destinationY = (int) Math.round(centerY + midPointRadius * Math.sin(θ));
 
         g2.setColor(Color.getHSBColor((float) hue, (float) 1, (float) 1));
-        // g2.setColor(Color.getHSBColor((float) 0, (float) 1, (float) 1));
-        g2.fillOval(_x, _y, diameter, diameter);
+        g2.fillOval(destinationX - radius, destinationY - radius, diameter, diameter);
+
         g2.setColor(Color.GRAY);
-        g2.drawOval(_x, _y, diameter, diameter);
+        g2.drawOval(destinationX - radius, destinationY - radius, diameter, diameter);
+
     }
 
     public void paintSBPicker(Graphics2D g2, int x, int y) {
