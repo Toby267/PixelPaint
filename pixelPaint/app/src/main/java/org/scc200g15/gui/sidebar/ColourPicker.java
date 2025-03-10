@@ -1,6 +1,5 @@
 package org.scc200g15.gui.sidebar;
 
-import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -50,7 +49,11 @@ public class ColourPicker extends JComponent {
         int x = getWidth() / 2;
         int y = (int) Math.round(RADIUS_OUTER_H * 1.25);
         paintHPicker(g2, x, y);
+        paintHHover(g2, x, y);
+
         paintSBPicker(g2, x, y);
+
+
     }
 
     public void paintHPicker(Graphics2D g2, int x, int y) {
@@ -69,6 +72,26 @@ public class ColourPicker extends JComponent {
         }
     }
 
+    public void paintHHover(Graphics2D g2, int x, int y) {
+        g2.setStroke(new BasicStroke(5));
+        // g2.setColor(Color.getHSBColor(0, (float) 1, (float) 1));
+        int diameter = 5 + (RADIUS_OUTER_H - RADIUS_INNER_H) * 2;
+
+        int _x = x + (RADIUS_OUTER_H + RADIUS_INNER_H) / 2 - diameter / 2;
+        int _y = y - diameter / 2;
+
+        double θ =  Math.toDegrees(Math.tan((x - _x) / (double) (y - _y))) - 90; // ! -90 IS TEMPORARY
+        double hue = Math.toDegrees(θ) / (float) 360;
+        System.out.println("ANGLE = " + Math.toDegrees(θ));
+        System.out.println("Hue = " + (Math.toDegrees(θ) / (float) 360));
+
+        g2.setColor(Color.getHSBColor((float) hue, (float) 1, (float) 1));
+        // g2.setColor(Color.getHSBColor((float) 0, (float) 1, (float) 1));
+        g2.fillOval(_x, _y, diameter, diameter);
+        g2.setColor(Color.GRAY);
+        g2.drawOval(_x, _y, diameter, diameter);
+    }
+
     public void paintSBPicker(Graphics2D g2, int x, int y) {
         // Inspired by: https://stackoverflow.com/questions/64876600/circular-saturation-brightness-gradient-for-color-wheel
         g2.setColor(Color.RED);
@@ -83,6 +106,7 @@ public class ColourPicker extends JComponent {
         addGradient(g2, x, y, Math.toRadians(θ_black), new Color(0, 0, 0), true);
         addGradient(g2, x, y, Math.toRadians(θ_white), new Color(255, 255, 255), true);
     }
+
 
     private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
         return new RadialGradientPaint(
