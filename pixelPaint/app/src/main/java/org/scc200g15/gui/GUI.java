@@ -15,6 +15,7 @@ import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.DrawTool;
+import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
 
@@ -43,12 +44,21 @@ public class GUI extends JFrame {
   LayerSelectorPanel layerSelector;
 
   private void registerTools(){
-    LayerMenuTools lmt = new LayerMenuTools();
-    // Draw Tool
-    DrawTool drawDemo = new DrawTool();
-    toolManager.registerTool("draw", drawDemo);
+    //default tool
+    PanZoomTool defaultTool = new PanZoomTool();
+    toolManager.setDefaultTool(defaultTool);
+    
+    // draw tool
+    DrawTool drawTool = new DrawTool();
+    toolManager.registerTool("DrawTool", drawTool);
 
-    toolBar.addTool(drawDemo, lmt.VISIBLE_TRASH_ICON);
+    //erase tool
+    EraserTool eraseTool = new EraserTool();
+    toolManager.registerTool("EraseTool", eraseTool);
+
+    //for demo in lab
+    toolManager.setActiveTool("DrawTool");
+    toolManager.setActiveTool("EraseTool");
   }
 
   private GUI() {
@@ -87,9 +97,7 @@ public class GUI extends JFrame {
     add(layerSelector, BorderLayout.EAST);
 
     // ToolManager
-    PanZoomTool defaultTool = new PanZoomTool();
-    toolManager = new ToolManager(canvas, defaultTool);
-
+    toolManager = new ToolManager(canvas);
     registerTools();
 
     // General
