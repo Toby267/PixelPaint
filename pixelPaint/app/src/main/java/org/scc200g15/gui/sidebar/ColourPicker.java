@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -72,6 +73,13 @@ public class ColourPicker extends JComponent {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
+        RenderingHints rh = new RenderingHints(
+            RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON
+        );
+
+        g2.setRenderingHints(rh);
+
         // Colour wheel center points
         int x = getWidth() / 2;
         int y = (int) Math.round(RADIUS_OUTER_H * 1.25);
@@ -90,6 +98,7 @@ public class ColourPicker extends JComponent {
         // Setup the bufferImage to use getPixel
         this.IMAGE_SB = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d_temp = this.IMAGE_SB.createGraphics();
+        g2d_temp.setRenderingHints(rh);
         g2d_temp.setColor(getBackground());
 
         // Draw the saturation + brightness color ring
@@ -153,7 +162,7 @@ public class ColourPicker extends JComponent {
 
     private boolean clickedH(int x, int y, int centerX, int centerY) {
         double distance = Tools.getDistance(x - centerX, y - centerY);
-        int tolerance = 10;
+        int tolerance = 9;
         if (this.mouseX == -1 && this.mouseY == -1) 
             return false;
         return distance >= RADIUS_INNER_H - tolerance && distance <= RADIUS_OUTER_H + tolerance;
@@ -202,7 +211,7 @@ public class ColourPicker extends JComponent {
 
     private boolean clickedBS(int x, int y, int centerX, int centerY) {
         double distance = Tools.getDistance(x - centerX, y - centerY);
-        int tolerance = 0;
+        int tolerance = -1;
         if (this.mouseX == -1 && this.mouseY == -1) 
             return false;
         return distance <= RADIUS_SB + tolerance;
@@ -211,9 +220,9 @@ public class ColourPicker extends JComponent {
 
     private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
         return new RadialGradientPaint(
-            x - Tools.newX(RADIUS_SB, θ) * 2.5f,
-            y - Tools.newY(RADIUS_SB, θ) * 2.5f,
-            RADIUS_SB * 3.5f,
+            x - Tools.newX(RADIUS_SB, θ) * 2.45f,
+            y - Tools.newY(RADIUS_SB, θ) * 2.45f,
+            RADIUS_SB * 3.4f,
             Tools.inverseGradientSteps,
             Tools.inverseGradientColors(c)
         );
@@ -223,7 +232,7 @@ public class ColourPicker extends JComponent {
         return new RadialGradientPaint(
             x + Tools.newX(RADIUS_SB, θ) * 2.f,
             y + Tools.newY(RADIUS_SB, θ) * 2.f,
-            RADIUS_SB * 2.6f,
+            RADIUS_SB * 2.53f,
             Tools.gradientSteps,
             Tools.gradientColors(c)
         );

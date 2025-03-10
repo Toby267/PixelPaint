@@ -23,8 +23,8 @@ public class PSideBar extends JPanel {
     setPreferredSize(new Dimension(200, window.getHeight()));
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    JLabel sideLabel = new JLabel("side");
-    sideLabel.setHorizontalAlignment(SwingConstants.LEFT);
+    JLabel sideLabel = new JLabel("Colour Selector");
+    sideLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
     add(sideLabel);
 
