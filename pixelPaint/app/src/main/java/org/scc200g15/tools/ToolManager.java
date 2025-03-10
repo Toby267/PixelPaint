@@ -16,6 +16,14 @@ import org.scc200g15.gui.canvas.PCanvas;
  */
 public class ToolManager implements MouseMotionListener, MouseListener, MouseWheelListener {
 
+  public static void toolChangeAction(Tool t) {
+    if( GUI.getInstance().getToolManager().isActiveTool(t)){
+      GUI.getInstance().getToolManager().setDefault();
+    }else{
+      GUI.getInstance().getToolManager().setActiveTool(t);
+    }
+  }
+
   // Map of all tools
   private Map<String, Tool> tools;
 

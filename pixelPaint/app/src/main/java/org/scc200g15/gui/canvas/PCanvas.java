@@ -180,7 +180,6 @@ public class PCanvas extends JPanel {
     this.hoverPixel = hoverPixel;
   }
 
-
   public void setHoverColour(Color hoverColour) {
     this.hoverColour = hoverColour;
   }

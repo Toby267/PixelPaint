@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.scc200g15.gui.GUI;
@@ -20,8 +19,10 @@ import org.scc200g15.tools.Tool;
 public class PToolBar extends JPanel {
   ArrayList<PToolBarButton> toolbarButtons;
 
+  public static int height = 32;
+
   public PToolBar(GUI window) {
-    setPreferredSize(new Dimension(window.getWidth(), 32));
+    setPreferredSize(new Dimension(window.getWidth(), height));
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
     toolbarButtons = new ArrayList<>();
@@ -42,6 +43,21 @@ public class PToolBar extends JPanel {
 
     // Add Button
     add(toolButton);
+    toolbarButtons.add(toolButton);
+
+    revalidate();
+    repaint();
+  }
+  public void addTool(Tool t, ImageIcon icon, JPanel subPanel){
+    // Create Button
+    PToolBarButton toolButton = new PToolBarButton(t, icon, subPanel);
+
+    // Add Button
+    add(toolButton);
+    add(subPanel);
+
+    subPanel.setVisible(false);
+
     toolbarButtons.add(toolButton);
 
     revalidate();
