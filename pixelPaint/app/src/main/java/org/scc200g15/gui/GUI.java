@@ -14,6 +14,7 @@ import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.DrawTool;
+import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.ToolManager;
 
@@ -45,16 +46,17 @@ public class GUI extends JFrame {
     PanZoomTool defaultTool = new PanZoomTool();
     toolManager.setDefaultTool(defaultTool);
     
-    // Draw Tool
+    // draw tool
     DrawTool drawTool = new DrawTool();
     toolManager.registerTool("DrawTool", drawTool);
 
+    //erase tool
+    EraserTool eraseTool = new EraserTool();
+    toolManager.registerTool("EraseTool", eraseTool);
+
     //for demo in lab
-    drawTool.setColour(255, 0, 0);
-    drawTool.setOppacity(255);
-    drawTool.setSize(9);
-    drawTool.setShape("Circle");
     toolManager.setActiveTool("DrawTool");
+    toolManager.setActiveTool("EraseTool");
   }
 
   private GUI() {
