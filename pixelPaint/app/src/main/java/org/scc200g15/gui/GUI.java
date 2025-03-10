@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -25,6 +26,7 @@ import org.scc200g15.tools.Tool;
 import org.scc200g15.tools.ToolIcons;
 import org.scc200g15.tools.ToolManager;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 
@@ -33,6 +35,8 @@ import com.formdev.flatlaf.FlatLightLaf;
  * canvas and the other parts of the UI
  */
 public class GUI extends JFrame {
+
+  boolean isDarkMode = false;
 
   private static GUI instance;
 
@@ -148,5 +152,26 @@ public class GUI extends JFrame {
   }
   public void repaintToolBar(){
     toolBar.repaint();
+  }
+
+  public void toggleDarkMode(){
+    System.out.println(isDarkMode);
+    if(isDarkMode){
+      try {
+        UIManager.setLookAndFeel( new FlatLightLaf() );
+      } catch( UnsupportedLookAndFeelException ex ) {
+        System.err.println( "Failed to initialize LaF" );
+      }
+    }else{
+      try {
+        UIManager.setLookAndFeel( new FlatDarkLaf() );
+      } catch( UnsupportedLookAndFeelException ex ) {
+        System.err.println( "Failed to initialize LaF" );
+      }
+    }
+
+    SwingUtilities.updateComponentTreeUI(this);
+
+    isDarkMode = !isDarkMode;
   }
 }

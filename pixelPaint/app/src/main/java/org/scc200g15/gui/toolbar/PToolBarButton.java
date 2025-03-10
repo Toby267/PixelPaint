@@ -51,7 +51,8 @@ public class PToolBarButton extends JButton{
             if(subJPanel != null) subJPanel.setVisible(true);
         }else{
             setIcon(inactiveIcon);
-            setBackground(new Color(0,0,0,0));
+            setBackground(IconManager.VISIBLE_BACKGROUND_COLOUR);
+            //setBackground(new Color(0,0,0,0));
 
             if(subJPanel != null) subJPanel.setVisible(false);
         }
