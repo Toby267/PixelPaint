@@ -44,6 +44,8 @@ public class GUI extends JFrame {
   LayerSelectorPanel layerSelector;
 
   private void registerTools(){
+    LayerMenuTools lmt = new LayerMenuTools();
+    
     //default tool
     PanZoomTool defaultTool = new PanZoomTool();
     toolManager.setDefaultTool(defaultTool);
@@ -51,14 +53,12 @@ public class GUI extends JFrame {
     // draw tool
     DrawTool drawTool = new DrawTool();
     toolManager.registerTool("DrawTool", drawTool);
+    toolBar.addTool(drawTool, lmt.VISIBLE_TRASH_ICON);
 
     //erase tool
     EraserTool eraseTool = new EraserTool();
     toolManager.registerTool("EraseTool", eraseTool);
-
-    //for demo in lab
-    toolManager.setActiveTool("DrawTool");
-    toolManager.setActiveTool("EraseTool");
+    toolBar.addTool(eraseTool, lmt.VISIBLE_TRASH_ICON);
   }
 
   private GUI() {
