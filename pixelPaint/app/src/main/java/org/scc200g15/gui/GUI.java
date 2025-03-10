@@ -19,6 +19,7 @@ import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.DrawTool;
 import org.scc200g15.tools.EraserTool;
+import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.Tool;
 import org.scc200g15.tools.ToolIcons;
@@ -68,6 +69,9 @@ public class GUI extends JFrame {
 
     EraserTool eraserTool = new EraserTool();
     registerTool(eraserTool, IconManager.ERASE_ICON, "erase", "Erase Tool");
+
+    FillTool fillTool = new FillTool();
+    registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool");
   }
 
   private GUI() {
