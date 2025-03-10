@@ -7,6 +7,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.gui.layerselector.LayerMenuTools;
 import org.scc200g15.gui.layerselector.LayerSelectorPanel;
 import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
@@ -39,6 +40,7 @@ public class GUI extends JFrame {
 
   PCanvas canvas;
   ToolManager toolManager;
+  PToolBar toolBar;
   LayerSelectorPanel layerSelector;
 
   private void registerTools(){
@@ -75,7 +77,7 @@ public class GUI extends JFrame {
     setJMenuBar(menuBar);
 
     // Add Toolbar to the JFrame
-    PToolBar toolBar = new PToolBar(this);
+    toolBar = new PToolBar(this);
     add(toolBar, BorderLayout.NORTH);
 
     // Add the StatusBar to the JFrame
@@ -121,4 +123,13 @@ public class GUI extends JFrame {
     return layerSelector;
   }
 
+  public ToolManager getToolManager() {
+    return toolManager;
+  }
+  public PToolBar getToolBar(){
+    return toolBar;
+  }
+  public void repaintToolBar(){
+    toolBar.repaint();
+  }
 }

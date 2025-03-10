@@ -8,6 +8,7 @@ import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
 
 /**
@@ -82,6 +83,7 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    */
   public void setActiveTool(Tool activeTool) {
     this.activeTool = activeTool;
+    GUI.getInstance().repaintToolBar();
   }
 
   /**
@@ -91,6 +93,7 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    */
   public void setActiveTool(String ID) {
     this.activeTool = getTool(ID);
+    GUI.getInstance().repaintToolBar();
   }
 
   /**
@@ -105,6 +108,11 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    */
   public void setDefault(){
     this.activeTool = defaultTool;
+  }
+
+  public boolean isActiveTool(Tool t){
+    if(activeTool == null) return t.equals(defaultTool);
+    else return  t.equals(activeTool);
   }
 
   // Pass through to the active or default tool
