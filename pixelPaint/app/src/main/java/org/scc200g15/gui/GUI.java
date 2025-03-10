@@ -41,15 +41,20 @@ public class GUI extends JFrame {
   LayerSelectorPanel layerSelector;
 
   private void registerTools(){
+    //default tool
+    PanZoomTool defaultTool = new PanZoomTool();
+    toolManager.setDefaultTool(defaultTool);
+    
     // Draw Tool
     DrawTool drawTool = new DrawTool();
-    
+    toolManager.registerTool("DrawTool", drawTool);
+
+    //for demo in lab
     drawTool.setColour(255, 0, 0);
-    drawTool.setOppacity(200);
+    drawTool.setOppacity(255);
     drawTool.setSize(9);
     drawTool.setShape("Circle");
-
-    toolManager.registerTool("DrawTool", drawTool);
+    toolManager.setActiveTool("DrawTool");
   }
 
   private GUI() {
@@ -88,12 +93,8 @@ public class GUI extends JFrame {
     add(layerSelector, BorderLayout.EAST);
 
     // ToolManager
-    PanZoomTool defaultTool = new PanZoomTool();
-    toolManager = new ToolManager(canvas, defaultTool);
-
+    toolManager = new ToolManager(canvas);
     registerTools();
-
-    toolManager.setActiveTool("DrawTool");
 
     // General
     setSize(1250, 750);

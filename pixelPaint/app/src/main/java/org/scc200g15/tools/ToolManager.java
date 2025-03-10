@@ -37,6 +37,18 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
   }
 
   /**
+   * Constructor that takes a canvas to work on
+   * 
+   * @param canvas the canvas for tools to work on
+   */
+  public ToolManager(PCanvas canvas) {
+    tools = new HashMap<>();
+
+    this.canvas = canvas;
+    canvas.registerToolManager(this);
+  }
+
+  /**
    * Register a tool
    * 
    * @param ID the ID of the tool
@@ -79,6 +91,13 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    */
   public void setActiveTool(String ID) {
     this.activeTool = getTool(ID);
+  }
+
+  /**
+   * sets up the default tool
+   */
+  public void setDefaultTool(Tool defaultTool){
+    this.defaultTool = defaultTool;
   }
 
   /**
