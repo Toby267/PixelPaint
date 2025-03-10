@@ -26,20 +26,6 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
   private PCanvas canvas;
 
   /**
-   * Constructor that takes a canvas to work on and a default tool
-   * 
-   * @param canvas      the canvas for tools to work on
-   * @param defaultTool the tool to be active if no tools are selected
-   */
-  public ToolManager(PCanvas canvas, Tool defaultTool) {
-    this.defaultTool = defaultTool;
-    tools = new HashMap<>();
-
-    this.canvas = canvas;
-    canvas.registerToolManager(this);
-  }
-
-  /**
    * Constructor that takes a canvas to work on
    * 
    * @param canvas the canvas for tools to work on
@@ -136,6 +122,8 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
 
   @Override
   public void mousePressed(MouseEvent e) {
+    //change the focus to the canvas for the key listener
+    canvas.requestFocus();
     if (activeTool != null)
       activeTool.mousePressed(canvas, e);
     else

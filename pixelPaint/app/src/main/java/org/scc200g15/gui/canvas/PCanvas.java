@@ -24,6 +24,7 @@ public class PCanvas extends JPanel {
   float zoomLevel = 1;
 
   Point2D zoomCenter = new Point(0, 0);
+  
   Point2D hoverPixel = new Point(-1, -1);
   int hoverWidth = 1, hoverHeight = 1;
   Color hoverColour = Color.WHITE;
@@ -132,6 +133,8 @@ public class PCanvas extends JPanel {
     addMouseListener(toolManager);
     addMouseMotionListener(toolManager);
     addMouseWheelListener(toolManager);
+    addKeyListener(toolManager);
+    this.setFocusable(true);
   }
 
   /**
