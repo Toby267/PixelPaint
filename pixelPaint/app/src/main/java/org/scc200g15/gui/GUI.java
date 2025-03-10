@@ -17,6 +17,7 @@ import org.scc200g15.image.Image;
 import org.scc200g15.tools.DrawTool;
 import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.PanZoomTool;
+import org.scc200g15.tools.SquareSelectTool;
 import org.scc200g15.tools.ToolManager;
 
 import com.formdev.flatlaf.FlatLightLaf;
@@ -59,6 +60,11 @@ public class GUI extends JFrame {
     EraserTool eraseTool = new EraserTool();
     toolManager.registerTool("EraseTool", eraseTool);
     toolBar.addTool(eraseTool, lmt.VISIBLE_TRASH_ICON);
+
+    //select tool
+    SquareSelectTool selectTool = new SquareSelectTool();
+    toolManager.registerTool("SelectTool", selectTool);
+    toolBar.addTool(selectTool, lmt.VISIBLE_EYE_OPEN_ICON);
   }
 
   private GUI() {
