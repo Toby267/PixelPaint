@@ -4,14 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
 import org.scc200g15.image.Image;
-import org.scc200g15.image.Layer;
 import org.scc200g15.tools.ToolManager;
 
 /**
@@ -30,6 +29,8 @@ public class PCanvas extends JPanel {
 
   Point dif = new Point(0, 0);
 
+  BufferedImage imageBuffer;
+
   /**
    * Default constructor, with no image active to start
    */
@@ -43,7 +44,6 @@ public class PCanvas extends JPanel {
   @Override
   public void paint(Graphics g) {
     Graphics2D g2d = (Graphics2D) g;
-    Rectangle r = g.getClipBounds();
 
     // Draw the black background across the entire canvas
     g2d.setColor(getBackground());
@@ -54,11 +54,11 @@ public class PCanvas extends JPanel {
       return;
 
     // Calculate the X and Y SF to make the image fill the screen
-    float XSF = this.getWidth() / activeImage.getWidth();
-    float YSF = this.getHeight() / activeImage.getHeight();
+    float XSF = (float)this.getWidth() / activeImage.getWidth();
+    float YSF = (float)this.getHeight() / activeImage.getHeight();
 
     // Pick the smaller of the X and Y SF to make sure that the full image fits on the screen
-    float SF = XSF > YSF ? YSF : XSF;
+    float SF = Math.min(XSF, YSF);
 
     // Calculate the move needed to move the grid into the middle of the canvas
     int xMove = (this.getWidth() - (int) (SF * activeImage.getWidth())) / 2;
@@ -78,37 +78,11 @@ public class PCanvas extends JPanel {
 
     g2d.transform(currentTransform);
 
-    Point2D s = getPixelPoint(new Point(r.x, r.y));
-    Point2D e = getPixelPoint(new Point((int) r.getMaxX(), (int) r.getMaxY()));
+    g2d.drawImage(imageBuffer, null, 0,0);
 
-    int sx = (int) s.getX() < 0 ? 0 : (int) s.getX();
-    int sy = (int) s.getY() < 0 ? 0 : (int) s.getY();
-
-    int ex = Math.min(activeImage.getWidth(), (int) Math.ceil(e.getX()));
-    int ey = Math.min(activeImage.getHeight(), (int) Math.ceil(e.getY()));
-
-    Point2D startPoint = new Point(sx, sy);
-    Point2D endPoint = new Point(ex, ey);
-
-    // Render the pixels onto the screen
-    for (int l = 0; l < activeImage.getLayerCount(); l++) {
-      Layer layer = activeImage.getLayer(l);
-      if (!layer.getIsActive())
-        continue;
-
-      Color[][] pixels = layer.getPixels();
-
-      for (int x = (int) startPoint.getX(); x < endPoint.getX(); x++) {
-        for (int y = (int) startPoint.getY(); y < endPoint.getY(); y++) {
-          if ((int) (hoverPixel.getX()) == x && (int) (hoverPixel.getY()) == y)
-            g2d.setColor(hoverColour);
-          else
-            g2d.setColor(pixels[x][y]);
-
-          g2d.fillRect(x, y, 1, 1);
-        }
-      }
-    }
+    // Draw Hover Pixel
+    g2d.setColor(hoverColour);
+    g2d.fillRect((int)hoverPixel.getX(), (int)hoverPixel.getY(), 1, 1);
   }
 
   /**
@@ -118,6 +92,8 @@ public class PCanvas extends JPanel {
    * @return returns the pixel pos for the given mouse position on screen
    */
   public Point2D getPixelPoint(Point p) {
+    if(currentTransform == null) return new Point(0, 0);
+    
     // Define a point to put the result in
     Point2D dsPoint = new Point2D.Float();
     try {
@@ -138,6 +114,7 @@ public class PCanvas extends JPanel {
    */
   public void setActiveImage(Image i) {
     activeImage = i;
+    recalculateAllPixels();
     repaint();
   }
   public Image getActiveImage() {
@@ -162,7 +139,7 @@ public class PCanvas extends JPanel {
    */
   public void zoomIn(Point p) {
     zoomCenter = p;
-    zoomLevel += 0.05;
+    zoomLevel += 0.05f;
   }
 
   /**
@@ -171,7 +148,7 @@ public class PCanvas extends JPanel {
    * @param p The point to zoom the canvas about
    */
   public void zoomOut(Point p) {
-    zoomLevel -= 0.05;
+    zoomLevel -= 0.05f;
     if (zoomLevel <= 0.05)
       zoomLevel = 0.05f;
     else
@@ -203,7 +180,18 @@ public class PCanvas extends JPanel {
     this.hoverPixel = hoverPixel;
   }
 
+
   public void setHoverColour(Color hoverColour) {
     this.hoverColour = hoverColour;
+  }
+
+  public void recalculatePixel(int x, int y){
+    imageBuffer = activeImage.updateImageBuffer(imageBuffer, x, y, 1, 1);
+  }
+  public void recalculatePixels(int x, int y, int w, int h){
+    imageBuffer = activeImage.updateImageBuffer(imageBuffer, x, y, w, h);
+  }
+  public void recalculateAllPixels(){
+    imageBuffer = activeImage.calculateImageBuffer();
   }
 }
