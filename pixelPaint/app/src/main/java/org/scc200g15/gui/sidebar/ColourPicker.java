@@ -14,10 +14,10 @@ import javax.swing.JComponent;
 public class ColourPicker extends JComponent {
     // Hue component
     private final int RADIUS_OUTER_H = 80;
-    private final int RADIUS_INNER_H = 70;
+    private final int RADIUS_INNER_H = 68;
 
     // Saturation + Brigthness components
-    private final int RADIUS_SB = 50;
+    private final int RADIUS_SB = 49;
 
     private float hue = (float) 0;
     private float saturation = (float) 1;
@@ -27,6 +27,8 @@ public class ColourPicker extends JComponent {
     private int mouseX = -1;
     private int mouseY = -1;
 
+    private int pastMouseX;
+    private int pastMouseY;
 
     public ColourPicker() {
 
@@ -56,18 +58,22 @@ public class ColourPicker extends JComponent {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        Color c;
 
         int x = getWidth() / 2;
         int y = (int) Math.round(RADIUS_OUTER_H * 1.25);
 
         paintHPicker(g2, x, y);
-        // paintHHover(g2, x, y);
 
-        if (mouseX != -1 && mouseY != -1) {
-            paintHHover(g2, mouseX, mouseY, x, y);
-        }    
+        if (outerRingClicked(mouseX, mouseY, x, y)) {
+            c = paintHHover(g2, mouseX, mouseY, x, y);
+            pastMouseX = mouseX;
+            pastMouseY = mouseY;
+        } else {
+            c = paintHHover(g2, pastMouseX, pastMouseY, x, y);
+        }
 
-        paintSBPicker(g2, x, y);
+        paintSBPicker(g2, x, y, c);
 
 
     }
@@ -89,30 +95,49 @@ public class ColourPicker extends JComponent {
         }
     }
 
-    public void paintHHover(Graphics2D g2, int x, int y, int centerX, int centerY) {
+    public Color paintHHover(Graphics2D g2, int x, int y, int centerX, int centerY) {
         g2.setStroke(new BasicStroke(5));
 
-        int diameter = 5 + (RADIUS_OUTER_H - RADIUS_INNER_H) * 2;
-        int radius = diameter / 2;
-        int midPointRadius = (RADIUS_OUTER_H + RADIUS_INNER_H) / 2;
+        int ringWidth = 5 + (RADIUS_OUTER_H - RADIUS_INNER_H) * 2;
+        int radius = (RADIUS_OUTER_H + RADIUS_INNER_H) / 2;
 
         double θ =  Math.atan2(y - centerY, x - centerX); 
-        double hue = ((Math.toDegrees(θ) + 360) % 360) / (float) 360;
+        double hue = (Math.toDegrees(θ) % 360) / (float) 360;
 
-        int destinationX = (int) Math.round(centerX + midPointRadius * Math.cos(θ));
-        int destinationY = (int) Math.round(centerY + midPointRadius * Math.sin(θ));
+        int destinationX = (int) Math.round(centerX + radius * Math.cos(θ));
+        int destinationY = (int) Math.round(centerY + radius * Math.sin(θ));
 
-        g2.setColor(Color.getHSBColor((float) hue, (float) 1, (float) 1));
-        g2.fillOval(destinationX - radius, destinationY - radius, diameter, diameter);
+        Color fillColor = Color.getHSBColor((float) hue, (float) 1, (float) 1);
+        g2.setColor(fillColor);
+        g2.fillOval(destinationX - ringWidth / 2, destinationY - ringWidth / 2, ringWidth, ringWidth);
 
         g2.setColor(Color.GRAY);
-        g2.drawOval(destinationX - radius, destinationY - radius, diameter, diameter);
+        g2.drawOval(destinationX - ringWidth / 2, destinationY - ringWidth / 2, ringWidth, ringWidth);
 
+        return fillColor;
     }
 
-    public void paintSBPicker(Graphics2D g2, int x, int y) {
+
+    private boolean outerRingClicked(int x, int y, int centerX, int centerY) {
+        if (mouseX == -1 && mouseY == -1) 
+            return false;
+
+        int o = x - centerX;
+        int a = y - centerY;
+        double h = Math.sqrt(Math.pow(o, 2) + Math.pow(a, 2));
+            
+        int clickTolerance = 13;
+
+        if(h >= RADIUS_INNER_H - clickTolerance && h <= RADIUS_OUTER_H + clickTolerance)
+            return true;
+
+        return false;
+    }
+    
+
+    public void paintSBPicker(Graphics2D g2, int x, int y, Color c) {
         // Inspired by: https://stackoverflow.com/questions/64876600/circular-saturation-brightness-gradient-for-color-wheel
-        g2.setColor(Color.RED);
+        g2.setColor(c);
         g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
         
         int θ_black = 75;
