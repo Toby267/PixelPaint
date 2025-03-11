@@ -10,8 +10,11 @@ import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
 
-//TODO: make this inherit from JComponent, and draw its own highlighted area
-//      because right now, the highlighted area is off by half a pixel from the actual selected area
+/**
+ * TODO: make the action listeners come form the tool menu,
+ *      that way it can have its own paintComponent method instead of highjacking the hover pixel functionality from PCanvas,
+ *      and you can then draw the highlighted area without the half pixel offset
+ */
 public class SquareSelectTool implements Tool {
   protected enum State {
     NOTHING,
