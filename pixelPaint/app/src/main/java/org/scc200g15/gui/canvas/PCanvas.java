@@ -82,9 +82,9 @@ public class PCanvas extends JPanel {
 
     g2d.drawImage(imageBuffer, null, 0,0);
 
-    // Draw Hover Pixel
+    // Draws the selected area if any
     g2d.setColor(hoverColour);
-    g2d.drawRect((int)hoverPixel.getX(), (int)hoverPixel.getY(), hoverWidth, hoverHeight);
+    g2d.fillRect((int)hoverPixel.getX(), (int)hoverPixel.getY(), hoverWidth, hoverHeight);
   }
 
   /**

@@ -38,6 +38,19 @@ public class SquareSelectTool implements Tool {
   // * ---------------------------------- [ ACTIONS ] ---------------------------------- * //
 
   /**
+   * highlights the selected area on the given canvas
+   * 
+   * @param c the canvas
+   */
+  private void paint(PCanvas c) {
+    c.setHoverColour(new Color(110, 193, 240, 100));
+    c.setHoverPixel(calcTrueStart());
+    c.setHoverDimensions(calcWidth(), calcHeight());
+    
+    c.repaint();
+  }
+
+  /**
    * deletes the selected pixels for the given canvas
    * 
    * @param c the canvas to delete the pixels in
@@ -106,10 +119,7 @@ public class SquareSelectTool implements Tool {
     if (state == State.SELECTING) {
       endPoint = c.getPixelPoint(e.getPoint());
 
-      c.setHoverPixel(calcTrueStart());
-      c.setHoverDimensions(calcWidth(), calcHeight());
-      
-      c.repaint();
+      paint(c);
     }
     else if (state == State.MOVING) {
       //TODO: this
@@ -120,10 +130,7 @@ public class SquareSelectTool implements Tool {
       else if (selectedSide == Side.TOP || selectedSide == Side.BOTTOM)
         resizePoint.setLocation(resizePoint.getX(), c.getPixelPoint(e.getPoint()).getY());
 
-      c.setHoverPixel(calcTrueStart());
-      c.setHoverDimensions(calcWidth(), calcHeight());
-      
-      c.repaint();
+      paint(c);
     }
   }
   
@@ -140,13 +147,15 @@ public class SquareSelectTool implements Tool {
     if (state == State.NOTHING) {
       state = State.SELECTING;
       startPoint = p;
+      endPoint = p;
+      paint(c);
       return;
     }
 
     //mouseReleased ensures that it is already selecting, this is just to make sure
     if (state != State.SELECTING) return;
 
-    if (onBorder(p)){
+    if (getBorder(p) != null){
       state = State.RESIZING;
       selectedSide = getBorder(p);
       resizePoint = getBorderPoint(p);
@@ -181,30 +190,21 @@ public class SquareSelectTool implements Tool {
   private int calcWidth() {
     int width = (int)endPoint.getX() - (int)startPoint.getX();
     if (width < 0) width = -width;
-    return width;
+    return width + 1;
   }
   private int calcHeight() {
     int height = (int)endPoint.getY() - (int)startPoint.getY();
     if (height < 0) height = -height;
-    return height;
+    return height + 1;
   }
   private boolean contains(Point2D p) {
     Point2D start = calcTrueStart();
     int width = calcWidth(), height = calcHeight();
     
-    boolean x = p.getX() >= start.getX() && p.getX() <= start.getX() + width;
-    boolean y = p.getY() >= start.getY() && p.getY() <= start.getY() + height;
+    boolean x = p.getX() >= start.getX() && p.getX() <= start.getX() + width - 1;
+    boolean y = p.getY() >= start.getY() && p.getY() <= start.getY() + height - 1;
 
     return (x && y);
-  }
-  private boolean onBorder(Point2D p) {
-    Point2D start = calcTrueStart();
-    int width = calcWidth(), height = calcHeight();
-    
-    boolean x = (int)p.getX() == (int)start.getX() || (int)p.getX() == (int)start.getX() + width;
-    boolean y = (int)p.getY() == (int)start.getY() || (int)p.getY() == (int)start.getY() + height;
-
-    return (x || y);
   }
   private Side getBorder(Point2D p) {
     Point2D start = calcTrueStart();
@@ -212,11 +212,11 @@ public class SquareSelectTool implements Tool {
 
     if ((int)p.getX() == (int)start.getX())
       return Side.LEFT;
-    if ((int)p.getX() == (int)start.getX() + width)
+    if ((int)p.getX() == (int)start.getX() + width - 1)
       return Side.RIGHT;
     if ((int)p.getY() == (int)start.getY())
       return Side.TOP;
-    if ((int)p.getY() == (int)start.getY() + height)
+    if ((int)p.getY() == (int)start.getY() + height - 1)
       return Side.BOTTOM;
 
     return null;
