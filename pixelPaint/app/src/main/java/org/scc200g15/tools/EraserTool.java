@@ -16,8 +16,8 @@ public class EraserTool implements Tool {
 
   public EraserTool() {
     drawTool = new DrawTool();
-    drawTool.setColour(0, 0, 0);
-    drawTool.setOppacity(0);
+    drawTool.setColour(255, 255, 255);
+    drawTool.setOppacity(255);
     drawTool.setSize(9);
     drawTool.setShape("Circle");
   }
