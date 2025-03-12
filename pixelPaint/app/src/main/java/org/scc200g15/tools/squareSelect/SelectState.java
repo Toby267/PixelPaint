@@ -5,6 +5,9 @@ import java.awt.event.MouseEvent;
 
 import org.scc200g15.gui.canvas.PCanvas;
 
+/**
+ * interface that all square select states must adhere to
+ */
 public interface SelectState {
   public void mouseDragged(PCanvas c, MouseEvent e, SquareSelectTool context);
 

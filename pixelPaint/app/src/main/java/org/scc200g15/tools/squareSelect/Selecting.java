@@ -6,6 +6,9 @@ import java.awt.geom.Point2D;
 
 import org.scc200g15.gui.canvas.PCanvas;
 
+/**
+ * selecting state for when the select tool has an area selected or is currently selecting an area
+ */
 public class Selecting implements SelectState {
   /**
    * event for setting the new end point for the selected area, and showing the area on the canvas

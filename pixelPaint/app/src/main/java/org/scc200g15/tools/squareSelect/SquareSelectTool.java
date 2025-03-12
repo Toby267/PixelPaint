@@ -12,9 +12,8 @@ import org.scc200g15.image.Layer;
 import org.scc200g15.tools.Tool;
 
 /**
- * TODO: make the action listeners come form the tool menu,
- *      that way it can have its own paintComponent method instead of highjacking the hover pixel functionality from PCanvas,
- *      and you can then draw the highlighted area without the half pixel offset
+ * class for the square select tool, essentially a state machine for selecting, resizing, moving, etc
+ * uses the hover pixel logic in PCanvas for highlighting the selected area
  */
 public class SquareSelectTool implements Tool {
   protected enum Side {
@@ -31,6 +30,7 @@ public class SquareSelectTool implements Tool {
   private Point2D resizePoint = null;
 
   // * ---------------------------------- [ GETTERS/SETTERS ] ---------------------------------- * //
+
   protected void setState(SelectState state) {
       currentState = state;
   }
@@ -122,35 +122,23 @@ public class SquareSelectTool implements Tool {
   // * ---------------------------------- [ USED ACTION LISTENERS ] ---------------------------------- * //
   
   /**
-   * event for pressing a key, will pass the event to the current state if not null
+   * used events will pass the event to the current state if not null
    */
   @Override
   public void keyPressed(PCanvas c, KeyEvent e) {
     if (currentState != null)
       currentState.keyPressed(c, e, this);
   }
-
-  /**
-   * event for dragging the mouse, will pass the event to the current state if not null
-   */
   @Override
   public void mouseDragged(PCanvas c, MouseEvent e) {
     if (currentState != null)
       currentState.mouseDragged(c, e, this);
   }
-
-  /**
-   * event for releasing the mouse, will pass the event to the current state if not null
-   */
   @Override
   public void mouseReleased(PCanvas c, MouseEvent e) {
     if (currentState != null)
       currentState.mouseReleased(c, e, this);
   }
-  
-  /**
-   * event for pressing the mouse, will pass the event to the current state if not null
-   */
   @Override
   public void mousePressed(PCanvas c, MouseEvent e) {
     if (currentState != null) {
@@ -208,9 +196,9 @@ public class SquareSelectTool implements Tool {
 
     return null;
   }
-
   
   // * ---------------------------------- [ UNUSED ACTION LISTENERS ] ---------------------------------- * //
+
   @Override
   public void mouseMoved(PCanvas c, MouseEvent e) {}
   @Override

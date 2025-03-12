@@ -6,6 +6,9 @@ import java.awt.geom.Point2D;
 
 import org.scc200g15.gui.canvas.PCanvas;
 
+/**
+ * idle state for when the select tool is not doing anything
+ */
 public class Idle implements SelectState {
   /**
    * starts selecting an area

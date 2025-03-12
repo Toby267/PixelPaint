@@ -7,6 +7,9 @@ import java.awt.geom.Point2D;
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.tools.squareSelect.SquareSelectTool.Side;
 
+/**
+ * resizing state for when the select tool is resizing the selected area
+ */
 public class Resizing implements SelectState{
   /**
    * event for resizing the selected area when the mouse is dragged 

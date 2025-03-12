@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import org.scc200g15.gui.canvas.PCanvas;
 
 /**
+ * moving state for when the selected area is being moved
  * TODO: this
  */
 public class Moving implements SelectState{
