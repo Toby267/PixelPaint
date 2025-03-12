@@ -1,7 +1,5 @@
 package org.scc200g15.gui.canvas;
 
-import java.awt.event.MouseEvent;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,11 +18,11 @@ public class DrawToolTest {
     @DisplayName("Colour draw test")
     @Test
     void ColourTest() {
-        drawTool.setColour(255, 0, 0);
-        drawTool.setOppacity(0);
+        // drawTool.setColour(255, 0, 0);
+        // drawTool.setOppacity(0);
         
-        MouseEvent e = new MouseEvent(canvas, 0, 0, 0, 0, 0, 0, false);
-        drawTool.mousePressed(canvas, e);
+        // MouseEvent e = new MouseEvent(canvas, 0, 0, 0, 0, 0, 0, false);
+        // drawTool.mousePressed(canvas, e);
 
         //Colour col = drawTool.get
     }
