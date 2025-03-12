@@ -24,8 +24,8 @@ public class SquareSelectTool implements Tool {
     BOTTOM
   }
 
-  private SelectState currentState = null;
-  private Side selectedSide = Side.LEFT;
+  private SelectState currentState = new Idle();
+  private Side selectedSide = null;
   
   private Point2D startPoint, endPoint;
   private Point2D resizePoint = null;
@@ -113,7 +113,7 @@ public class SquareSelectTool implements Tool {
    * @param c the canvas
    */
   protected void deselect(PCanvas c) {
-    currentState = null;
+    currentState = new Idle();
 
     c.setHoverDimensions(0, 0);
     c.repaint();
@@ -122,23 +122,12 @@ public class SquareSelectTool implements Tool {
   // * ---------------------------------- [ USED ACTION LISTENERS ] ---------------------------------- * //
   
   /**
-   * event for when the user presses a key
-   * 
-   * will either delete or unselect the selected area
+   * event for pressing a key, will pass the event to the current state if not null
    */
   @Override
   public void keyPressed(PCanvas c, KeyEvent e) {
-    if (currentState == null) return;
-
-    switch (e.getKeyCode()) {
-      case KeyEvent.VK_DELETE:
-        deleteSelected(c);
-        deselect(c);
-      case KeyEvent.VK_ESCAPE:
-        deselect(c);
-      case KeyEvent.VK_ENTER:
-        deselect(c);
-    }
+    if (currentState != null)
+      currentState.keyPressed(c, e, this);
   }
 
   /**
@@ -161,22 +150,11 @@ public class SquareSelectTool implements Tool {
   
   /**
    * event for pressing the mouse, will pass the event to the current state if not null
-   * otherwise will start selecting
    */
   @Override
   public void mousePressed(PCanvas c, MouseEvent e) {
     if (currentState != null) {
       currentState.mousePressed(c, e, this);
-    }
-    //start selecting
-    else {
-      setState(new Selecting());
-
-      Point2D p = c.getPixelPoint(e.getPoint());
-      setStartPoint(p);
-      setEndPoint(p);
-      
-      paint(c);
     }
   }
 
