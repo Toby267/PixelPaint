@@ -17,12 +17,6 @@ import org.scc200g15.tools.Tool;
  *      and you can then draw the highlighted area without the half pixel offset
  */
 public class SquareSelectTool implements Tool {
-  protected enum State {
-    NOTHING,
-    SELECTING,
-    MOVING,
-    RESIZING
-  }
   protected enum Side {
     LEFT,
     RIGHT,
@@ -30,12 +24,47 @@ public class SquareSelectTool implements Tool {
     BOTTOM
   }
 
-  private State state = State.NOTHING;
+  private SelectState currentState = null;
   private Side selectedSide = Side.LEFT;
   
   private Point2D startPoint, endPoint;
-  //points to either startPoint or endPoint
   private Point2D resizePoint = null;
+
+  // * ---------------------------------- [ GETTERS/SETTERS ] ---------------------------------- * //
+  protected void setState(SelectState state) {
+      currentState = state;
+  }
+  protected SelectState getState() {
+    return currentState;
+  }
+
+  protected Point2D getStartPoint() {
+    return startPoint;
+  }
+  protected void setStartPoint(Point2D p) {
+    startPoint = p;
+  }
+
+  protected Point2D getEndPoint() {
+    return endPoint;
+  }
+  protected void setEndPoint(Point2D p) {
+    endPoint = p;
+  }
+
+  protected Side getSelectedSide() {
+    return selectedSide;
+  }
+  protected void setSelectedSide(Side s) {
+    selectedSide = s;
+  }
+
+  protected Point2D getResizePoint() {
+    return resizePoint;
+  }
+  protected void setResizePoint(Point2D p) {
+    resizePoint = p;
+  }
 
   // * ---------------------------------- [ ACTIONS ] ---------------------------------- * //
 
@@ -44,7 +73,7 @@ public class SquareSelectTool implements Tool {
    * 
    * @param c the canvas
    */
-  private void paint(PCanvas c) {
+  protected void paint(PCanvas c) {
     c.setHoverColour(new Color(110, 193, 240, 100));
     c.setHoverPixel(calcTrueStart());
     c.setHoverDimensions(calcWidth(), calcHeight());
@@ -55,9 +84,9 @@ public class SquareSelectTool implements Tool {
   /**
    * deletes the selected pixels for the given canvas
    * 
-   * @param c the canvas to delete the pixels in
+   * @param c the canvas
    */
-  private void deleteSelected(PCanvas c) {
+  protected void deleteSelected(PCanvas c) {
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
     int maxHeight = image.getHeight(), maxWidth = image.getHeight();
@@ -81,10 +110,11 @@ public class SquareSelectTool implements Tool {
   /**
    * deselects the selected area
    * 
-   * @param c the canvas that has the selected pixels
+   * @param c the canvas
    */
-  private void deselect(PCanvas c) {
-    state = State.NOTHING;
+  protected void deselect(PCanvas c) {
+    currentState = null;
+
     c.setHoverDimensions(0, 0);
     c.repaint();
   }
@@ -98,7 +128,7 @@ public class SquareSelectTool implements Tool {
    */
   @Override
   public void keyPressed(PCanvas c, KeyEvent e) {
-    if (state == State.NOTHING) return;
+    if (currentState == null) return;
 
     switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE:
@@ -112,94 +142,63 @@ public class SquareSelectTool implements Tool {
   }
 
   /**
-   * event for moving the selected area, or resizing it depending on where it was dragged from
-   * 
-   * if dragged from outline, resize, if dragged from center, move
+   * event for dragging the mouse, will pass the event to the current state if not null
    */
   @Override
   public void mouseDragged(PCanvas c, MouseEvent e) {
-    if (state == State.SELECTING) {
-      endPoint = c.getPixelPoint(e.getPoint());
-
-      paint(c);
-    }
-    else if (state == State.MOVING) {
-      //TODO: this
-    }
-    else if (state == State.RESIZING) {
-      if (selectedSide == Side.RIGHT || selectedSide == Side.LEFT)
-        resizePoint.setLocation(c.getPixelPoint(e.getPoint()).getX(), resizePoint.getY());
-      else if (selectedSide == Side.TOP || selectedSide == Side.BOTTOM)
-        resizePoint.setLocation(resizePoint.getX(), c.getPixelPoint(e.getPoint()).getY());
-
-      paint(c);
-    }
-  }
-  
-  /**
-   * event for determining what drag action to perform
-   * 
-   * records the start pixel
-   */
-  @Override
-  public void mousePressed(PCanvas c, MouseEvent e) {
-    Point2D p = c.getPixelPoint(e.getPoint());
-    
-    //state will either be nothing or selecting
-    if (state == State.NOTHING) {
-      state = State.SELECTING;
-      startPoint = p;
-      endPoint = p;
-      paint(c);
-      return;
-    }
-
-    //mouseReleased ensures that it is already selecting, this is just to make sure
-    if (state != State.SELECTING) return;
-
-    if (getBorder(p) != null){
-      state = State.RESIZING;
-      selectedSide = getBorder(p);
-      resizePoint = getBorderPoint(p);
-    }
-    else if (contains(p)) {
-      state = State.MOVING;
-    }
-    else {
-      state = State.NOTHING;
-      deselect(c);
-    }
+    if (currentState != null)
+      currentState.mouseDragged(c, e, this);
   }
 
   /**
-   * event for determining the state after a click/drag has been performed
+   * event for releasing the mouse, will pass the event to the current state if not null
    */
   @Override
   public void mouseReleased(PCanvas c, MouseEvent e) {
-    //after moving or resizing, go back to the selecting state
-    if (state == State.MOVING || state == State.RESIZING)
-      state = State.SELECTING;
+    if (currentState != null)
+      currentState.mouseReleased(c, e, this);
+  }
+  
+  /**
+   * event for pressing the mouse, will pass the event to the current state if not null
+   * otherwise will start selecting
+   */
+  @Override
+  public void mousePressed(PCanvas c, MouseEvent e) {
+    if (currentState != null) {
+      currentState.mousePressed(c, e, this);
+    }
+    //start selecting
+    else {
+      setState(new Selecting());
+
+      Point2D p = c.getPixelPoint(e.getPoint());
+      setStartPoint(p);
+      setEndPoint(p);
+      
+      paint(c);
+    }
   }
 
   // * ---------------------------------- [ HELPER METHODS ] ---------------------------------- * //
 
-  private Point2D calcTrueStart() {
+  protected Point2D calcTrueStart() {
     return new Point2D.Double(
       Double.min(startPoint.getX(), endPoint.getX()),
       Double.min(startPoint.getY(), endPoint.getY())
     );
   }
-  private int calcWidth() {
+  protected int calcWidth() {
     int width = (int)endPoint.getX() - (int)startPoint.getX();
     if (width < 0) width = -width;
     return width + 1;
   }
-  private int calcHeight() {
+  protected int calcHeight() {
     int height = (int)endPoint.getY() - (int)startPoint.getY();
     if (height < 0) height = -height;
     return height + 1;
   }
-  private boolean contains(Point2D p) {
+  protected boolean contains(Point2D p) {
     Point2D start = calcTrueStart();
     int width = calcWidth(), height = calcHeight();
     
@@ -208,7 +207,7 @@ public class SquareSelectTool implements Tool {
 
     return (x && y);
   }
-  private Side getBorder(Point2D p) {
+  protected Side getBorder(Point2D p) {
     Point2D start = calcTrueStart();
     int width = calcWidth(), height = calcHeight();
 
@@ -223,7 +222,7 @@ public class SquareSelectTool implements Tool {
 
     return null;
   }
-  private Point2D getBorderPoint(Point2D p) {
+  protected Point2D getBorderPoint(Point2D p) {
     if ((int)p.getX() == (int)startPoint.getX() || (int)p.getY() == (int)startPoint.getY())
       return startPoint;
     if ((int)p.getX() == (int)endPoint.getX() || (int)p.getY() == (int)endPoint.getY())
