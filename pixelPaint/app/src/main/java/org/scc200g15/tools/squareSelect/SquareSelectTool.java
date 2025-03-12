@@ -1,4 +1,4 @@
-package org.scc200g15.tools;
+package org.scc200g15.tools.squareSelect;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -9,6 +9,7 @@ import java.awt.geom.Point2D;
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
+import org.scc200g15.tools.Tool;
 
 /**
  * TODO: make the action listeners come form the tool menu,
@@ -33,6 +34,7 @@ public class SquareSelectTool implements Tool {
   private Side selectedSide = Side.LEFT;
   
   private Point2D startPoint, endPoint;
+  //points to either startPoint or endPoint
   private Point2D resizePoint = null;
 
   // * ---------------------------------- [ ACTIONS ] ---------------------------------- * //

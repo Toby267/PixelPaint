@@ -17,8 +17,8 @@ import org.scc200g15.image.Image;
 import org.scc200g15.tools.DrawTool;
 import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.PanZoomTool;
-import org.scc200g15.tools.SquareSelectTool;
 import org.scc200g15.tools.ToolManager;
+import org.scc200g15.tools.squareSelect.SquareSelectTool;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
