@@ -252,8 +252,8 @@ public class SquareSelectTool implements Tool {
     Point2D start = calcTrueStart();
     int width = calcWidth(), height = calcHeight();
     
-    boolean x = p.getX() >= start.getX() && p.getX() <= start.getX() + width - 1;
-    boolean y = p.getY() >= start.getY() && p.getY() <= start.getY() + height - 1;
+    boolean x = p.getX() >= start.getX() && p.getX() <= start.getX() + width;
+    boolean y = p.getY() >= start.getY() && p.getY() <= start.getY() + height;
 
     return (x && y);
   }
@@ -262,6 +262,8 @@ public class SquareSelectTool implements Tool {
     Point2D start = calcTrueStart();
     int width = calcWidth(), height = calcHeight();
 
+    if (!contains(p))
+      return null;
     if ((int)p.getX() == (int)start.getX())
       return Side.LEFT;
     if ((int)p.getX() == (int)start.getX() + width - 1)
