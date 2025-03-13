@@ -24,7 +24,9 @@ public class PCanvas extends JPanel {
   float zoomLevel = 1;
 
   Point2D zoomCenter = new Point(0, 0);
+  
   Point2D hoverPixel = new Point(-1, -1);
+  int hoverWidth = 1, hoverHeight = 1;
   Color hoverColour = Color.WHITE;
 
   Point dif = new Point(0, 0);
@@ -80,9 +82,9 @@ public class PCanvas extends JPanel {
 
     g2d.drawImage(imageBuffer, null, 0,0);
 
-    // Draw Hover Pixel
+    // Draws the selected area if any
     g2d.setColor(hoverColour);
-    g2d.fillRect((int)hoverPixel.getX(), (int)hoverPixel.getY(), 1, 1);
+    g2d.fillRect((int)hoverPixel.getX(), (int)hoverPixel.getY(), hoverWidth, hoverHeight);
   }
 
   /**
@@ -130,6 +132,8 @@ public class PCanvas extends JPanel {
     addMouseListener(toolManager);
     addMouseMotionListener(toolManager);
     addMouseWheelListener(toolManager);
+    addKeyListener(toolManager);
+    this.setFocusable(true);
   }
 
   /**
@@ -178,6 +182,17 @@ public class PCanvas extends JPanel {
    */
   public void setHoverPixel(Point2D hoverPixel) {
     this.hoverPixel = hoverPixel;
+  }
+
+  /**
+   * Sets the dimensions for the hover pixels
+   * 
+   * @param width the width
+   * @param height the height
+   */
+  public void setHoverDimensions(int width, int height) {
+    this.hoverWidth = width;
+    this.hoverHeight = height;
   }
 
   public void setHoverColour(Color hoverColour) {

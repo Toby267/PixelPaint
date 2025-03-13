@@ -1,5 +1,7 @@
 package org.scc200g15.tools;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -14,7 +16,7 @@ import org.scc200g15.gui.canvas.PCanvas;
 /**
  * The toolManager is responsible for passing the mouse events to the current active tool or the default tool if no tool is active
  */
-public class ToolManager implements MouseMotionListener, MouseListener, MouseWheelListener {
+public class ToolManager implements MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
 
   public static void toolChangeAction(Tool t) {
     if( GUI.getInstance().getToolManager().isActiveTool(t)){
@@ -30,20 +32,6 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
   private Tool defaultTool;
   private Tool activeTool = null;
   private PCanvas canvas;
-
-  /**
-   * Constructor that takes a canvas to work on and a default tool
-   * 
-   * @param canvas      the canvas for tools to work on
-   * @param defaultTool the tool to be active if no tools are selected
-   */
-  public ToolManager(PCanvas canvas, Tool defaultTool) {
-    this.defaultTool = defaultTool;
-    tools = new HashMap<>();
-
-    this.canvas = canvas;
-    canvas.registerToolManager(this);
-  }
 
   /**
    * Constructor that takes a canvas to work on
@@ -142,6 +130,8 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
 
   @Override
   public void mousePressed(MouseEvent e) {
+    //change the focus to the canvas for the key listener
+    canvas.requestFocus();
     if (activeTool != null)
       activeTool.mousePressed(canvas, e);
     else
@@ -188,4 +178,27 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
       defaultTool.mouseMoved(canvas, e);
   }
 
+  @Override
+  public void keyTyped(KeyEvent e) {
+    if (activeTool != null)
+      activeTool.keyTyped(canvas, e);
+    else
+      defaultTool.keyTyped(canvas, e);
+  }
+
+  @Override
+  public void keyPressed(KeyEvent e) {
+    if (activeTool != null)
+      activeTool.keyPressed(canvas, e);
+    else
+      defaultTool.keyPressed(canvas, e);
+  }
+
+  @Override
+  public void keyReleased(KeyEvent e) {
+    if (activeTool != null)
+      activeTool.keyReleased(canvas, e);
+    else
+      defaultTool.keyReleased(canvas, e);
+  }
 }

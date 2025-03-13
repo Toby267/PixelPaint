@@ -25,6 +25,7 @@ import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.Tool;
 import org.scc200g15.tools.ToolIcons;
 import org.scc200g15.tools.ToolManager;
+import org.scc200g15.tools.squareSelect.SquareSelectTool;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
