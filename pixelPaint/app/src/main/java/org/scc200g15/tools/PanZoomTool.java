@@ -1,6 +1,7 @@
 package org.scc200g15.tools;
 
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
@@ -48,23 +49,20 @@ public class PanZoomTool implements Tool {
 
   // Not used
   @Override
-  public void mouseClicked(PCanvas c, MouseEvent e) {
-  }
-
+  public void mouseClicked(PCanvas c, MouseEvent e) {}
   @Override
-  public void mouseMoved(PCanvas c, MouseEvent e) {
-  }
-
+  public void mouseMoved(PCanvas c, MouseEvent e) {}
   @Override
-  public void mouseExited(PCanvas c, MouseEvent e) {
-  }
-
+  public void mouseExited(PCanvas c, MouseEvent e) {}
   @Override
-  public void mouseReleased(PCanvas c, MouseEvent e) {
-  }
-
+  public void mouseReleased(PCanvas c, MouseEvent e) {}
   @Override
-  public void mouseEntered(PCanvas c, MouseEvent e) {
-  }
+  public void mouseEntered(PCanvas c, MouseEvent e) {}
+  @Override
+  public void keyTyped(PCanvas c, KeyEvent e) {}
+  @Override
+  public void keyPressed(PCanvas c, KeyEvent e) {}
+  @Override
+  public void keyReleased(PCanvas c, KeyEvent e) {}
 
 }
