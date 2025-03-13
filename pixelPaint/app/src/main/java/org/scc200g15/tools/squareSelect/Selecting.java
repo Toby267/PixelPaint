@@ -49,14 +49,34 @@ public class Selecting implements SelectState {
    */
   @Override
   public void keyPressed(PCanvas c, KeyEvent e, SquareSelectTool context) {
+    if (e.getModifiersEx() == 0)
+      noModifiers(c, e, context);
+    else if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0)
+      ctrlDown(c, e, context);
+  }
+
+  private void noModifiers(PCanvas c, KeyEvent e, SquareSelectTool context) {
     switch (e.getKeyCode()) {
-      case KeyEvent.VK_DELETE:
+      case KeyEvent.VK_DELETE -> {
         context.deleteSelected(c);
         context.deselect(c);
-      case KeyEvent.VK_ESCAPE:
+      }
+      case KeyEvent.VK_ESCAPE -> {
         context.deselect(c);
-      case KeyEvent.VK_ENTER:
+      }
+      case KeyEvent.VK_ENTER -> {
+        context.deselect(c);}
+    }
+  }
+  private void ctrlDown(PCanvas c, KeyEvent e, SquareSelectTool context) {
+    switch (e.getKeyCode()) {
+      case KeyEvent.VK_C -> {
+        context.cacheSelectedArea(c);
+      }
+      case KeyEvent.VK_V -> {
+        context.printCached(c);
         context.deselect(c);
+      }
     }
   }
 
