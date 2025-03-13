@@ -27,7 +27,10 @@ public class Selecting implements SelectState {
   public void mousePressed(PCanvas c, MouseEvent e, SquareSelectTool context) {
     Point2D p = c.getPixelPoint(e.getPoint());
 
-    if (context.getBorder(p) != null){
+    if (context.calcWidth() == 1 && context.calcHeight() == 1) {
+      context.deselect(c);
+    }
+    else if (context.getBorder(p) != null){
       context.setState(new Resizing());
       context.setSelectedSide(context.getBorder(p));
       context.setResizePoint(context.getBorderPoint(p));
@@ -35,7 +38,6 @@ public class Selecting implements SelectState {
     else if (context.contains(p)) {
       context.setState(new Moving());
       context.setMoveStartPoint(p);
-      //TODO: logic for switching to the moving state
     }
     else {
       context.deselect(c);
