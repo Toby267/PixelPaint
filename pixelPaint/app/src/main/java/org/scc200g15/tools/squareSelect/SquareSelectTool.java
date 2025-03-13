@@ -14,8 +14,6 @@ import org.scc200g15.tools.Tool;
 /**
  * class for the square select tool, essentially a state machine for selecting, resizing, moving, etc
  * uses the hover pixel logic in PCanvas for highlighting the selected area
- * 
- * TODO: moving to a different layer
  */
 public class SquareSelectTool implements Tool {
   protected enum Side {
@@ -286,6 +284,8 @@ public class SquareSelectTool implements Tool {
   }
   //calculates the transformation needed for the move operation
   protected Point2D calcMoveTransform() {
+    if (moveEndPoint == null) return new Point2D.Double(0f, 0f);
+    
     return new Point2D.Double(
       (int)moveEndPoint.getX() - (int)moveStartPoint.getX(),
       (int)moveEndPoint.getY() - (int)moveStartPoint.getY()
