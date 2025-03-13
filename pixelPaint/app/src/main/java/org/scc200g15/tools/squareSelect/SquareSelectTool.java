@@ -29,6 +29,9 @@ public class SquareSelectTool implements Tool {
   private Point2D startPoint, endPoint;
   private Point2D resizePoint = null;
 
+  private Point2D moveStartPoint, moveEndPoint;
+  private Color[][] cachedArea;
+
   // * ---------------------------------- [ GETTERS/SETTERS ] ---------------------------------- * //
 
   protected void setState(SelectState state) {
@@ -66,6 +69,20 @@ public class SquareSelectTool implements Tool {
     resizePoint = p;
   }
 
+  protected void setMoveStartPoint(Point2D p) {
+    moveStartPoint = p;
+  }
+  protected Point2D getMoveStartPoint() {
+    return moveStartPoint;
+  }
+
+  protected void setMoveEndPoint(Point2D p) {
+    moveEndPoint = p;
+  }
+  protected Point2D getMoveEndPoint() {
+    return moveEndPoint;
+  }
+
   // * ---------------------------------- [ ACTIONS ] ---------------------------------- * //
 
   /**
@@ -80,33 +97,6 @@ public class SquareSelectTool implements Tool {
     
     c.repaint();
   }
-
-  /**
-   * deletes the selected pixels for the given canvas
-   * 
-   * @param c the canvas
-   */
-  protected void deleteSelected(PCanvas c) {
-    Image image = c.getActiveImage();
-    Layer activeLayer = image.getActiveLayer();
-    int maxHeight = image.getHeight(), maxWidth = image.getHeight();
-
-    for (int i = 0; i < calcWidth(); i++){
-      for (int j = 0; j < calcHeight(); j++){
-        int x = (int)calcTrueStart().getX() + i;
-        int y = (int)calcTrueStart().getY() + j;
-
-        if (x < 0 || x >= maxWidth) continue;
-        if (y < 0 || y >= maxHeight) continue;
-        
-        activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
-        c.recalculatePixel(x, y);
-      }
-    }
-
-    c.repaint();
-  }
-
   /**
    * deselects the selected area
    * 
@@ -118,7 +108,122 @@ public class SquareSelectTool implements Tool {
     c.setHoverDimensions(0, 0);
     c.repaint();
   }
+  /**
+   * deletes the selected pixels for the given canvas
+   * 
+   * @param c the canvas
+   */
+  protected void deleteSelected(PCanvas c) {
+    Image image = c.getActiveImage();
+    Layer activeLayer = image.getActiveLayer();
 
+    int maxHeight = image.getHeight(), maxWidth = image.getHeight();
+    Point2D trueStart = calcTrueStart();
+    int width = calcWidth(), height = calcHeight();
+
+    for (int i = 0; i < width; i++){
+      for (int j = 0; j < height; j++){
+        int x = (int)trueStart.getX() + i;
+        int y = (int)trueStart.getY() + j;
+
+        if (x < 0 || x >= maxWidth) continue;
+        if (y < 0 || y >= maxHeight) continue;
+        
+        activeLayer.setPixel(x, y, new Color(255, 255, 255, 255));
+        c.recalculatePixel(x, y);
+      }
+    }
+
+    c.repaint();
+  }
+  /**
+   * caches the selected arrea within cachedArea
+   * 
+   * @param c the canvas
+   */
+  protected void cacheSelectedArea(PCanvas c) {
+    cachedArea = new Color[calcWidth()][calcHeight()];
+
+    Image image = c.getActiveImage();
+    Layer activeLayer = image.getActiveLayer();
+
+    int maxHeight = image.getHeight(), maxWidth = image.getHeight();
+    Point2D trueStart = calcTrueStart();
+
+    for (int i = 0; i < cachedArea.length; i++){
+      for (int j = 0; j < cachedArea[0].length; j++){
+        int x = (int)trueStart.getX() + i;
+        int y = (int)trueStart.getY() + j;
+
+        if (x < 0 || x >= maxWidth) continue;
+        if (y < 0 || y >= maxHeight) continue;
+        
+        cachedArea[i][j] = activeLayer.getPixel(x, y);
+      }
+    }
+  }
+  /**
+   * caches the selected area while deleting the area on the canvas
+   * 
+   * @param c the canvas
+   */
+  protected void cacheAndDelete(PCanvas c) {
+    cachedArea = new Color[calcWidth()][calcHeight()];
+
+    Image image = c.getActiveImage();
+    Layer activeLayer = image.getActiveLayer();
+
+    int maxHeight = image.getHeight(), maxWidth = image.getHeight();
+    Point2D trueStart = calcTrueStart();
+
+    for (int i = 0; i < cachedArea.length; i++){
+      for (int j = 0; j < cachedArea[0].length; j++){
+        int x = (int)trueStart.getX() + i;
+        int y = (int)trueStart.getY() + j;
+
+        if (x < 0 || x >= maxWidth) continue;
+        if (y < 0 || y >= maxHeight) continue;
+        
+        cachedArea[i][j] = activeLayer.getPixel(x, y);
+        activeLayer.setPixel(x, y, new Color(255, 255, 255, 255));
+        c.recalculatePixel(x, y);
+      }
+    }
+
+    c.repaint();
+  }
+  /**
+   * prints the cached area to the move area wihtout deleting or deselecting the original area
+   * 
+   * @param c the canvas
+   */
+  protected void printCached(PCanvas c) {
+    Image image = c.getActiveImage();
+    Layer activeLayer = image.getActiveLayer();
+
+    int maxHeight = image.getHeight(), maxWidth = image.getHeight();
+    Point2D transform = calcMoveTransform();
+    Point2D trueStart = calcTrueStart();
+
+    for (int i = 0; i < cachedArea.length; i++){
+      for (int j = 0; j < cachedArea[0].length; j++){
+        //calculate the start and end coordinates
+        int x = (int)trueStart.getX() + (int)transform.getX() + i;
+        int y = (int)trueStart.getY() + (int)transform.getY() + j;
+
+        //if the start pixel or end is out of bounds
+        if (x < 0 || x >= maxWidth) continue;
+        if (y < 0 || y >= maxHeight) continue;
+
+        //cache the colour and delete the pixel
+        activeLayer.setPixel(x, y, cachedArea[i][j]);
+        c.recalculatePixel(x, y);
+      }
+    }
+
+    c.repaint();
+  }
+  
   // * ---------------------------------- [ USED ACTION LISTENERS ] ---------------------------------- * //
   
   /**
@@ -150,8 +255,8 @@ public class SquareSelectTool implements Tool {
 
   protected Point2D calcTrueStart() {
     return new Point2D.Double(
-      Double.min(startPoint.getX(), endPoint.getX()),
-      Double.min(startPoint.getY(), endPoint.getY())
+      (int)Double.min(startPoint.getX(), endPoint.getX()),
+      (int)Double.min(startPoint.getY(), endPoint.getY())
     );
   }
   protected int calcWidth() {
@@ -195,6 +300,12 @@ public class SquareSelectTool implements Tool {
       return endPoint;
 
     return null;
+  }
+  protected Point2D calcMoveTransform() {
+    return new Point2D.Double(
+      (int)moveEndPoint.getX() - (int)moveStartPoint.getX(),
+      (int)moveEndPoint.getY() - (int)moveStartPoint.getY()
+    );
   }
   
   // * ---------------------------------- [ UNUSED ACTION LISTENERS ] ---------------------------------- * //

@@ -34,6 +34,7 @@ public class Selecting implements SelectState {
     }
     else if (context.contains(p)) {
       context.setState(new Moving());
+      context.setMoveStartPoint(p);
       //TODO: logic for switching to the moving state
     }
     else {

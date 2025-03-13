@@ -20,9 +20,9 @@ public class Resizing implements SelectState{
       Point2D resizePoint = context.getResizePoint();
   
       if (selectedSide == Side.RIGHT || selectedSide == Side.LEFT)
-      resizePoint.setLocation(c.getPixelPoint(e.getPoint()).getX(), resizePoint.getY());
+        resizePoint.setLocation(c.getPixelPoint(e.getPoint()).getX(), resizePoint.getY());
       else if (selectedSide == Side.TOP || selectedSide == Side.BOTTOM)
-      resizePoint.setLocation(resizePoint.getX(), c.getPixelPoint(e.getPoint()).getY());
+        resizePoint.setLocation(resizePoint.getX(), c.getPixelPoint(e.getPoint()).getY());
   
       context.paint(c);
   }
@@ -32,7 +32,7 @@ public class Resizing implements SelectState{
    */
   @Override
   public void mouseReleased(PCanvas c, MouseEvent e, SquareSelectTool context) {
-      context.setState(new Selecting());
+    context.setState(new Selecting());
   }
   
   //unused action listeners

@@ -7,22 +7,31 @@ import org.scc200g15.gui.canvas.PCanvas;
 
 /**
  * moving state for when the selected area is being moved
- * TODO: this
  */
 public class Moving implements SelectState{
+  /**
+   * updates the move end point with the new point from the drag
+   */
   @Override
   public void mouseDragged(PCanvas c, MouseEvent e, SquareSelectTool context) {
+    context.setMoveEndPoint(c.getPixelPoint(e.getPoint()));
   }
   
-  @Override
-  public void mousePressed(PCanvas c, MouseEvent e, SquareSelectTool context) {
-  }
-  
+  /**
+   * moves the selected area, then deselects
+   */
   @Override
   public void mouseReleased(PCanvas c, MouseEvent e, SquareSelectTool context) {
+    context.cacheAndDelete(c);
+    context.printCached(c);
+
+    context.setState(new Selecting());
+    context.deselect(c);
   }
-  
+
+  //unused action listeners
   @Override
-  public void keyPressed(PCanvas c, KeyEvent e, SquareSelectTool context) {
-  }
+  public void keyPressed(PCanvas c, KeyEvent e, SquareSelectTool context) {}
+  @Override
+  public void mousePressed(PCanvas c, MouseEvent e, SquareSelectTool context) {}
 }
