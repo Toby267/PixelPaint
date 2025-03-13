@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import org.scc200g15.gui.GUI;
+import org.scc200g15.gui.icons.IconManager;
 import org.scc200g15.gui.layerselector.LayerMenuTools;
 
 /**
@@ -26,8 +27,8 @@ final public class Layer extends JPanel {
     private final LayerMenuTools Tools = new LayerMenuTools();
 
     // Actual Components of a LayerMenuItem
-    private final JButton displayButton = new JButton(Tools.VISIBLE_EYE_OPEN_ICON);
-    private final JButton removeButton = new JButton(Tools.VISIBLE_TRASH_ICON); // ! TODO: REMOVE VISIBILITY WHEN LAST LAYER
+    private final JButton displayButton = new JButton(IconManager.VISIBLE_EYE_OPEN_ICON);
+    private final JButton removeButton = new JButton(IconManager.VISIBLE_TRASH_ICON); // ! TODO: REMOVE VISIBILITY WHEN LAST LAYER
     private final JLabel layerLabel = new JLabel();
     private final JTextField renameLabelField = new JTextField();
 
@@ -70,8 +71,8 @@ final public class Layer extends JPanel {
 
     private void setupLayerMenuPanel(String layerName){
         this.setLayout(new BorderLayout());
-        this.setBorder(Tools.DEFAULT_BORDER);
-        this.setBackground(Tools.VISIBLE_BACKGROUND_COLOUR);
+        this.setBorder(IconManager.DEFAULT_BORDER);
+        this.setBackground(IconManager.VISIBLE_BACKGROUND_COLOUR);
 
         displayButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
         removeButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
@@ -83,7 +84,7 @@ final public class Layer extends JPanel {
         removeButton.setContentAreaFilled(false);
         
         layerLabel.setText(layerName);
-        layerLabel.setForeground(Tools.VISIBLE_ICON_COLOUR);
+        layerLabel.setForeground(IconManager.VISIBLE_ICON_COLOUR);
         
         // Add all components to the LayerMenuItem (JPanel)
         this.add(displayButton, BorderLayout.WEST);
@@ -261,22 +262,22 @@ final public class Layer extends JPanel {
     public void setLayerStateUI(String state) {
         switch (state.toLowerCase()) {
             case "active" -> {
-                this.setBackground(Tools.ACTIVE_BACKGROUND_COLOUR);
-                displayButton.setIcon(isLayerVisible ? Tools.ACTIVE_EYE_OPEN_ICON : Tools.ACTIVE_EYE_SHUT_ICON);
-                layerLabel.setForeground(Tools.ACTIVE_ICON_COLOUR);
-                removeButton.setIcon(Tools.ACTIVE_TRASH_ICON);
+                this.setBackground(IconManager.ACTIVE_BACKGROUND_COLOUR);
+                displayButton.setIcon(isLayerVisible ? IconManager.ACTIVE_EYE_OPEN_ICON : IconManager.ACTIVE_EYE_SHUT_ICON);
+                layerLabel.setForeground(IconManager.ACTIVE_ICON_COLOUR);
+                removeButton.setIcon(IconManager.ACTIVE_TRASH_ICON);
             }
             case "visible" -> {
-                this.setBackground(Tools.VISIBLE_BACKGROUND_COLOUR);
-                displayButton.setIcon(Tools.VISIBLE_EYE_OPEN_ICON);
-                layerLabel.setForeground(Tools.VISIBLE_ICON_COLOUR);
-                removeButton.setIcon(Tools.VISIBLE_TRASH_ICON);
+                this.setBackground(IconManager.VISIBLE_BACKGROUND_COLOUR);
+                displayButton.setIcon(IconManager.VISIBLE_EYE_OPEN_ICON);
+                layerLabel.setForeground(IconManager.VISIBLE_ICON_COLOUR);
+                removeButton.setIcon(IconManager.VISIBLE_TRASH_ICON);
             }
             case "hidden" -> {
-                this.setBackground(Tools.HIDDEN_BACKGROUND_COLOUR);
-                displayButton.setIcon(Tools.HIDDEN_EYE_SHUT_ICON);
-                layerLabel.setForeground(Tools.HIDDEN_ICON_COLOUR);
-                removeButton.setIcon(Tools.HIDDEN_TRASH_ICON);
+                this.setBackground(IconManager.HIDDEN_BACKGROUND_COLOUR);
+                displayButton.setIcon(IconManager.HIDDEN_EYE_SHUT_ICON);
+                layerLabel.setForeground(IconManager.HIDDEN_ICON_COLOUR);
+                removeButton.setIcon(IconManager.HIDDEN_TRASH_ICON);
             }
             default -> System.out.println("ERROR - Incorrect state.");
         }
@@ -316,8 +317,8 @@ final public class Layer extends JPanel {
 
     public void switchSelectedLayerState() {
         this.isSelected = !isSelected;
-        if (isSelected) this.setBorder(Tools.IS_SELECTED_BORDER);
-        else this.setBorder(Tools.DEFAULT_BORDER);
+        if (isSelected) this.setBorder(IconManager.IS_SELECTED_BORDER);
+        else this.setBorder(IconManager.DEFAULT_BORDER);
     }
 
     public boolean isSelected() {
