@@ -23,7 +23,6 @@ import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.Tool;
-import org.scc200g15.tools.ToolIcons;
 import org.scc200g15.tools.ToolManager;
 import org.scc200g15.tools.squareSelect.SquareSelectTool;
 
@@ -67,7 +66,9 @@ public class GUI extends JFrame {
   }
 
   private void registerTools(){
-    // Draw Tool
+    SquareSelectTool squareSelect = new SquareSelectTool();
+    registerTool(squareSelect, IconManager.SQUARE_SELECT_ICON, "squareSelect", "Square Select Tool");
+    
     DrawTool drawTool = new DrawTool();
     DrawSubPanel jsp = new DrawSubPanel(PToolBar.height, drawTool);
     registerTool(drawTool, IconManager.DRAW_ICON, "draw", "Draw Tool", jsp);

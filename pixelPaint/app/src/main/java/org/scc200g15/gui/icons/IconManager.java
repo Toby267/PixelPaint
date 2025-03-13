@@ -18,6 +18,7 @@ public class IconManager {
     private static final String PAN_ZOOM_ICON_PATH = "/Icons/Pan_Zoom.png";
     private static final String ERASE_ICON_PATH = "/Icons/eraser.png";
     private static final String FILL_ICON_PATH = "/Icons/fill.png";
+    private static final String SQUARE_SELECT_ICON_PATH = "/Icons/Square_Select.png";
 
     public static final String SQUARE_ICON_PATH = "/Icons/square.png";
     public static final String CIRCLE_ICON_PATH = "/Icons/circle.png";
@@ -58,6 +59,7 @@ public class IconManager {
     public static final ImageIcon PAN_ZOOM_ICON = createImageIcon(32, 32, PAN_ZOOM_ICON_PATH);
     public static final ImageIcon ERASE_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, ERASE_ICON_PATH);
     public static final ImageIcon FILL_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, FILL_ICON_PATH);
+    public static final ImageIcon SQUARE_SELECT_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, SQUARE_SELECT_ICON_PATH);
 
     // Shape Icons
     public static final ImageIcon SQUARE_ICON = createImageIcon(16, 16, VISIBLE_ICON_COLOUR, SQUARE_ICON_PATH);

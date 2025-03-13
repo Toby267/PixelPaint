@@ -14,6 +14,8 @@ import org.scc200g15.tools.Tool;
 /**
  * class for the square select tool, essentially a state machine for selecting, resizing, moving, etc
  * uses the hover pixel logic in PCanvas for highlighting the selected area
+ * 
+ * TODO: moving to a different layer
  */
 public class SquareSelectTool implements Tool {
   protected enum Side {
