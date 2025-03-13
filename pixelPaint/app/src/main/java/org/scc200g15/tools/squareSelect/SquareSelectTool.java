@@ -223,7 +223,71 @@ public class SquareSelectTool implements Tool {
 
     c.repaint();
   }
-  
+
+  // * ---------------------------------- [ HELPER METHODS ] ---------------------------------- * //
+
+  //calculates the top left pixel of the selected area
+  protected Point2D calcTrueStart() {
+    return new Point2D.Double(
+      (int)Double.min(startPoint.getX(), endPoint.getX()),
+      (int)Double.min(startPoint.getY(), endPoint.getY())
+    );
+  }
+  //calculates the width of the selected area
+  protected int calcWidth() {
+    int width = (int)endPoint.getX() - (int)startPoint.getX();
+    if (width < 0) width = -width;
+    return width + 1;
+  }
+  //calculates the height of the selected area
+  protected int calcHeight() {
+    int height = (int)endPoint.getY() - (int)startPoint.getY();
+    if (height < 0) height = -height;
+    return height + 1;
+  }
+  //returns whether a given pixel is within the selected area
+  protected boolean contains(Point2D p) {
+    Point2D start = calcTrueStart();
+    int width = calcWidth(), height = calcHeight();
+    
+    boolean x = p.getX() >= start.getX() && p.getX() <= start.getX() + width - 1;
+    boolean y = p.getY() >= start.getY() && p.getY() <= start.getY() + height - 1;
+
+    return (x && y);
+  }
+  //returns whether a given pixel is on the border with the selected area
+  protected Side getBorder(Point2D p) {
+    Point2D start = calcTrueStart();
+    int width = calcWidth(), height = calcHeight();
+
+    if ((int)p.getX() == (int)start.getX())
+      return Side.LEFT;
+    if ((int)p.getX() == (int)start.getX() + width - 1)
+      return Side.RIGHT;
+    if ((int)p.getY() == (int)start.getY())
+      return Side.TOP;
+    if ((int)p.getY() == (int)start.getY() + height - 1)
+      return Side.BOTTOM;
+
+    return null;
+  }
+  //returns the startPoint or endPoint (or null) of the selected area, depending if that point is for the border that a given point is on
+  protected Point2D getBorderPoint(Point2D p) {
+    if ((int)p.getX() == (int)startPoint.getX() || (int)p.getY() == (int)startPoint.getY())
+      return startPoint;
+    if ((int)p.getX() == (int)endPoint.getX() || (int)p.getY() == (int)endPoint.getY())
+      return endPoint;
+
+    return null;
+  }
+  //calculates the transformation needed for the move operation
+  protected Point2D calcMoveTransform() {
+    return new Point2D.Double(
+      (int)moveEndPoint.getX() - (int)moveStartPoint.getX(),
+      (int)moveEndPoint.getY() - (int)moveStartPoint.getY()
+    );
+  }
+
   // * ---------------------------------- [ USED ACTION LISTENERS ] ---------------------------------- * //
   
   /**
@@ -249,63 +313,6 @@ public class SquareSelectTool implements Tool {
     if (currentState != null) {
       currentState.mousePressed(c, e, this);
     }
-  }
-
-  // * ---------------------------------- [ HELPER METHODS ] ---------------------------------- * //
-
-  protected Point2D calcTrueStart() {
-    return new Point2D.Double(
-      (int)Double.min(startPoint.getX(), endPoint.getX()),
-      (int)Double.min(startPoint.getY(), endPoint.getY())
-    );
-  }
-  protected int calcWidth() {
-    int width = (int)endPoint.getX() - (int)startPoint.getX();
-    if (width < 0) width = -width;
-    return width + 1;
-  }
-  protected int calcHeight() {
-    int height = (int)endPoint.getY() - (int)startPoint.getY();
-    if (height < 0) height = -height;
-    return height + 1;
-  }
-  protected boolean contains(Point2D p) {
-    Point2D start = calcTrueStart();
-    int width = calcWidth(), height = calcHeight();
-    
-    boolean x = p.getX() >= start.getX() && p.getX() <= start.getX() + width - 1;
-    boolean y = p.getY() >= start.getY() && p.getY() <= start.getY() + height - 1;
-
-    return (x && y);
-  }
-  protected Side getBorder(Point2D p) {
-    Point2D start = calcTrueStart();
-    int width = calcWidth(), height = calcHeight();
-
-    if ((int)p.getX() == (int)start.getX())
-      return Side.LEFT;
-    if ((int)p.getX() == (int)start.getX() + width - 1)
-      return Side.RIGHT;
-    if ((int)p.getY() == (int)start.getY())
-      return Side.TOP;
-    if ((int)p.getY() == (int)start.getY() + height - 1)
-      return Side.BOTTOM;
-
-    return null;
-  }
-  protected Point2D getBorderPoint(Point2D p) {
-    if ((int)p.getX() == (int)startPoint.getX() || (int)p.getY() == (int)startPoint.getY())
-      return startPoint;
-    if ((int)p.getX() == (int)endPoint.getX() || (int)p.getY() == (int)endPoint.getY())
-      return endPoint;
-
-    return null;
-  }
-  protected Point2D calcMoveTransform() {
-    return new Point2D.Double(
-      (int)moveEndPoint.getX() - (int)moveStartPoint.getX(),
-      (int)moveEndPoint.getY() - (int)moveStartPoint.getY()
-    );
   }
   
   // * ---------------------------------- [ UNUSED ACTION LISTENERS ] ---------------------------------- * //
