@@ -72,11 +72,12 @@ public class GUI extends JFrame {
     registerTool(squareSelect, IconManager.SQUARE_SELECT_ICON, "squareSelect", "Square Select Tool");
     
     DrawTool drawTool = new DrawTool();
-    DrawSubPanel jsp = new DrawSubPanel(PToolBar.height, drawTool);
-    registerTool(drawTool, IconManager.DRAW_ICON, "draw", "Draw Tool", jsp);
+    DrawSubPanel dsp = new DrawSubPanel(PToolBar.height, drawTool);
+    registerTool(drawTool, IconManager.DRAW_ICON, "draw", "Draw Tool", dsp);
 
-    EraserTool eraserTool = new EraserTool();
-    registerTool(eraserTool, IconManager.ERASE_ICON, "erase", "Erase Tool");
+    EraserTool eraseTool = new EraserTool();
+    DrawSubPanel esp = new DrawSubPanel(PToolBar.height, eraseTool);
+    registerTool(eraseTool, IconManager.ERASE_ICON, "erase", "Erase Tool", esp);
 
     FillTool fillTool = new FillTool();
     registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool");
