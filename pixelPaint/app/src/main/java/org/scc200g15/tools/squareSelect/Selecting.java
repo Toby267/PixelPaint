@@ -33,7 +33,7 @@ public class Selecting implements SelectState {
     else if (context.getBorder(p) != null){
       context.setState(new Resizing());
       context.setSelectedSide(context.getBorder(p));
-      context.setResizePoint(context.getBorderPoint(p));
+      context.setResizePoint(context.getBorderPoint(context.getSelectedSide()));
     }
     else if (context.contains(p)) {
       context.setState(new Moving());
