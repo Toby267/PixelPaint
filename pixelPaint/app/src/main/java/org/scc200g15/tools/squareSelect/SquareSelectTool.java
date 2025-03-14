@@ -24,10 +24,10 @@ public class SquareSelectTool implements Tool {
   }
 
   private SelectState currentState = new Idle();
-  private Side selectedSide = null;
+  private Side selectedSide;
   
   private Point2D startPoint, endPoint;
-  private Point2D resizePoint = null;
+  private Point2D resizePoint;
 
   private Point2D moveStartPoint, moveEndPoint;
   private Color[][] cachedArea;
@@ -105,6 +105,9 @@ public class SquareSelectTool implements Tool {
   protected void deselect(PCanvas c) {
     currentState = new Idle();
 
+    setStartPoint(null);
+    setEndPoint(null);
+    
     c.setHoverDimensions(0, 0);
     c.repaint();
   }
