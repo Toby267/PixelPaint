@@ -1,6 +1,7 @@
 package org.scc200g15.tools;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
@@ -164,4 +165,10 @@ public class StarTool implements Tool {
   public void mouseExited(PCanvas c, MouseEvent e) {}
   @Override
   public void mouseEntered(PCanvas c, MouseEvent e) {}
+  @Override
+  public void keyTyped(PCanvas c, KeyEvent e) {}
+  @Override
+  public void keyPressed(PCanvas c, KeyEvent e) {}
+  @Override
+  public void keyReleased(PCanvas c, KeyEvent e) {}
 } 

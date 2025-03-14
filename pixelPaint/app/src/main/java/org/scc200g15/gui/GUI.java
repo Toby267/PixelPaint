@@ -22,6 +22,7 @@ import org.scc200g15.tools.DrawTool;
 import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
+import org.scc200g15.tools.StarTool;
 import org.scc200g15.tools.Tool;
 import org.scc200g15.tools.ToolManager;
 import org.scc200g15.tools.squareSelect.SquareSelectTool;
@@ -78,6 +79,9 @@ public class GUI extends JFrame {
 
     FillTool fillTool = new FillTool();
     registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool");
+
+    StarTool starTool = new StarTool();
+    registerTool(starTool, IconManager.STAR_ICON, "star", "Star Tool");
   }
 
   private GUI() {
