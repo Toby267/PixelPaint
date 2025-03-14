@@ -7,6 +7,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
@@ -16,42 +17,6 @@ import org.scc200g15.tools.Tool;
  * Tool for drawing pixels on the canvas
  */
 public class DrawTool extends Drawable implements Tool {
-  private Color colour = Color.RED;
-
-  /**
-   * sets the colour of the draw tool to the one specified by the rgb values
-   * 
-   * @param r the new red value of the colour
-   * @param g the new red value of the colour
-   * @param b the new red value of the colour
-   */
-  public void setColour(int r, int g, int b) {
-    colour = new Color(r, g, b, colour.getAlpha());
-  }
-
-  /**
-   * gets the colour of the draw tool
-   */
-  public Color getColour() {
-    return colour;
-  }
-
-  /**
-   * sets the oppacity of the draw tool to the one specified by the alpha value
-   * 
-   * @param alpha the new oppacity value
-   */
-  public void setOppacity(int alpha) {
-    colour = new Color(colour.getRed(), colour.getGreen(), colour.getBlue(), alpha);
-  }
-
-  /**
-   * gets the oppacity of the draw tool
-   */
-  public int getOppacity() {
-    return colour.getAlpha();
-  }
-
   /**
    * draws the current shape with the current colour on the canvas
    * 
@@ -61,6 +26,8 @@ public class DrawTool extends Drawable implements Tool {
   @Override
   protected void draw(PCanvas c, MouseEvent e) {
     Point2D point = c.getPixelPoint(e.getPoint());
+    Color colour = GUI.getInstance().getSideBar().getActiveColor();
+
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
     int height = image.getHeight(), width = image.getHeight();

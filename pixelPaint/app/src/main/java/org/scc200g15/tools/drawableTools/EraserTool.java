@@ -26,6 +26,7 @@ public class EraserTool extends Drawable implements Tool {
   @Override
   protected void draw(PCanvas c, MouseEvent e) {
     Point2D point = c.getPixelPoint(e.getPoint());
+
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
     int height = image.getHeight(), width = image.getHeight();
@@ -36,7 +37,7 @@ public class EraserTool extends Drawable implements Tool {
       if (p.getX() < 0 || p.getX() >= width)  continue;
       if (p.getY() < 0 || p.getY() >= height) continue;
 
-      activeLayer.setPixel((int)p.getX(), (int)p.getY(), Color.WHITE);
+      activeLayer.setPixel((int)p.getX(), (int)p.getY(), new Color(0, 0, 0, 0));
       c.recalculatePixel((int)p.getX(), (int)p.getY());
     }
 

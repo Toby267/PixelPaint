@@ -53,6 +53,7 @@ public class GUI extends JFrame {
   ToolManager toolManager;
   PToolBar toolBar;
   PMenuBar menuBar;
+  PSideBar sideBar;
   LayerSelectorPanel layerSelector;
 
   private void registerTool(Tool tool, ImageIcon icon, String toolID, String name){
@@ -108,7 +109,7 @@ public class GUI extends JFrame {
     add(statusBar, BorderLayout.SOUTH);
 
     // Add the SideBar to the JFrame
-    PSideBar sideBar = new PSideBar(this);
+    sideBar = new PSideBar(this);
     add(sideBar, BorderLayout.WEST);
 
     // Canvas
@@ -158,6 +159,10 @@ public class GUI extends JFrame {
   }
   public void repaintToolBar(){
     toolBar.repaint();
+  }
+
+  public PSideBar getSideBar() {
+    return sideBar;
   }
 
   public void toggleDarkMode(){
