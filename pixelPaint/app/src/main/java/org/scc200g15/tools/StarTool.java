@@ -49,7 +49,7 @@ public class StarTool implements Tool {
     fillPolygon(activeLayer, starPoints);
     
     // Redraw the affected area
-    c.recalculateArea(centerX - radius, centerY - radius, radius * 2, radius * 2);
+    c.recalculatePixels(centerX - radius, centerY - radius, radius * 2, radius * 2);
     c.repaint();
   }
   
