@@ -52,6 +52,7 @@ public class GUI extends JFrame {
   ToolManager toolManager;
   PToolBar toolBar;
   PMenuBar menuBar;
+  PSideBar sideBar;
   LayerSelectorPanel layerSelector;
 
   private void registerTool(Tool tool, ImageIcon icon, String toolID, String name){
@@ -84,10 +85,10 @@ public class GUI extends JFrame {
     super("Pixel Paint");
 
     try {
-    UIManager.setLookAndFeel( new FlatLightLaf() );
-} catch( UnsupportedLookAndFeelException ex ) {
-    System.err.println( "Failed to initialize LaF" );
-}
+      UIManager.setLookAndFeel( new FlatLightLaf() );
+    } catch( UnsupportedLookAndFeelException ex ) {
+        System.err.println( "Failed to initialize LaF" );
+    }
 
     setLayout(new BorderLayout());
 
@@ -104,7 +105,7 @@ public class GUI extends JFrame {
     add(statusBar, BorderLayout.SOUTH);
 
     // Add the SideBar to the JFrame
-    PSideBar sideBar = new PSideBar(this);
+    sideBar = new PSideBar(this);
     add(sideBar, BorderLayout.WEST);
 
     // Canvas
@@ -149,10 +150,13 @@ public class GUI extends JFrame {
   public ToolManager getToolManager() {
     return toolManager;
   }
-  public PToolBar getToolBar(){
+  public PToolBar getToolBar() {
     return toolBar;
   }
-  public void repaintToolBar(){
+  public PSideBar getSideBar() {
+    return sideBar;
+  }
+  public void repaintToolBar() {
     toolBar.repaint();
   }
 

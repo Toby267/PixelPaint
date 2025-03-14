@@ -8,6 +8,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
@@ -92,7 +93,7 @@ public class DrawTool implements Tool {
    * gets the colour of the draw tool
    */
   public Color getColour() {
-    return colour;
+    return GUI.getInstance().getSideBar().getActiveColor();
   }
 
   /**
@@ -129,7 +130,7 @@ public class DrawTool implements Tool {
       if (p.getX() < 0 || p.getX() >= width) continue;
       if (p.getY() < 0 || p.getY() >= height) continue;
 
-      activeLayer.setPixel((int)p.getX(), (int)p.getY(), colour);
+      activeLayer.setPixel((int)p.getX(), (int)p.getY(), getColour());
       c.recalculatePixel((int)p.getX(), (int)p.getY());
     }
 
