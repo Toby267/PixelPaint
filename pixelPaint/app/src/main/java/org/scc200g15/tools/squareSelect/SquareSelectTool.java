@@ -10,6 +10,7 @@ import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
 import org.scc200g15.tools.Tool;
+import org.scc200g15.tools.squareSelect.SquareSelectTool.Side;
 
 /**
  * class for the square select tool, essentially a state machine for selecting, resizing, moving, etc
@@ -276,13 +277,13 @@ public class SquareSelectTool implements Tool {
 
     return null;
   }
-  //returns the startPoint or endPoint (or null) of the selected area, depending if that point is for the border that a given point is on
-  protected Point2D getBorderPoint(Point2D p) {
-    if ((int)p.getX() == (int)startPoint.getX() || (int)p.getY() == (int)startPoint.getY())
-      return startPoint;
-    if ((int)p.getX() == (int)endPoint.getX() || (int)p.getY() == (int)endPoint.getY())
-      return endPoint;
-
+  //returns the startPoint or endPoint (or null) of the selected area, that corresponds to the given side
+  protected Point2D getBorderPoint(Side s) {
+    if (s == Side.RIGHT)  return startPoint.getX() > endPoint.getX() ? startPoint : endPoint;
+    if (s == Side.LEFT)   return startPoint.getX() < endPoint.getX() ? startPoint : endPoint;
+    if (s == Side.BOTTOM) return startPoint.getY() > endPoint.getY() ? startPoint : endPoint;
+    if (s == Side.TOP)    return startPoint.getY() < endPoint.getY() ? startPoint : endPoint;
+    
     return null;
   }
   //calculates the transformation needed for the move operation
