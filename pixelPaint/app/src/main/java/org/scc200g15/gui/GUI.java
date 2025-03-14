@@ -2,21 +2,31 @@ package org.scc200g15.gui;
 
 import java.awt.BorderLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.gui.icons.IconManager;
 import org.scc200g15.gui.layerselector.LayerSelectorPanel;
 import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
+import org.scc200g15.gui.toolbar.DrawSubPanel;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.DrawTool;
+import org.scc200g15.tools.EraserTool;
+import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
+import org.scc200g15.tools.Tool;
 import org.scc200g15.tools.ToolManager;
+import org.scc200g15.tools.squareSelect.SquareSelectTool;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 
@@ -25,6 +35,8 @@ import com.formdev.flatlaf.FlatLightLaf;
  * canvas and the other parts of the UI
  */
 public class GUI extends JFrame {
+
+  boolean isDarkMode = false;
 
   private static GUI instance;
 
@@ -38,12 +50,34 @@ public class GUI extends JFrame {
 
   PCanvas canvas;
   ToolManager toolManager;
+  PToolBar toolBar;
+  PMenuBar menuBar;
   LayerSelectorPanel layerSelector;
 
+  private void registerTool(Tool tool, ImageIcon icon, String toolID, String name){
+    toolManager.registerTool(toolID, tool);
+    toolBar.addTool(tool, icon);
+    menuBar.addTool(tool, name);
+  }
+  private void registerTool(Tool tool, ImageIcon icon, String toolID, String name, JPanel subPanel){
+    toolManager.registerTool(toolID, tool);
+    toolBar.addTool(tool, icon, subPanel);
+    menuBar.addTool(tool, name);
+  }
+
   private void registerTools(){
-    // Draw Tool
-    DrawTool drawDemo = new DrawTool();
-    toolManager.registerTool("draw", drawDemo);
+    SquareSelectTool squareSelect = new SquareSelectTool();
+    registerTool(squareSelect, IconManager.SQUARE_SELECT_ICON, "squareSelect", "Square Select Tool");
+    
+    DrawTool drawTool = new DrawTool();
+    DrawSubPanel jsp = new DrawSubPanel(PToolBar.height, drawTool);
+    registerTool(drawTool, IconManager.DRAW_ICON, "draw", "Draw Tool", jsp);
+
+    EraserTool eraserTool = new EraserTool();
+    registerTool(eraserTool, IconManager.ERASE_ICON, "erase", "Erase Tool");
+
+    FillTool fillTool = new FillTool();
+    registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool");
   }
 
   private GUI() {
@@ -58,11 +92,11 @@ public class GUI extends JFrame {
     setLayout(new BorderLayout());
 
     // Add the MenuBar to the JFrame
-    PMenuBar menuBar = new PMenuBar(this);
+    menuBar = new PMenuBar(this);
     setJMenuBar(menuBar);
 
     // Add Toolbar to the JFrame
-    PToolBar toolBar = new PToolBar(this);
+    toolBar = new PToolBar(this);
     add(toolBar, BorderLayout.NORTH);
 
     // Add the StatusBar to the JFrame
@@ -83,11 +117,11 @@ public class GUI extends JFrame {
 
     // ToolManager
     PanZoomTool defaultTool = new PanZoomTool();
+    toolBar.addTool(defaultTool, IconManager.PAN_ZOOM_ICON);
+    menuBar.addTool(defaultTool, "Pan Zoom");
     toolManager = new ToolManager(canvas, defaultTool);
 
     registerTools();
-
-    toolManager.setActiveTool("draw");
 
     // General
     setSize(1250, 750);
@@ -112,4 +146,34 @@ public class GUI extends JFrame {
     return layerSelector;
   }
 
+  public ToolManager getToolManager() {
+    return toolManager;
+  }
+  public PToolBar getToolBar(){
+    return toolBar;
+  }
+  public void repaintToolBar(){
+    toolBar.repaint();
+  }
+
+  public void toggleDarkMode(){
+    System.out.println(isDarkMode);
+    if(isDarkMode){
+      try {
+        UIManager.setLookAndFeel( new FlatLightLaf() );
+      } catch( UnsupportedLookAndFeelException ex ) {
+        System.err.println( "Failed to initialize LaF" );
+      }
+    }else{
+      try {
+        UIManager.setLookAndFeel( new FlatDarkLaf() );
+      } catch( UnsupportedLookAndFeelException ex ) {
+        System.err.println( "Failed to initialize LaF" );
+      }
+    }
+
+    SwingUtilities.updateComponentTreeUI(this);
+
+    isDarkMode = !isDarkMode;
+  }
 }

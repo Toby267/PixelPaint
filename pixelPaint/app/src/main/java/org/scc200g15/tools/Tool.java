@@ -23,4 +23,11 @@ public interface Tool {
   public void mouseReleased(PCanvas c, java.awt.event.MouseEvent e);
 
   public void mouseEntered(PCanvas c, java.awt.event.MouseEvent e);
+
+  public void keyTyped(PCanvas c, java.awt.event.KeyEvent e);
+
+  public void keyPressed(PCanvas c, java.awt.event.KeyEvent e);
+
+  public void keyReleased(PCanvas c, java.awt.event.KeyEvent e);
+
 }

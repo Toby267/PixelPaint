@@ -1,5 +1,7 @@
 package org.scc200g15.tools;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -8,12 +10,21 @@ import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
 
 /**
  * The toolManager is responsible for passing the mouse events to the current active tool or the default tool if no tool is active
  */
-public class ToolManager implements MouseMotionListener, MouseListener, MouseWheelListener {
+public class ToolManager implements MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
+
+  public static void toolChangeAction(Tool t) {
+    if( GUI.getInstance().getToolManager().isActiveTool(t)){
+      GUI.getInstance().getToolManager().setDefault();
+    }else{
+      GUI.getInstance().getToolManager().setActiveTool(t);
+    }
+  }
 
   // Map of all tools
   private Map<String, Tool> tools;
@@ -25,7 +36,7 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
   /**
    * Constructor that takes a canvas to work on and a default tool
    * 
-   * @param canvas      the canvas for tools to work on
+   * @param canvas the canvas for tools to work on
    * @param defaultTool the tool to be active if no tools are selected
    */
   public ToolManager(PCanvas canvas, Tool defaultTool) {
@@ -70,6 +81,7 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    */
   public void setActiveTool(Tool activeTool) {
     this.activeTool = activeTool;
+    GUI.getInstance().repaintToolBar();
   }
 
   /**
@@ -79,6 +91,14 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    */
   public void setActiveTool(String ID) {
     this.activeTool = getTool(ID);
+    GUI.getInstance().repaintToolBar();
+  }
+
+  /**
+   * sets up the default tool
+   */
+  public void setDefaultTool(Tool defaultTool){
+    this.defaultTool = defaultTool;
   }
 
   /**
@@ -86,6 +106,11 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    */
   public void setDefault(){
     this.activeTool = defaultTool;
+  }
+
+  public boolean isActiveTool(Tool t){
+    if(activeTool == null) return t.equals(defaultTool);
+    else return  t.equals(activeTool);
   }
 
   // Pass through to the active or default tool
@@ -107,6 +132,8 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
 
   @Override
   public void mousePressed(MouseEvent e) {
+    //change the focus to the canvas for the key listener
+    canvas.requestFocus();
     if (activeTool != null)
       activeTool.mousePressed(canvas, e);
     else
@@ -153,4 +180,27 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
       defaultTool.mouseMoved(canvas, e);
   }
 
+  @Override
+  public void keyTyped(KeyEvent e) {
+    if (activeTool != null)
+      activeTool.keyTyped(canvas, e);
+    else
+      defaultTool.keyTyped(canvas, e);
+  }
+
+  @Override
+  public void keyPressed(KeyEvent e) {
+    if (activeTool != null)
+      activeTool.keyPressed(canvas, e);
+    else
+      defaultTool.keyPressed(canvas, e);
+  }
+
+  @Override
+  public void keyReleased(KeyEvent e) {
+    if (activeTool != null)
+      activeTool.keyReleased(canvas, e);
+    else
+      defaultTool.keyReleased(canvas, e);
+  }
 }
