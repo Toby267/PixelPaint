@@ -9,8 +9,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -21,8 +19,8 @@ public class NumberInput extends JSpinner {
     private int MAX;
     private int MIN;
 
-    public NumberInput(int MIN, int MAX){
-        super(new SpinnerNumberModel(MIN, MIN, MAX, 1)); // Set the initial value, min, max, and step
+    public NumberInput(int MIN, int MAX, int STEP){
+        super(new SpinnerNumberModel(MIN, MIN, MAX, STEP)); // Set the initial value, min, max, and step
 
         this.MAX = MAX;
         this.MIN = MIN;
