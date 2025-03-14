@@ -132,7 +132,7 @@ public class SquareSelectTool implements Tool {
         if (x < 0 || x >= maxWidth) continue;
         if (y < 0 || y >= maxHeight) continue;
         
-        activeLayer.setPixel(x, y, new Color(255, 255, 255, 255));
+        activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
         c.recalculatePixel(x, y);
       }
     }
@@ -188,7 +188,7 @@ public class SquareSelectTool implements Tool {
         if (y < 0 || y >= maxHeight) continue;
         
         cachedArea[i][j] = activeLayer.getPixel(x, y);
-        activeLayer.setPixel(x, y, new Color(255, 255, 255, 255));
+        activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
         c.recalculatePixel(x, y);
       }
     }

@@ -18,13 +18,13 @@ import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.DrawSubPanel;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.image.Image;
-import org.scc200g15.tools.DrawTool;
-import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.StarTool;
 import org.scc200g15.tools.Tool;
 import org.scc200g15.tools.ToolManager;
+import org.scc200g15.tools.drawableTools.DrawTool;
+import org.scc200g15.tools.drawableTools.EraserTool;
 import org.scc200g15.tools.squareSelect.SquareSelectTool;
 
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -53,6 +53,7 @@ public class GUI extends JFrame {
   ToolManager toolManager;
   PToolBar toolBar;
   PMenuBar menuBar;
+  PSideBar sideBar;
   LayerSelectorPanel layerSelector;
 
   private void registerTool(Tool tool, ImageIcon icon, String toolID, String name){
@@ -71,11 +72,12 @@ public class GUI extends JFrame {
     registerTool(squareSelect, IconManager.SQUARE_SELECT_ICON, "squareSelect", "Square Select Tool");
     
     DrawTool drawTool = new DrawTool();
-    DrawSubPanel jsp = new DrawSubPanel(PToolBar.height, drawTool);
-    registerTool(drawTool, IconManager.DRAW_ICON, "draw", "Draw Tool", jsp);
+    DrawSubPanel dsp = new DrawSubPanel(PToolBar.height, drawTool);
+    registerTool(drawTool, IconManager.DRAW_ICON, "draw", "Draw Tool", dsp);
 
-    EraserTool eraserTool = new EraserTool();
-    registerTool(eraserTool, IconManager.ERASE_ICON, "erase", "Erase Tool");
+    EraserTool eraseTool = new EraserTool();
+    DrawSubPanel esp = new DrawSubPanel(PToolBar.height, eraseTool);
+    registerTool(eraseTool, IconManager.ERASE_ICON, "erase", "Erase Tool", esp);
 
     FillTool fillTool = new FillTool();
     registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool");
@@ -108,7 +110,7 @@ public class GUI extends JFrame {
     add(statusBar, BorderLayout.SOUTH);
 
     // Add the SideBar to the JFrame
-    PSideBar sideBar = new PSideBar(this);
+    sideBar = new PSideBar(this);
     add(sideBar, BorderLayout.WEST);
 
     // Canvas
@@ -158,6 +160,10 @@ public class GUI extends JFrame {
   }
   public void repaintToolBar(){
     toolBar.repaint();
+  }
+
+  public PSideBar getSideBar() {
+    return sideBar;
   }
 
   public void toggleDarkMode(){

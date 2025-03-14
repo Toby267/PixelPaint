@@ -10,16 +10,16 @@ import javax.swing.event.ChangeEvent;
 
 import org.scc200g15.gui.icons.IconManager;
 import org.scc200g15.gui.numberinput.NumberInput;
-import org.scc200g15.tools.DrawTool;
+import org.scc200g15.tools.drawableTools.Drawable;
 
 public class DrawSubPanel extends JPanel{
 
-    DrawTool drawTool;
+    Drawable tool;
 
-    public DrawSubPanel(int height, DrawTool tool) {
+    public DrawSubPanel(int height, Drawable tool) {
         super(null);
 
-        drawTool = tool;
+        this.tool = tool;
         
         setMaximumSize(new Dimension(128, height));
         
