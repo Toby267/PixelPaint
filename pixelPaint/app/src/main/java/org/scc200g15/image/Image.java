@@ -174,7 +174,7 @@ public final class Image {
           for(int i = 1; i < colorsToMix.size(); i++) 
             outputColour = combineColors(outputColour, colorsToMix.get(i));
 
-          if(adjustAlpha) finalImage[x - startX][y-startY] = adjustForAlpha(outputColour);
+          if(adjustAlpha) finalImage[x - startX][y - startY] = adjustForAlpha(outputColour);
           else finalImage[x - startX][y - startY] = outputColour;
         }
 
@@ -202,7 +202,7 @@ public final class Image {
     BufferedImage imageBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     updateImageBuffer(imageBuffer, 0, 0, width, height);
 
-    return  imageBuffer;
+    return imageBuffer;
   }
   public BufferedImage updateImageBuffer(BufferedImage imageBuffer, int startX, int startY, int w, int h) {
     Color[][] pixelData = compressVisiblePixels(startX, startY, w, h);
@@ -213,7 +213,7 @@ public final class Image {
       }
     }
 
-    return  imageBuffer;
+    return imageBuffer;
   }
 
   public Color combineColors(Color c1, Color c2) {
