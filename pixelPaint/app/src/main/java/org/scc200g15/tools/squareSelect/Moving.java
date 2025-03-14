@@ -24,9 +24,10 @@ public class Moving implements SelectState{
   public void mouseReleased(PCanvas c, MouseEvent e, SquareSelectTool context) {
     context.cacheAndDelete(c);
     context.printCached(c);
-
-    context.setState(new Selecting());
     context.deselect(c);
+
+    context.setMoveStartPoint(null);
+    context.setMoveEndPoint(null);
   }
 
   //unused action listeners

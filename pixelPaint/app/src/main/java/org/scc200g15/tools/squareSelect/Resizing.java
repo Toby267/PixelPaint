@@ -33,6 +33,8 @@ public class Resizing implements SelectState{
   @Override
   public void mouseReleased(PCanvas c, MouseEvent e, SquareSelectTool context) {
     context.setState(new Selecting());
+    context.setResizePoint(null);
+    context.setSelectedSide(null);
   }
   
   //unused action listeners
