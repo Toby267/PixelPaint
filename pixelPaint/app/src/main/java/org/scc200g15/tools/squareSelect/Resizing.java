@@ -16,15 +16,18 @@ public class Resizing implements SelectState{
    */    
   @Override
   public void mouseDragged(PCanvas c, MouseEvent e, SquareSelectTool context) {
-      Side selectedSide = context.getSelectedSide();
-      Point2D resizePoint = context.getResizePoint();
-  
-      if (selectedSide == Side.RIGHT || selectedSide == Side.LEFT)
-        resizePoint.setLocation(c.getPixelPoint(e.getPoint()).getX(), resizePoint.getY());
-      else if (selectedSide == Side.TOP || selectedSide == Side.BOTTOM)
-        resizePoint.setLocation(resizePoint.getX(), c.getPixelPoint(e.getPoint()).getY());
-  
-      context.paint(c);
+    Point2D p = c.getPixelPoint(e.getPoint());
+    if (c.isOutOfBounds(p)) return;
+    
+    Side selectedSide = context.getSelectedSide();
+    Point2D resizePoint = context.getResizePoint();
+
+    if (selectedSide == Side.RIGHT || selectedSide == Side.LEFT)
+      resizePoint.setLocation(p.getX(), resizePoint.getY());
+    else if (selectedSide == Side.TOP || selectedSide == Side.BOTTOM)
+      resizePoint.setLocation(resizePoint.getX(), p.getY());
+
+    context.paint(c);
   }
 
   /**

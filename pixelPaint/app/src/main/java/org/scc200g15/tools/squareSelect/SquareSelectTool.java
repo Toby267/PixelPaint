@@ -10,7 +10,6 @@ import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
 import org.scc200g15.tools.Tool;
-import org.scc200g15.tools.squareSelect.SquareSelectTool.Side;
 
 /**
  * class for the square select tool, essentially a state machine for selecting, resizing, moving, etc
@@ -121,7 +120,6 @@ public class SquareSelectTool implements Tool {
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
 
-    int maxHeight = image.getHeight(), maxWidth = image.getHeight();
     Point2D trueStart = calcTrueStart();
     int width = calcWidth(), height = calcHeight();
 
@@ -130,8 +128,7 @@ public class SquareSelectTool implements Tool {
         int x = (int)trueStart.getX() + i;
         int y = (int)trueStart.getY() + j;
 
-        if (x < 0 || x >= maxWidth) continue;
-        if (y < 0 || y >= maxHeight) continue;
+        if (c.isOutOfBounds(x, y)) continue;
         
         activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
         c.recalculatePixel(x, y);
@@ -151,7 +148,6 @@ public class SquareSelectTool implements Tool {
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
 
-    int maxHeight = image.getHeight(), maxWidth = image.getHeight();
     Point2D trueStart = calcTrueStart();
 
     for (int i = 0; i < cachedArea.length; i++){
@@ -159,8 +155,7 @@ public class SquareSelectTool implements Tool {
         int x = (int)trueStart.getX() + i;
         int y = (int)trueStart.getY() + j;
 
-        if (x < 0 || x >= maxWidth) continue;
-        if (y < 0 || y >= maxHeight) continue;
+        if (c.isOutOfBounds(x, y)) continue;
         
         cachedArea[i][j] = activeLayer.getPixel(x, y);
       }
@@ -177,7 +172,6 @@ public class SquareSelectTool implements Tool {
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
 
-    int maxHeight = image.getHeight(), maxWidth = image.getHeight();
     Point2D trueStart = calcTrueStart();
 
     for (int i = 0; i < cachedArea.length; i++){
@@ -185,8 +179,7 @@ public class SquareSelectTool implements Tool {
         int x = (int)trueStart.getX() + i;
         int y = (int)trueStart.getY() + j;
 
-        if (x < 0 || x >= maxWidth) continue;
-        if (y < 0 || y >= maxHeight) continue;
+        if (c.isOutOfBounds(x, y)) continue;
         
         cachedArea[i][j] = activeLayer.getPixel(x, y);
         activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
@@ -205,7 +198,6 @@ public class SquareSelectTool implements Tool {
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
 
-    int maxHeight = image.getHeight(), maxWidth = image.getHeight();
     Point2D transform = calcMoveTransform();
     Point2D trueStart = calcTrueStart();
 
@@ -216,8 +208,7 @@ public class SquareSelectTool implements Tool {
         int y = (int)trueStart.getY() + (int)transform.getY() + j;
 
         //if the start pixel or end is out of bounds
-        if (x < 0 || x >= maxWidth) continue;
-        if (y < 0 || y >= maxHeight) continue;
+        if (c.isOutOfBounds(x, y)) continue;
 
         //cache the colour and delete the pixel
         activeLayer.setPixel(x, y, cachedArea[i][j]);

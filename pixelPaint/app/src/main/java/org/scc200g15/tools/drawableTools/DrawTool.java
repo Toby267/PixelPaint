@@ -30,13 +30,11 @@ public class DrawTool extends Drawable implements Tool {
 
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
-    int height = image.getHeight(), width = image.getHeight();
 
     ArrayList<Point2D> points = activeShape.returnPixels(point, size);
     
     for (Point2D p : points) {
-      if (p.getX() < 0 || p.getX() >= width)  continue;
-      if (p.getY() < 0 || p.getY() >= height) continue;
+      if (c.isOutOfBounds(p)) continue;
 
       activeLayer.setPixel((int)p.getX(), (int)p.getY(), colour);
       c.recalculatePixel((int)p.getX(), (int)p.getY());
