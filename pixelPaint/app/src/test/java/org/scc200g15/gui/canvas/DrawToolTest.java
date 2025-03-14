@@ -3,7 +3,7 @@ package org.scc200g15.gui.canvas;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.scc200g15.tools.DrawTool;
+import org.scc200g15.tools.drawableTools.DrawTool;
 
 public class DrawToolTest {
     PCanvas canvas = new PCanvas();

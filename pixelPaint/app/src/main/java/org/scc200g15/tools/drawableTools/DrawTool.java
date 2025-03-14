@@ -1,4 +1,4 @@
-package org.scc200g15.tools;
+package org.scc200g15.tools.drawableTools;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -6,76 +6,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
-import org.scc200g15.tools.shapes.Circle;
-import org.scc200g15.tools.shapes.Shape;
-import org.scc200g15.tools.shapes.Square;
-import org.scc200g15.tools.shapes.Star;
-import org.scc200g15.tools.shapes.Triangle;
+import org.scc200g15.tools.Tool;
 
 /**
  * Tool for drawing pixels on the canvas
  */
-public class DrawTool implements Tool {
-  // map of all shapes
-  private HashMap<String, Shape> shapes = new HashMap<>();
-
-  private Shape activeShape;
+public class DrawTool extends Drawable implements Tool {
   private Color colour = Color.RED;
-  private int size = 1;
-
-  /**
-   * Constructor that sets up all the shapes, and the active shape
-   */
-  public DrawTool() {
-    shapes.put("Circle", new Circle());
-    shapes.put("Square", new Square());
-    shapes.put("Triangle", new Triangle());
-    shapes.put("Star", new Star());
-
-    activeShape = shapes.get("Circle");
-  }
-
-  /**
-   * sets the shape to the shape specified by ID
-   * 
-   * @param ID The ID of the shape
-   */
-  public void setShape(String ID) {
-    try {
-      activeShape = shapes.get(ID);
-    }
-    catch (Exception e) {
-      throw new Error("No shape exists with ID: " + ID);
-    }
-  }
-
-  /**
-   * gets the shape of the draw tool
-   */
-  public Shape getShape() {
-    return activeShape;
-  }
-
-  /**
-   * sets the size of the draw tool to the one specified by size
-   * 
-   * @param size the new size value
-   */
-  public void setSize(int size) {
-    this.size = size;
-  }
-
-  /**
-   * gets the size of the draw tool
-   */
-  public int getSize() {
-    return size;
-  }
 
   /**
    * sets the colour of the draw tool to the one specified by the rgb values
@@ -117,7 +58,8 @@ public class DrawTool implements Tool {
    * @param c the canvas to draw on
    * @param e the mouse event that caused the interupt
    */
-  private void draw(PCanvas c, MouseEvent e) {
+  @Override
+  protected void draw(PCanvas c, MouseEvent e) {
     Point2D point = c.getPixelPoint(e.getPoint());
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
@@ -126,7 +68,7 @@ public class DrawTool implements Tool {
     ArrayList<Point2D> points = activeShape.returnPixels(point, size);
     
     for (Point2D p : points) {
-      if (p.getX() < 0 || p.getX() >= width) continue;
+      if (p.getX() < 0 || p.getX() >= width)  continue;
       if (p.getY() < 0 || p.getY() >= height) continue;
 
       activeLayer.setPixel((int)p.getX(), (int)p.getY(), colour);
