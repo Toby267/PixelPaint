@@ -14,9 +14,13 @@ public class Idle implements SelectState {
    * starts selecting an area
    */
   private void select(PCanvas c, MouseEvent e, SquareSelectTool context) {
+    Point2D p = c.getPixelPoint(e.getPoint());
+
+    if (p.getX() < 0 || p.getX() >= c.getActiveImage().getWidth()) return;
+    if (p.getY() < 0 || p.getY() >= c.getActiveImage().getHeight()) return;
+    
     context.setState(new Selecting());
     
-    Point2D p = c.getPixelPoint(e.getPoint());
     context.setStartPoint(p);
     context.setEndPoint(p);
     
