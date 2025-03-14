@@ -32,7 +32,7 @@ public class DrawSubPanel extends JPanel{
 
         shapeSelector.getSelectedIndex();
 
-        NumberInput sizeInput = new NumberInput(1,100);
+        NumberInput sizeInput = new NumberInput(1,100, 2);
         sizeInput.setLocation(64,2);
         sizeInput.setSize(new Dimension(60, height - 4));
 
