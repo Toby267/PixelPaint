@@ -2,6 +2,7 @@ package org.scc200g15.tools.squareSelect;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 
 import org.scc200g15.gui.canvas.PCanvas;
 
@@ -14,7 +15,10 @@ public class Moving implements SelectState{
    */
   @Override
   public void mouseDragged(PCanvas c, MouseEvent e, SquareSelectTool context) {
-    context.setMoveEndPoint(c.getPixelPoint(e.getPoint()));
+    Point2D p = c.getPixelPoint(e.getPoint());
+    if (c.isOutOfBounds(p)) return;
+    
+    context.setMoveEndPoint(p);
   }
   
   /**

@@ -208,4 +208,18 @@ public class PCanvas extends JPanel {
   public void recalculateAllPixels(){
     imageBuffer = activeImage.calculateImageBuffer();
   }
+
+  //retuns true if the given coordinate is out of bounds
+  public boolean isOutOfBounds(Point2D point) {
+    if (point.getX() < 0 || point.getX() >= activeImage.getWidth())  return true;
+    if (point.getY() < 0 || point.getY() >= activeImage.getHeight()) return true;
+    
+    return false;
+  }
+  public boolean isOutOfBounds(int x, int y) {
+    if (x < 0 || x >= activeImage.getWidth())  return true;
+    if (y < 0 || y >= activeImage.getHeight()) return true;
+    
+    return false;
+  }
 }

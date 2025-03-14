@@ -15,6 +15,9 @@ public class Selecting implements SelectState {
    */
   @Override
   public void mouseDragged(PCanvas c, MouseEvent e, SquareSelectTool context) {
+    Point2D p = c.getPixelPoint(e.getPoint());
+    if (c.isOutOfBounds(p)) return;
+    
     context.setEndPoint(c.getPixelPoint(e.getPoint()));
 
     context.paint(c);
