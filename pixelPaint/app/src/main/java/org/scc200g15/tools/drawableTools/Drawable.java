@@ -132,6 +132,7 @@ public void mousePressed(PCanvas c, MouseEvent e) {
       actionOldColors.add(activeLayer.getPixel((int)p.getX(), (int)p.getY()));
       actionPoints.add(new Point((int)p.getX(), (int)p.getY()));
 
+      activeLayer.setPixel((int)p.getX(), (int)p.getY(), getColour());
       activeLayer.setPixel((int)p.getX(), (int)p.getY(), color);
       c.recalculatePixel((int)p.getX(), (int)p.getY());
     }
