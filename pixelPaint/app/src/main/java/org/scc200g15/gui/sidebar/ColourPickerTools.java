@@ -35,6 +35,10 @@ public class ColourPickerTools {
         return Math.atan2(a, b);
     }
 
+    public double getθ(double hue) {
+        return 2 * hue * Math.PI;
+    }
+
     public float newX(int radius, double θ) { 
         return radius * (float) (Math.cos(θ)); // x = r * cos(θ)
     }
