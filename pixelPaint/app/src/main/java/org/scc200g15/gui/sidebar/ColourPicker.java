@@ -248,20 +248,24 @@ public class ColourPicker extends JComponent {
     
     // Inspired by: https://stackoverflow.com/questions/64876600/circular-saturation-brightness-gradient-for-color-wheel
     public void paintPickerSB(Graphics2D g2, int x, int y, Color c) {
-        g2.setColor(c);
+        // ! UNCOMMENT IF GRADIENT IDEA FAILS
+        // g2.setColor(c); 
         g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
         
+        int θ_color = 330;
         int θ_black = 75;
         int θ_white = 200;
 
         // ! TODO: MAYBE LIMIT THE FILL COLOR OR MAKE IT A GRADIENT AS WELL
         // if doesn't work add grey gradient
-
+        
         // Add gradients from outside, which fades as distance increases
+        addGradient(g2, x, y, Math.toRadians(θ_color), c, false);
         addGradient(g2, x, y, Math.toRadians(θ_black), new Color(0, 0, 0), false);
         addGradient(g2, x, y, Math.toRadians(θ_white), new Color(255, 255, 255), false);
         
         // Add gradients from outside opposite side, which intensifies as distance increases
+        addGradient(g2, x, y, Math.toRadians(θ_color), c, true);
         addGradient(g2, x, y, Math.toRadians(θ_black), new Color(0, 0, 0), true);
         addGradient(g2, x, y, Math.toRadians(θ_white), new Color(255, 255, 255), true);
     }
@@ -297,20 +301,24 @@ public class ColourPicker extends JComponent {
     }
 
     private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
+        float centerFactor = 2.45f;
+        float radiusFactor = 3.4f;
         return new RadialGradientPaint(
-            x - Tools.newX(RADIUS_SB, θ) * 2.45f,
-            y - Tools.newY(RADIUS_SB, θ) * 2.45f,
-            RADIUS_SB * 3.4f,
+            x - Tools.newX(RADIUS_SB, θ) * centerFactor,
+            y - Tools.newY(RADIUS_SB, θ) * centerFactor,
+            RADIUS_SB * radiusFactor,
             Tools.inverseGradientSteps,
             Tools.inverseGradientColors(c)
         );
     }
 
     private RadialGradientPaint createGradient(int x, int y, double θ, Color c) {
+        float centerFactor = 1.5f;
+        float radiusFactor = 1.75f;
         return new RadialGradientPaint(
-            x + Tools.newX(RADIUS_SB, θ) * 2.f,
-            y + Tools.newY(RADIUS_SB, θ) * 2.f,
-            RADIUS_SB * 2.53f,
+            x + Tools.newX(RADIUS_SB, θ) * centerFactor,
+            y + Tools.newY(RADIUS_SB, θ) * centerFactor,
+            RADIUS_SB * radiusFactor,
             Tools.gradientSteps,
             Tools.gradientColors(c)
         );

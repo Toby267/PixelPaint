@@ -129,24 +129,14 @@ public class PSideBar extends JPanel {
     JButton button = new JButton("Get Colour");
 
     button.addActionListener((ActionEvent e) -> {
-
-      System.out.println(rText.getValue());
-      System.out.println(gText.getValue());
-      System.out.println(bText.getValue());
-      System.out.println(opacityPercent);
-
-      // Color c = new Color(248, 122, 250); // ! Manually add the changes, moves it into input text
-
-      Color c = getNormalisedColor(
+      this.colourPicker.setColor(getNormalisedColor(
         (int) rText.getValue(), 
         (int) gText.getValue(), 
         (int) bText.getValue(), 
         opacityPercent
-      );
+      ));
 
-      this.colourPicker.setColor(c);
-
-      Color out = getActiveColor();
+      Color out = getActiveColor(); // ! TEMPORARY
       System.out.println("Active: (" + out.getRed() + ", " + out.getGreen() + ", " + out.getBlue() + ", " + out.getAlpha() + ")");
     });
 

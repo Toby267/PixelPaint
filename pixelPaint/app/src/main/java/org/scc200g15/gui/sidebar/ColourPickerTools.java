@@ -6,7 +6,7 @@ public class ColourPickerTools {
 
     // * --------------------- [Gradient Setup] --------------------- * //
 
-    public float[] gradientSteps = {0.0f, 0.5f, 0.75f, 1.0f};
+    public float[] gradientSteps = {0.0f, 0.6f, 0.75f, 1.0f};
     public Color[] gradientColors(Color c) {
         return new Color[] {
             new Color(c.getRed(), c.getGreen(), c.getBlue(), 255), 
