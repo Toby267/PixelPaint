@@ -101,10 +101,12 @@ public class ColourPicker extends JComponent {
     }
 
     public void setSB(Color c) {
-        Color tempC = getPixelColor(0, 0);
-        double minDifference = colorDifference(c, tempC);
+        Color tempC = null;
+        double minDifference = Double.POSITIVE_INFINITY;
         for(int x_i = 0; x_i < this.IMAGE_SB.getWidth(); x_i++) {
             for (int y_i = 0; y_i < this.IMAGE_SB.getHeight(); y_i++) {
+                if(!inSBRange(x_i, y_i))
+                    continue;
                 double difference = colorDifference(c, getPixelColor(x_i, y_i));
                 if(difference < minDifference) {
                     tempC = getPixelColor(x_i, y_i);
@@ -114,7 +116,11 @@ public class ColourPicker extends JComponent {
                 }
             }
         }
-        System.out.println("Calculated: (" + tempC.getRed() + ", " + tempC.getGreen() + ", " + tempC.getBlue() + ")");
+        if(tempC != null)
+            System.out.println("Calculated: (" + tempC.getRed() + ", " + tempC.getGreen() + ", " + tempC.getBlue() + ")");
+        System.out.println("MouseX SETSB = " + mouseX);
+        System.out.println("MouseY SETSB = " + mouseY);
+        System.out.println("IN RANGE = " + inSBRange(mouseX, mouseY));
         repaint();
     }
 
@@ -161,8 +167,7 @@ public class ColourPicker extends JComponent {
             this.currentColor = paintHoverH(g2, this.mouseX, this.mouseY);
             this.pastX_H = this.mouseX;
             this.pastY_H = this.mouseY;
-        } else 
-            this.currentColor = paintHoverH(g2, this.pastX_H, this.pastY_H);
+        } else this.currentColor = paintHoverH(g2, this.pastX_H, this.pastY_H);
 
         // Draw the saturation + brightness color ring
         this.IMAGE_SB = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -180,8 +185,7 @@ public class ColourPicker extends JComponent {
             this.currentColor = paintHoverSB(g2, this.mouseX, this.mouseY);
             this.pastX_BS = this.mouseX;
             this.pastY_BS = this.mouseY;
-        } else 
-            this.currentColor = paintHoverSB(g2, this.pastX_BS, this.pastY_BS);
+        } else this.currentColor = paintHoverSB(g2, this.pastX_BS, this.pastY_BS);
 
     }
 
@@ -288,6 +292,9 @@ public class ColourPicker extends JComponent {
         return distance <= RADIUS_SB + tolerance;
     }
 
+    private boolean inSBRange(int hoverX, int hoverY) {
+        return Tools.getDistance(hoverX - x, hoverY - y) <= RADIUS_SB - 1;
+    }
 
     private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
         return new RadialGradientPaint(
