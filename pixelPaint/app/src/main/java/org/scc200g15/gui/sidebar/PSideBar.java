@@ -28,11 +28,9 @@ public class PSideBar extends JPanel {
   JLabel opacityValue = new JLabel("100%");
   int opacityPercent = 100;
 
-
   JSpinner rText = createTextField();
   JSpinner gText = createTextField();
   JSpinner bText = createTextField();
-
 
   boolean isRGBInput = true; // false
 
@@ -128,7 +126,7 @@ public class PSideBar extends JPanel {
   }
 
   private JButton button() {
-    JButton button = new JButton("PRESS");
+    JButton button = new JButton("Get Colour");
 
     button.addActionListener((ActionEvent e) -> {
 
