@@ -170,6 +170,4 @@ public class PSideBar extends JPanel {
   }
 
 
-
-
 }
