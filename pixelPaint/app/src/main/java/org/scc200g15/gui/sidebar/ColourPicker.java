@@ -101,8 +101,8 @@ public class ColourPicker extends JComponent {
     }
 
     public void setSB(Color c) {
-        Color tempC = null;
-        double minDifference = colorDifference(c, getPixelColor(0, 0));
+        Color tempC = getPixelColor(0, 0);
+        double minDifference = colorDifference(c, tempC);
         for(int x_i = 0; x_i < this.IMAGE_SB.getWidth(); x_i++) {
             for (int y_i = 0; y_i < this.IMAGE_SB.getHeight(); y_i++) {
                 double difference = colorDifference(c, getPixelColor(x_i, y_i));

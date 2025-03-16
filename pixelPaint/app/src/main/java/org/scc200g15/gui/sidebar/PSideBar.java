@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
@@ -27,6 +28,14 @@ public class PSideBar extends JPanel {
   JLabel opacityValue = new JLabel("100%");
   int opacityPercent = 100;
 
+
+  JSpinner rText = createTextField();
+  JSpinner gText = createTextField();
+  JSpinner bText = createTextField();
+
+
+  boolean isRGBInput = true; // false
+
   public PSideBar(GUI window) {
     setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -35,6 +44,10 @@ public class PSideBar extends JPanel {
 
     sliderStyling();
 
+    createDisplay();
+  }
+
+  private void createDisplay() {
     // Title
     JPanel title = new JPanel();
     panelSetup(title);
@@ -56,6 +69,21 @@ public class PSideBar extends JPanel {
     add(opacitySlider);
     add(Box.createVerticalStrut(8));
 
+    // RGB Input
+    if(isRGBInput) {
+      JPanel inputRGB = new JPanel();
+      panelSetup(inputRGB);
+      inputRGB.add(Box.createHorizontalStrut(3));
+      inputRGB.add(rText);
+      inputRGB.add(Box.createHorizontalStrut(5));
+      inputRGB.add(gText);
+      inputRGB.add(Box.createHorizontalStrut(5));
+      inputRGB.add(bText);
+      inputRGB.add(Box.createHorizontalStrut(3));
+      add(inputRGB);
+      add(Box.createVerticalStrut(8));
+    }
+
     // Button
     JPanel button = new JPanel();
     panelSetup(button);
@@ -63,28 +91,28 @@ public class PSideBar extends JPanel {
     add(button);
 
     // Bottom Spacing
-    add(Box.createVerticalStrut(370));
+    add(Box.createVerticalStrut(340));
   }
 
-  public void panelSetup(JPanel panel) {
+  private void panelSetup(JPanel panel) {
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
     panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
   }
 
-  public JLabel titleLabel() {
+  private JLabel titleLabel() {
     JLabel label = new JLabel("Colour Selector");
     label.setPreferredSize(new Dimension(200, 20));
     label.setHorizontalAlignment(JLabel.CENTER);
     return label;
   }
 
-  public JLabel opacityValueLabel() {
+  private JLabel opacityValueLabel() {
     opacityValue.setPreferredSize(new Dimension(35, 20));
     opacityValue.setHorizontalAlignment(SwingConstants.CENTER);
     return opacityValue;
   }
 
-  public JSlider opacitySlider() {
+  private JSlider opacitySlider() {
     JSlider slider = new JSlider(0, 100, 100);
     slider.setPreferredSize(new Dimension(120, 20));
 
@@ -99,11 +127,25 @@ public class PSideBar extends JPanel {
     return slider;
   }
 
-  public JButton button() {
+  private JButton button() {
     JButton button = new JButton("PRESS");
 
     button.addActionListener((ActionEvent e) -> {
-      Color c = new Color(248, 122, 250); // ! Manually add the changes, moves it into input text
+
+      System.out.println(rText.getValue());
+      System.out.println(gText.getValue());
+      System.out.println(bText.getValue());
+      System.out.println(opacityPercent);
+
+      // Color c = new Color(248, 122, 250); // ! Manually add the changes, moves it into input text
+
+      Color c = getNormalisedColor(
+        (int) rText.getValue(), 
+        (int) gText.getValue(), 
+        (int) bText.getValue(), 
+        opacityPercent
+      );
+
       this.colourPicker.setColor(c);
 
       Color out = getActiveColor();
@@ -113,22 +155,33 @@ public class PSideBar extends JPanel {
     return button;
   }
 
+  private JSpinner createTextField() {
+    JSpinner field = new JSpinner();
+    field.setPreferredSize(new Dimension(50, 20));
+    return field;
+  }
 
-  public void sliderStyling() {
+  private void sliderStyling() {
     UIManager.put("Slider.thumbSize", new Dimension(12, 12));
     UIManager.put("Slider.trackWidth", 4);
   }
 
 
-  public Color getActiveColor() {
-    Color c = this.colourPicker.getActiveColor();
+  private Color getNormalisedColor(int red, int green, int blue, int opacity) {
     return new Color(
-      c.getRed()     / (float) 255.0, 
-      c.getGreen()   / (float) 255.0, 
-      c.getBlue()    / (float) 255.0, 
-      opacityPercent / (float) 100.0
+      red     / (float) 255.0, 
+      green   / (float) 255.0, 
+      blue    / (float) 255.0, 
+      opacity / (float) 100.0
     );
   }
+
+  public Color getActiveColor() {
+    Color c = this.colourPicker.getActiveColor();
+    return getNormalisedColor(c.getRed(), c.getGreen(), c.getBlue(), opacityPercent);
+  }
+
+
 
 
 }
