@@ -54,6 +54,12 @@ public class SquareSelectTool implements Tool {
   protected void setEndPoint(Point2D p) {
     endPoint = p;
   }
+  protected void setEndPointX(double x) {
+    endPoint = new Point2D.Double(x, endPoint.getY());
+  }
+  protected void setEndPointY(double y) {
+    endPoint = new Point2D.Double(endPoint.getX(), y);
+  }
 
   protected Side getSelectedSide() {
     return selectedSide;
@@ -223,6 +229,9 @@ public class SquareSelectTool implements Tool {
    * @param c the canvas
    */
   protected void printCached(PCanvas c) {
+    if (cachedArea == null)
+      return;
+
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
 
