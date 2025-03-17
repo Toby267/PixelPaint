@@ -54,6 +54,12 @@ public class SquareSelectTool implements Tool {
   protected void setEndPoint(Point2D p) {
     endPoint = p;
   }
+  protected void setEndPointX(double x) {
+    endPoint = new Point2D.Double(x, endPoint.getY());
+  }
+  protected void setEndPointY(double y) {
+    endPoint = new Point2D.Double(endPoint.getX(), y);
+  }
 
   protected Side getSelectedSide() {
     return selectedSide;
@@ -83,8 +89,36 @@ public class SquareSelectTool implements Tool {
     return moveEndPoint;
   }
 
-  // * ---------------------------------- [ ACTIONS ] ---------------------------------- * //
+  // * ---------------------------------- [ PUBLIC ACTIONS ] ---------------------------------- * //
 
+  public void delete(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      deleteSelected(c);
+      deselect(c);
+    }
+  }
+
+  public void escape(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      deselect(c);
+    }
+  }
+
+  public void copy(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      cacheSelectedArea(c);
+    }
+  }
+
+  public void paste(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      printCached(c);
+      deselect(c);
+    }
+  }
+
+  // * ---------------------------------- [ PROTECTED ACTIONS ] ---------------------------------- * //
+  
   /**
    * highlights the selected area on the given canvas
    * 
@@ -195,6 +229,9 @@ public class SquareSelectTool implements Tool {
    * @param c the canvas
    */
   protected void printCached(PCanvas c) {
+    if (cachedArea == null)
+      return;
+
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
 

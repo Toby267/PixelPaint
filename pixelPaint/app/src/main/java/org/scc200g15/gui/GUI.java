@@ -17,6 +17,7 @@ import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.DrawSubPanel;
 import org.scc200g15.gui.toolbar.PToolBar;
+import org.scc200g15.gui.toolbar.SelectSubPanel;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
@@ -69,7 +70,8 @@ public class GUI extends JFrame {
 
   private void registerTools(){
     SquareSelectTool squareSelect = new SquareSelectTool();
-    registerTool(squareSelect, IconManager.SQUARE_SELECT_ICON, "squareSelect", "Square Select Tool");
+    SelectSubPanel ssp = new SelectSubPanel(PToolBar.height, squareSelect);
+    registerTool(squareSelect, IconManager.SQUARE_SELECT_ICON, "squareSelect", "Square Select Tool", ssp);
     
     DrawTool drawTool = new DrawTool();
     DrawSubPanel dsp = new DrawSubPanel(PToolBar.height, drawTool);
