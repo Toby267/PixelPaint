@@ -83,8 +83,36 @@ public class SquareSelectTool implements Tool {
     return moveEndPoint;
   }
 
-  // * ---------------------------------- [ ACTIONS ] ---------------------------------- * //
+  // * ---------------------------------- [ PUBLIC ACTIONS ] ---------------------------------- * //
 
+  public void delete(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      deleteSelected(c);
+      deselect(c);
+    }
+  }
+
+  public void escape(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      deselect(c);
+    }
+  }
+
+  public void copy(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      cacheSelectedArea(c);
+    }
+  }
+
+  public void paste(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      printCached(c);
+      deselect(c);
+    }
+  }
+
+  // * ---------------------------------- [ PROTECTED ACTIONS ] ---------------------------------- * //
+  
   /**
    * highlights the selected area on the given canvas
    * 
