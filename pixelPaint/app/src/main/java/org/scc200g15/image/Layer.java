@@ -2,6 +2,7 @@ package org.scc200g15.image;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -305,6 +306,16 @@ final public class Layer extends JPanel {
 
     public void setPixels(Color[][] pixels) {
         this.pixels = pixels;
+    }
+    public void setPixels(Point[] points, Color[] colors) {
+        if(points.length != colors.length){
+            //TODO: Handle error
+            return;
+        }
+
+        for(int i = 0; i < points.length; i++ ){
+            setPixel(points[i].x, points[i].y, colors[i]);
+        }
     }
 
     public Boolean getIsActive() {
