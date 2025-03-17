@@ -16,15 +16,16 @@ import org.scc200g15.gui.canvas.PCanvas;
 public class FillTool implements Tool{
 
     Color targetColor;
-    Color newColor = Color.BLACK;
 
     Queue<Point> pointsToCheck;
     ArrayList<Point> checkedPoints;
 
     @Override
     public void mouseClicked(PCanvas c, MouseEvent e) {
+        Color newColor = GUI.getInstance().getSideBar().getActiveColor();
+
         Point2D point = c.getPixelPoint(e.getPoint());
-        Color[][] pixels = GUI.getInstance().getActiveImage().compressImage();
+        Color[][] pixels = GUI.getInstance().getActiveImage().compressVisibleLayers();
 
         targetColor = pixels[(int)point.getX()][(int)point.getY()];
 
