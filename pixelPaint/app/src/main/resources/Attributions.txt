@@ -8,6 +8,10 @@
 [Pan_zoom.png] Pan Zoom icons created by berkahicon - Flaticon: (https://www.flaticon.com/free-icons/zoom-i)
 [Draw.png] Pencil icons created by Those Icons - Flaticon: (https://www.flaticon.com/free-icons/pencil)
 
+<a href="https://www.flaticon.com/free-icons/copy" title="copy icons">Copy icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/clipboard" title="clipboard icons">Clipboard icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Kiranshastry - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/escape" title="escape icons">Escape icons created by Pixel perfect - Flaticon</a>
 
 <a href="https://www.flaticon.com/free-icons/dot" title="dot icons">Dot icons created by hirschwolf - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/triangle" title="triangle icons">Triangle icons created by rukanicon - Flaticon</a>
