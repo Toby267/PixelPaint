@@ -21,19 +21,19 @@ public class SelectSubPanel extends JPanel {
         setMaximumSize(new Dimension(171, height));
 
         //buttons
-        JButton deleteButton = new JButton(IconManager.ACTIVE_TRASH_ICON);
+        JButton deleteButton = new JButton(IconManager.DELETE_ICON);
         deleteButton.setSize(new Dimension(40, height - 4));
         deleteButton.setLocation(2,2);
 
-        JButton escapeButton = new JButton(IconManager.SQUARE_ICON);
+        JButton escapeButton = new JButton(IconManager.ESCAPE_ICON);
         escapeButton.setSize(new Dimension(40, height - 4));
         escapeButton.setLocation(44,2);
 
-        JButton copyButton = new JButton(IconManager.TRIANGLE_ICON);
+        JButton copyButton = new JButton(IconManager.COPY_ICON);
         copyButton.setSize(new Dimension(40, height - 4));
         copyButton.setLocation(86,2);
         
-        JButton pasteButton = new JButton(IconManager.STAR_ICON);
+        JButton pasteButton = new JButton(IconManager.PASTE_ICON);
         pasteButton.setSize(new Dimension(40, height - 4));
         pasteButton.setLocation(128,2);
 
