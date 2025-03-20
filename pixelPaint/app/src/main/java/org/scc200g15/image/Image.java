@@ -3,8 +3,14 @@ package org.scc200g15.image;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayDeque;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import org.scc200g15.action.Action;
 import org.scc200g15.gui.GUI;
@@ -41,6 +47,14 @@ public final class Image {
     
     Layers.add(new Layer("LAYER 2", new Color(0, 83, 234, 128), width, height));
   }
+
+  public Image(BufferedImage bufferedImage) {
+    this.imageBuffer = bufferedImage;
+}
+
+  // public BufferedImage getBufferedImage() {
+  //     return imageBuffer;
+  // }
 
   public int moveLayer(int index1, int index2) {
     if (index1 < 0 || index1 >= Layers.size() || index2 < 0 || index2 >= Layers.size()) {
@@ -304,4 +318,56 @@ public final class Image {
 
     addAction(a);
   }
+    public Image(int width, int height) {
+        imageBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    }
+
+    public BufferedImage getBufferedImage() {
+        return imageBuffer;
+    }
+
+    public void saveImage() {
+        if (imageBuffer == null) {
+            JOptionPane.showMessageDialog(null, "No image to save!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Image");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG Images", "png"));
+
+        int userSelection = fileChooser.showSaveDialog(null);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            try {
+                ImageIO.write(imageBuffer, "png", new File(fileToSave.getAbsolutePath() + ".png"));
+                JOptionPane.showMessageDialog(null, "Image saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error saving image!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public BufferedImage openImage() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Open Image");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG & JPEG Images", "png", "jpg", "jpeg"));
+
+        int userSelection = fileChooser.showOpenDialog(null);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToOpen = fileChooser.getSelectedFile();
+            try {
+                return ImageIO.read(fileToOpen);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error opening image!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return null;
+    }
+
+    public void createNewImage(int width, int height) {
+        imageBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    }private BufferedImage imageBuffer; // Store the image data
+
+
 }

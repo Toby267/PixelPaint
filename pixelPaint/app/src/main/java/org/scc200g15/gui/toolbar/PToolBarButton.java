@@ -59,6 +59,28 @@ public class PToolBarButton extends JButton{
         
         repaint();
     } 
+
+    public void setActive(boolean active) {
+        if (active) {
+            setIcon(activeIcon);
+            setBackground(Color.DARK_GRAY);
+            setOpaque(true);
+        } else {
+            setIcon(inactiveIcon);
+            setBackground(IconManager.VISIBLE_BACKGROUND_COLOUR);
+            setOpaque(false);
+        }
+    
+        if (subJPanel != null) {
+            subJPanel.setVisible(active);
+        }
+    
+        repaint();
+    }   
+    
+    public Tool getTool() {
+        return this.tool;
+    }    
 }
 
     

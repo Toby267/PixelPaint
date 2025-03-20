@@ -2,12 +2,21 @@ package org.scc200g15.gui;
 
 import java.awt.BorderLayout;
 
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.gui.icons.IconManager;
@@ -30,6 +39,13 @@ import org.scc200g15.tools.squareSelect.SquareSelectTool;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+
+
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+
 
 
 /**
@@ -90,6 +106,7 @@ public class GUI extends JFrame {
 
   private GUI() {
     super("Pixel Paint");
+    setupShortcuts();
 
     try {
     UIManager.setLookAndFeel( new FlatLightLaf() );
@@ -197,4 +214,149 @@ public class GUI extends JFrame {
   public int getFillTolerance(){
     return fillSP.getTolerance();
   }
+
+  private void setupShortcuts() {
+    JRootPane rootPane = this.getRootPane();
+    InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+    ActionMap actionMap = rootPane.getActionMap();
+
+    // Ctrl + S → Save Image
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "saveImage");
+    actionMap.put("saveImage", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+                canvas.saveImage();
+                System.out.println("Image saved successfully.");
+            }
+        }
+    });
+
+    // Ctrl + O → Open Image
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK), "openImage");
+    actionMap.put("openImage", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+                canvas.openImage();
+                System.out.println("Image opened successfully.");
+            }
+        }
+    });
+
+    // Ctrl + Z → Undo
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK), "undo");
+    actionMap.put("undo", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+                canvas.undo();
+                System.out.println("Undo action performed.");
+            }
+        }
+    });
+
+    // Ctrl + Y → Redo
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK), "redo");
+    actionMap.put("redo", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+                canvas.redo();
+                System.out.println("Redo action performed.");
+            }
+        }
+    });
+
+
+
+
+// Ctrl + E → Eraser Tool
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "eraserTool");
+actionMap.put("eraserTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+                Tool selectedTool = toolManager.getTool("erase");  // Convert ID to Tool
+                toolManager.setActiveTool(selectedTool);
+                toolBar.highlightSelectedTool(selectedTool);  // Pass Tool object
+                System.out.println("Eraser tool selected.");
+            } catch (Error ex) {
+                System.out.println("Error: Tool 'erase' not found.");
+            }
+        }
+    }
+});
+
+// Ctrl + B → Brush Tool (Draw Tool)
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK), "brushTool");
+actionMap.put("brushTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+                Tool selectedTool = toolManager.getTool("draw");
+                toolManager.setActiveTool(selectedTool);
+                toolBar.highlightSelectedTool(selectedTool);
+                System.out.println("Brush tool selected.");
+            } catch (Error ex) {
+                System.out.println("Error: Tool 'draw' not found.");
+            }
+        }
+    }
+});
+
+// Ctrl + F → Fill Tool
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), "fillTool");
+actionMap.put("fillTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+                Tool selectedTool = toolManager.getTool("fill");
+                toolManager.setActiveTool(selectedTool);
+                toolBar.highlightSelectedTool(selectedTool);
+                System.out.println("Fill tool selected.");
+            } catch (Error ex) {
+                System.out.println("Error: Tool 'fill' not found.");
+            }
+        }
+    }
+});
+
+// Ctrl + T → Star Tool
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK), "starTool");
+actionMap.put("starTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+                Tool selectedTool = toolManager.getTool("star");
+                toolManager.setActiveTool(selectedTool);
+                toolBar.highlightSelectedTool(selectedTool);
+                System.out.println("Star tool selected.");
+            } catch (Error ex) {
+                System.out.println("Error: Tool 'star' not found.");
+            }
+        }
+    }
+});
+
+
+
+
+
+    // Ctrl + D → Toggle Dark Mode
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "toggleDarkMode");
+    actionMap.put("toggleDarkMode", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            toggleDarkMode();
+            System.out.println("Dark mode toggled.");
+        }
+    });
+}
+
+
 }

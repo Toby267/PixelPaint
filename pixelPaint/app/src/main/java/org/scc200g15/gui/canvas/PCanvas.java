@@ -7,13 +7,18 @@ import java.awt.Point;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Stack;
 
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.scc200g15.gui.GUI;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.ToolManager;
-
 /**
  * PCanvas - The canvas is the area on the screen where the main ActiveImage is drawn it handles tracks mouse inputs and passes them to the tool manager
  */
@@ -262,4 +267,93 @@ public class PCanvas extends JPanel {
     
     return false;
   }
+
+public void saveImage() {
+    if (activeImage == null) {
+        JOptionPane.showMessageDialog(this, "No image to save!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Save Image");
+    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG Images", "png"));
+    
+    int userSelection = fileChooser.showSaveDialog(this);
+    if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToSave = fileChooser.getSelectedFile();
+        try {
+            ImageIO.write(imageBuffer, "png", new File(fileToSave.getAbsolutePath() + ".png"));
+            JOptionPane.showMessageDialog(this, "Image saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error saving image!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+}
+
+public void openImage() {
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Open Image");
+    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG & JPEG Images", "png", "jpg", "jpeg"));
+
+    int userSelection = fileChooser.showOpenDialog(this);
+    if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToOpen = fileChooser.getSelectedFile();
+        try {
+            BufferedImage openedImage = ImageIO.read(fileToOpen);
+            if (openedImage != null) {
+              imageBuffer = openedImage;
+              repaint();  // Repaint the canvas after opening an image
+          }
+            activeImage = new Image(openedImage);
+            recalculateAllPixels();
+            repaint();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error opening image!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+}
+
+public void createNewImage(int width, int height) {
+    activeImage = new Image(width, height);
+    recalculateAllPixels();
+    repaint();
+}
+
+
+private Stack<BufferedImage> undoStack = new Stack<>();
+private Stack<BufferedImage> redoStack = new Stack<>();
+
+public void saveStateForUndo() {
+    if (activeImage != null) {
+        undoStack.push(copyImage(imageBuffer));
+        redoStack.clear(); // Clear redo stack whenever new action is performed
+    }
+}
+
+public void undo() {
+    if (!undoStack.isEmpty()) {
+        redoStack.push(copyImage(imageBuffer));
+        imageBuffer = undoStack.pop();
+        repaint();
+    }
+}
+
+public void redo() {
+    if (!redoStack.isEmpty()) {
+        undoStack.push(copyImage(imageBuffer));
+        imageBuffer = redoStack.pop();
+        repaint();
+    }
+}
+
+// Helper function to copy BufferedImage
+private BufferedImage copyImage(BufferedImage img) {
+    BufferedImage copy = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
+    Graphics2D g = copy.createGraphics();
+    g.drawImage(img, 0, 0, null);
+    g.dispose();
+    return copy;
+}
+
+
 }

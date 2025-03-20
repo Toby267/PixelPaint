@@ -79,4 +79,10 @@ public class PToolBar extends JPanel {
     revalidate();
     repaint();
   }
+  public void highlightSelectedTool(Tool selectedTool) {
+    for (PToolBarButton btn : toolbarButtons) {
+        btn.setActive(btn.getTool() == selectedTool);
+    }
+    repaint();
+}
 }
