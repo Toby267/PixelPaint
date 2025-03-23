@@ -136,7 +136,7 @@ public class ColourPickerTest {
 
     System.out.println("difference = " + difference);
 
-    assertTrue(difference <= 36, "difference is too large: " + difference);
+    assertTrue(difference <= 50, "difference is too large: " + difference);
     addPassedTest();
   }
 

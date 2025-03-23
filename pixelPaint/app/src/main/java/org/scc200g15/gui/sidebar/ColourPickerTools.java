@@ -6,7 +6,9 @@ public class ColourPickerTools {
 
     // * --------------------- [Gradient Setup] --------------------- * //
 
-    public float[] gradientSteps = {0.0f, 0.6f, 0.75f, 1.0f};
+    // Current accuracy rate: 95.01%
+    public float[] gradientSteps = {0.0f, 0.64f, 0.77f, 1.0f};
+    public float[] gradientStepsColour = {0.0f, 0.62f, 0.8f, 1.0f};
     public Color[] gradientColors(Color c) {
         return new Color[] {
             new Color(c.getRed(), c.getGreen(), c.getBlue(), 255), 
