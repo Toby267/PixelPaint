@@ -107,7 +107,7 @@ public class ColourPicker extends JComponent {
             for (int y_i = 0; y_i < this.IMAGE_SB.getHeight(); y_i++) {
                 if(!inSBRange(x_i, y_i))
                     continue;
-                double difference = colorDifference(c, getPixelColor(x_i, y_i));
+                double difference = Tools.colorDifference(c, getPixelColor(x_i, y_i));
                 if(difference < minDifference) {
                     tempC = getPixelColor(x_i, y_i);
                     minDifference = difference;
@@ -124,14 +124,6 @@ public class ColourPicker extends JComponent {
         repaint();
     }
 
-
-
-    public double colorDifference(Color target, Color attempt) {
-        int r = target.getRed() - attempt.getRed();
-        int g = target.getGreen() - attempt.getGreen();
-        int b = target.getBlue() - attempt.getBlue();
-        return Math.pow(r, 2) + Math.pow(g, 2) + Math.pow(b, 2);
-    }
 
     public double calculateHue(int red, int green, int blue, int max, int min) {
         // Taken from: https://cs.stackexchange.com/questions/64549/convert-hsv-to-rgb-colors
@@ -253,8 +245,8 @@ public class ColourPicker extends JComponent {
         g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
         
         int θ_color = 330;
-        int θ_black = 75;
-        int θ_white = 200;
+        int θ_black = 85;
+        int θ_white = 190;
 
         // ! TODO: MAYBE LIMIT THE FILL COLOR OR MAKE IT A GRADIENT AS WELL
         // if doesn't work add grey gradient
@@ -302,7 +294,7 @@ public class ColourPicker extends JComponent {
 
     private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
         float centerFactor = 2.45f;
-        float radiusFactor = 3.4f;
+        float radiusFactor = 3.35f;
         return new RadialGradientPaint(
             x - Tools.newX(RADIUS_SB, θ) * centerFactor,
             y - Tools.newY(RADIUS_SB, θ) * centerFactor,
@@ -314,7 +306,7 @@ public class ColourPicker extends JComponent {
 
     private RadialGradientPaint createGradient(int x, int y, double θ, Color c) {
         float centerFactor = 1.5f;
-        float radiusFactor = 1.75f;
+        float radiusFactor = 1.8f; // 
         return new RadialGradientPaint(
             x + Tools.newX(RADIUS_SB, θ) * centerFactor,
             y + Tools.newY(RADIUS_SB, θ) * centerFactor,

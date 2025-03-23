@@ -54,13 +54,22 @@ public class ColourPickerTools {
     }
 
     // * --------------------- [General Helper Functions] --------------------- * //
-
+    
     public double getDistance(double o, double a) {
         return Math.sqrt(Math.pow(o, 2) + Math.pow(a, 2)); // √(a^2 + b^2)
     }
-
+    
     public double getHue(double θ) {
         return (Math.toDegrees(θ) % 360) / 360.0f;
+    }
+    
+    // * --------------------- [Colour Tools] --------------------- * //
+     
+    public double colorDifference(Color target, Color attempt) {
+        int r = target.getRed() - attempt.getRed();
+        int g = target.getGreen() - attempt.getGreen();
+        int b = target.getBlue() - attempt.getBlue();
+        return Math.pow(r, 2) + Math.pow(g, 2) + Math.pow(b, 2);
     }
     
 }
