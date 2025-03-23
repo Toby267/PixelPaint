@@ -2,9 +2,11 @@ package org.scc200g15.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.scc200g15.action.Action;
 import org.scc200g15.gui.GUI;
 
 /**
@@ -16,6 +18,9 @@ public final class Image {
 
   public Layer activeLayer;
   public ArrayList<Layer> selectedLayers;
+
+  ArrayDeque<Action> actionHistory = new ArrayDeque<>(20);
+  ArrayDeque<Action> undoHistory = new ArrayDeque<>(20);
 
   // The width and height of the image
   private int width = 32;
@@ -275,6 +280,30 @@ public final class Image {
     selectedLayers = new ArrayList<>(16); // Effectively removes all elements
   }
 
+  public void addAction(Action action){
+    if(actionHistory.size() >= 20){
+      actionHistory.removeFirst();
+    }
+    actionHistory.add(action);
+  }
+  public void undoAction(){
+    if(actionHistory.isEmpty()) return;
 
+    Action a = actionHistory.removeLast();
+    a.undo(this);
 
+    if(undoHistory.size() >= 20){
+      undoHistory.removeLast();
+    }
+    undoHistory.addFirst(a);
+  }
+
+  public void redoAction(){
+    if(undoHistory.isEmpty()) return;
+
+    Action a = undoHistory.removeFirst();
+    a.redo(this);
+
+    addAction(a);
+  }
 }

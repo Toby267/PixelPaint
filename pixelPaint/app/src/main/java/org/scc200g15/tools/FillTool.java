@@ -10,15 +10,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.scc200g15.action.PixelsChangedAction;
 import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.image.Layer;
 
 public class FillTool implements Tool{
-
-    Color targetColor;
-
-    Queue<Point> pointsToCheck;
-    ArrayList<Point> checkedPoints;
 
     @Override
     public void mouseClicked(PCanvas c, MouseEvent e) {
@@ -27,12 +24,17 @@ public class FillTool implements Tool{
         Point2D point = c.getPixelPoint(e.getPoint());
         Color[][] pixels = GUI.getInstance().getActiveImage().compressVisibleLayers();
 
-        targetColor = pixels[(int)point.getX()][(int)point.getY()];
+        Color targetColor = pixels[(int)point.getX()][(int)point.getY()];
 
-        pointsToCheck = new LinkedList<>();
-        checkedPoints = new ArrayList<>();
+        Queue<Point> pointsToCheck = new LinkedList<>();
+        ArrayList<Point> checkedPoints = new ArrayList<>();
+
+        ArrayList<Point> actionPoints = new ArrayList<>();
+        ArrayList<Color> actionOldColors = new ArrayList<>();
 
         pointsToCheck.add(new Point((int)point.getX(), (int)point.getY()));
+
+        Layer activeLayer = GUI.getInstance().getActiveImage().getActiveLayer();
 
         while (!pointsToCheck.isEmpty()){
             Point nextPoint = pointsToCheck.remove();
@@ -45,8 +47,11 @@ public class FillTool implements Tool{
             //TODO: Check if in tolerance
             if(!targetColor.equals(pixels[nextPoint.x][nextPoint.y]))
                 continue;
-            
-            GUI.getInstance().getActiveImage().getActiveLayer().setPixel(nextPoint.x, nextPoint.y, newColor);
+
+            actionOldColors.add(activeLayer.getPixel(nextPoint.x, nextPoint.y));
+            actionPoints.add(new Point(nextPoint.x, nextPoint.y));
+
+            activeLayer.setPixel(nextPoint.x, nextPoint.y, newColor);
 
             c.recalculatePixel(nextPoint.x, nextPoint.y);
 
@@ -60,6 +65,10 @@ public class FillTool implements Tool{
             if(nextPoint.y + 1 < pixels[0].length)
                 pointsToCheck.add(new Point(nextPoint.x, nextPoint.y + 1));
         }
+
+        PixelsChangedAction fillAction = new PixelsChangedAction(activeLayer, actionPoints, actionOldColors, newColor);
+        GUI.getInstance().getActiveImage().addAction(fillAction);
+
         c.repaint();
     }
 

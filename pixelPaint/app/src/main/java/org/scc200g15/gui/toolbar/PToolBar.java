@@ -2,10 +2,12 @@ package org.scc200g15.gui.toolbar;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.scc200g15.gui.GUI;
@@ -24,6 +26,20 @@ public class PToolBar extends JPanel {
   public PToolBar(GUI window) {
     setPreferredSize(new Dimension(window.getWidth(), height));
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
+    JButton a = new JButton("Undo");
+    JButton b = new JButton("Redo");
+
+    a.addActionListener((ActionEvent e) -> {
+        GUI.getInstance().getActiveImage().undoAction();
+    });
+
+    b.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getActiveImage().redoAction();
+    });
+
+    this.add(a);
+    this.add(b);
 
     toolbarButtons = new ArrayList<>();
   }

@@ -1,16 +1,31 @@
 package org.scc200g15.tools.drawableTools;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.scc200g15.action.PixelsChangedAction;
+import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.image.Image;
+import org.scc200g15.image.Layer;
+import org.scc200g15.tools.Tool;
 import org.scc200g15.tools.shapes.Circle;
 import org.scc200g15.tools.shapes.Shape;
 import org.scc200g15.tools.shapes.Square;
 import org.scc200g15.tools.shapes.Star;
 import org.scc200g15.tools.shapes.Triangle;
 
-public abstract class Drawable {
+public abstract class Drawable implements Tool {
+
+  ArrayList<Point> actionPoints;
+  ArrayList<Color> actionOldColors;
+
   // map of all shapes
   protected HashMap<String, Shape> shapes = new HashMap<>();
   protected Shape activeShape;
@@ -27,6 +42,9 @@ public abstract class Drawable {
     shapes.put("Star", new Star());
 
     activeShape = shapes.get("Circle");
+
+    actionPoints = new ArrayList<>();
+    actionOldColors = new ArrayList<>();
   }
 
   /**
@@ -65,6 +83,32 @@ public abstract class Drawable {
   public int getSize() {
     return size;
   }
+  
+  // draws when the mouse is dragged
+  @Override
+  public void mouseDragged(PCanvas c, MouseEvent e) {
+    draw(c, e);
+  }
+
+// draws when the mouse is clicked
+@Override
+public void mousePressed(PCanvas c, MouseEvent e) {
+  actionPoints = new ArrayList<>();
+  actionOldColors = new ArrayList<>();
+
+  draw(c, e);
+}
+
+    @Override
+  public void mouseReleased(PCanvas c, MouseEvent e) {
+    Color color = getColor();
+    Image image = c.getActiveImage();
+    Layer activeLayer = image.getActiveLayer();
+
+    PixelsChangedAction drawAction = new PixelsChangedAction(activeLayer, actionPoints, actionOldColors, color);
+
+    GUI.getInstance().getActiveImage().addAction(drawAction);
+  }
 
   /**
    * draws on the canvas
@@ -72,5 +116,45 @@ public abstract class Drawable {
    * @param c the canvas to draw on
    * @param e the mouse event that caused the interupt
    */
-  protected abstract void draw(PCanvas c, MouseEvent e);
+  public void draw(PCanvas c, MouseEvent e){
+    Point2D point = c.getPixelPoint(e.getPoint());
+    Color color = getColor();
+
+    Image image = c.getActiveImage();
+    Layer activeLayer = image.getActiveLayer();
+
+    ArrayList<Point2D> points = activeShape.returnPixels(point, size);
+    
+    for (Point2D p : points) {
+      if (c.isOutOfBounds(p)) continue;
+      if(actionPoints.contains(new Point((int)p.getX(), (int)p.getY()))) continue;
+
+      actionOldColors.add(activeLayer.getPixel((int)p.getX(), (int)p.getY()));
+      actionPoints.add(new Point((int)p.getX(), (int)p.getY()));
+
+      activeLayer.setPixel((int)p.getX(), (int)p.getY(), color);
+      c.recalculatePixel((int)p.getX(), (int)p.getY());
+    }
+
+    c.repaint();
+  }
+  protected abstract Color getColor();
+  
+    // Required interface methods that we don't need
+    @Override
+    public void mouseMoved(PCanvas c, MouseEvent e) {}
+    @Override
+    public void mouseWheelMoved(PCanvas c, MouseWheelEvent e) {}
+    @Override
+    public void mouseClicked(PCanvas c, MouseEvent e) {}
+    @Override
+    public void mouseExited(PCanvas c, MouseEvent e) {}
+    @Override
+    public void mouseEntered(PCanvas c, MouseEvent e) {}
+    @Override
+    public void keyTyped(PCanvas c, KeyEvent e) {}
+    @Override
+    public void keyPressed(PCanvas c, KeyEvent e) {}
+    @Override
+    public void keyReleased(PCanvas c, KeyEvent e) {}
 }
