@@ -19,10 +19,10 @@ public class FillTool implements Tool{
 
     @Override
     public void mouseClicked(PCanvas c, MouseEvent e) {
-        Color newColor = GUI.getInstance().getSideBar().getActiveColor();
-
         Point2D point = c.getPixelPoint(e.getPoint());
         Color[][] pixels = GUI.getInstance().getActiveImage().compressVisibleLayers();
+
+        Color newColor = GUI.getInstance().getSideBar().getActiveColor();
 
         Color targetColor = pixels[(int)point.getX()][(int)point.getY()];
 
