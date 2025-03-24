@@ -107,6 +107,7 @@ final public class Layer extends JPanel {
         this.addMouseListener(new MouseAdapter() {
             int startPoint, originIndex;
 
+
             // TODO: Could add a feature where a blue bar is displayed where the layer
             // would be moved if mouseReleased
             @Override
@@ -127,12 +128,10 @@ final public class Layer extends JPanel {
                 if(e.isAltDown()) {
                     GUI.getInstance().getLayerSelector().switchSelectedLayerState(originIndex);
                     return;
-                } else {
-                    if(!e.isPopupTrigger()) 
-                        GUI.getInstance().getActiveImage().disableSelectedLayers();
-                }
-                
-                checkDisplayContextMenu(e);
+                } 
+
+                if(!e.isAltDown())
+                    checkDisplayContextMenu(e, true);
                 
                 GUI.getInstance().getLayerSelector().setActiveLayer(originIndex);
             }
@@ -145,9 +144,6 @@ final public class Layer extends JPanel {
                 if (image == null)
                     return;
 
-                if(e.isControlDown())
-                    return;
-
                 int frameHeight = image.getLayer(0).getHeight() - 1;
                 int trueStartPoint = (originIndex * frameHeight) + startPoint;
                 int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint);
@@ -157,15 +153,23 @@ final public class Layer extends JPanel {
                 if (originIndex != destinationIndex) 
                     GUI.getInstance().getLayerSelector().moveLayer(originIndex, destinationIndex);
                 
-                checkDisplayContextMenu(e);
+                if(!e.isAltDown())
+                    checkDisplayContextMenu(e, false);
 
                 // Check if double click to rename layer
                 switchLabelToTextField(e);
             }
 
-            private void checkDisplayContextMenu(MouseEvent e) {
-                if (e.isPopupTrigger())
+            private void checkDisplayContextMenu(MouseEvent e, boolean isMousePressed) {
+                if (isMousePressed && (System.getProperty("os.name").startsWith("Windows")))
+                    return;
+                if (!isMousePressed && !System.getProperty("os.name").startsWith("Windows"))
+                    return;
+
+                if(e.isPopupTrigger())
                     layerContextMenu().show(e.getComponent(), e.getX(), e.getY());
+                else
+                    GUI.getInstance().getActiveImage().disableSelectedLayers();
             }    
 
         });
