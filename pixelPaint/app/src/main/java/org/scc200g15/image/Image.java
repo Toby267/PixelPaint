@@ -2,9 +2,11 @@ package org.scc200g15.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.scc200g15.action.Action;
 import org.scc200g15.gui.GUI;
 
 /**
@@ -16,6 +18,9 @@ public final class Image {
 
   public Layer activeLayer;
   public ArrayList<Layer> selectedLayers;
+
+  ArrayDeque<Action> actionHistory = new ArrayDeque<>(20);
+  ArrayDeque<Action> undoHistory = new ArrayDeque<>(20);
 
   // The width and height of the image
   private int width = 32;
@@ -39,7 +44,6 @@ public final class Image {
 
   public int moveLayer(int index1, int index2) {
     if (index1 < 0 || index1 >= Layers.size() || index2 < 0 || index2 >= Layers.size()) {
-      // TODO: Handle Error Invalid Layer ID
       return -1;
     }
     Layer tempLayer = Layers.get(index1);
@@ -87,7 +91,6 @@ public final class Image {
 
   public int removeLayer(int ID) {
     if (ID < 0 || ID >= Layers.size()) {
-      // TODO: Handle Error Invalid Layer ID
       return -1;
     }
 
@@ -250,7 +253,7 @@ public final class Image {
     selectedLayers.remove(layer);
   }
 
-  public void disableSeletedLayers() {
+  public void disableSelectedLayers() {
     for(Layer layer : selectedLayers) layer.switchSelectedLayerState();
     selectedLayers = new ArrayList<>(16); // Effectively removes all elements
   }
@@ -275,6 +278,30 @@ public final class Image {
     selectedLayers = new ArrayList<>(16); // Effectively removes all elements
   }
 
+  public void addAction(Action action){
+    if(actionHistory.size() >= 20){
+      actionHistory.removeFirst();
+    }
+    actionHistory.add(action);
+  }
+  public void undoAction(){
+    if(actionHistory.isEmpty()) return;
 
+    Action a = actionHistory.removeLast();
+    a.undo(this);
 
+    if(undoHistory.size() >= 20){
+      undoHistory.removeLast();
+    }
+    undoHistory.addFirst(a);
+  }
+
+  public void redoAction(){
+    if(undoHistory.isEmpty()) return;
+
+    Action a = undoHistory.removeFirst();
+    a.redo(this);
+
+    addAction(a);
+  }
 }

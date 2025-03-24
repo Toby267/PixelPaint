@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import org.scc200g15.gui.GUI;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.ToolManager;
 
@@ -17,21 +18,21 @@ import org.scc200g15.tools.ToolManager;
  * PCanvas - The canvas is the area on the screen where the main ActiveImage is drawn it handles tracks mouse inputs and passes them to the tool manager
  */
 public class PCanvas extends JPanel {
+
   Image activeImage = null;
+  BufferedImage imageBuffer;
 
   Transform currentTransform;
 
+  // Pan + Zoom
   float zoomLevel = 1;
-
   Point2D zoomCenter = new Point(0, 0);
-  
+  Point dif = new Point(0, 0);
+
+  // Hover Pixel
   Point2D hoverPixel = new Point(-1, -1);
   int hoverWidth = 1, hoverHeight = 1;
   Color hoverColour = Color.WHITE;
-
-  Point dif = new Point(0, 0);
-
-  BufferedImage imageBuffer;
 
   /**
    * Default constructor, with no image active to start
@@ -119,6 +120,11 @@ public class PCanvas extends JPanel {
     recalculateAllPixels();
     repaint();
   }
+
+  /**
+   * 
+   * @return returns the current active image for the canvas
+   */
   public Image getActiveImage() {
     return activeImage;
   }
@@ -144,6 +150,9 @@ public class PCanvas extends JPanel {
   public void zoomIn(Point p) {
     zoomCenter = p;
     zoomLevel += 0.05f;
+
+    // Update the status bar zoom field
+    GUI.getInstance().getStatusBar().updateZoom(zoomLevel);
   }
 
   /**
@@ -157,6 +166,9 @@ public class PCanvas extends JPanel {
       zoomLevel = 0.05f;
     else
       zoomCenter = p;
+
+    // Update the status bar zoom field
+    GUI.getInstance().getStatusBar().updateZoom(zoomLevel);
   }
 
   /**
@@ -175,9 +187,7 @@ public class PCanvas extends JPanel {
     return dif;
   }
 
-  /**
-   * FORDEV: set the current hover pixel
-   * 
+  /** 
    * @param hoverPixel the pos of the current hover pixel
    */
   public void setHoverPixel(Point2D hoverPixel) {
@@ -195,27 +205,57 @@ public class PCanvas extends JPanel {
     this.hoverHeight = height;
   }
 
+  /**
+   * Sets the color for the hover pixel
+   * 
+   * @param hoverColour the color for the hover pixel
+   */
   public void setHoverColour(Color hoverColour) {
     this.hoverColour = hoverColour;
   }
 
+  /**
+   * Go through all layers for a pixel and work out what color the final result should be
+   * @param x the x pos
+   * @param y the y pos
+   */
   public void recalculatePixel(int x, int y){
     imageBuffer = activeImage.updateImageBuffer(imageBuffer, x, y, 1, 1);
   }
+
+  /**
+   * Go through all layers for a rectangle of pixels and work out what there colors the final result should be
+   * @param x the x pos
+   * @param y the y pos
+   * @param w the width of the rectangle
+   * @param h the height of the rectangle
+   */
   public void recalculatePixels(int x, int y, int w, int h){
     imageBuffer = activeImage.updateImageBuffer(imageBuffer, x, y, w, h);
   }
+
+  /**
+   * Go through all pixels and work out what there colors the final result should be
+   */
   public void recalculateAllPixels(){
     imageBuffer = activeImage.calculateImageBuffer();
   }
 
-  //retuns true if the given coordinate is out of bounds
+  /**
+   * @param point the point to check
+   * @return returns true if point is out of canvas bounds
+   */
   public boolean isOutOfBounds(Point2D point) {
     if (point.getX() < 0 || point.getX() >= activeImage.getWidth())  return true;
     if (point.getY() < 0 || point.getY() >= activeImage.getHeight()) return true;
     
     return false;
   }
+  /**
+   * @param x 
+   * @param y 
+   * @return returns true if point is out of canvas bounds
+   */
   public boolean isOutOfBounds(int x, int y) {
     if (x < 0 || x >= activeImage.getWidth())  return true;
     if (y < 0 || y >= activeImage.getHeight()) return true;

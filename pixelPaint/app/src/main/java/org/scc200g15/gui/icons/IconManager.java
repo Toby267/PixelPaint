@@ -79,21 +79,41 @@ public class IconManager {
 
     /* --------------------------------------- [ICON GENERATION] --------------------------------------- */
 
-    public static ImageIcon createImageIcon(int x, int y, String path) {
+    /**
+     * Load an file from the resources folder as an ImageIcon
+     * @param w the desired width of the icon
+     * @param h the desired height of the icon
+     * @param path the path to the icon
+     * @return Scaled image icon loaded from the resources folder
+     */
+    public static ImageIcon createImageIcon(int w, int h, String path) {
         return new ImageIcon(
 
             new ImageIcon(IconManager.class.getResource(path))
                 .getImage()
-                .getScaledInstance(x, y, java.awt.Image.SCALE_SMOOTH)
+                .getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH)
         );
     }
 
-    public static ImageIcon createImageIcon(int x, int y, Color color, String path) {
-        return changeColour(createImageIcon(x, y, path), color);
+    /**
+     * Wrapper for createImageIcon where the color of the icon is changed to the given color
+     * @param w the desired width of the icon
+     * @param h the desired height of the icon
+     * @param color the color to use to preform the recolor
+     * @param path the path to the icon
+     * @return Scaled image icon loaded from the resources folder but recolored to the given color
+     */
+    public static ImageIcon createImageIcon(int w, int h, Color color, String path) {
+        return changeColour(createImageIcon(w, h, path), color);
     }
 
+    /**
+     * Convert a image icon to a buffered image
+     * Code from: Werner Kvalem Vesterås (https://stackoverflow.com/questions/15053214/converting-an-imageicon-to-a-bufferedimage)
+     * @param icon
+     * @return
+     */
     public static BufferedImage convert_ImageIcon_To_BufferedImage(ImageIcon icon) {
-        // Code from: Werner Kvalem Vesterås (https://stackoverflow.com/questions/15053214/converting-an-imageicon-to-a-bufferedimage)
         BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         icon.paintIcon(null, g, 0, 0);
@@ -101,13 +121,19 @@ public class IconManager {
         return image;
     }
 
+    /**
+     * Change the primary color of the given icon
+     * Code from: foowtf (https://stackoverflow.com/questions/8029903/how-to-change-the-color-of-an-icon-based-on-user-action)
+     * @param icon the icon to change the color of
+     * @param newColor the new primary color
+     * @return a recolored version of the icon
+     */
     public static ImageIcon changeColour(ImageIcon icon, Color newColor) {
         BufferedImage image = convert_ImageIcon_To_BufferedImage(icon);
-        // Code from: foowtf (https://stackoverflow.com/questions/8029903/how-to-change-the-color-of-an-icon-based-on-user-action)
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 Color imageColor = new Color(image.getRGB(x, y), true);
-                // New colours but maintain the originally transparent pixels.
+                // New colors but maintain the originally transparent pixels.
                 Color newPixelColor = new Color(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), imageColor.getAlpha());
                 image.setRGB(x, y, newPixelColor.getRGB());
             }
