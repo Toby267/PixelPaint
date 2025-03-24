@@ -162,6 +162,7 @@ public final class Image {
     return Layers;
   }
 
+  // ! TODO: ISSUE WITH COLOUR MERGE WHERE FULL COLOR JUST APPEAR AS IS REGARDLESS OF IF THEY ARE BEHIND OTHERS.
   private Color[][] compressAllLayers(ArrayList<Layer> layersToCompress, boolean skipInvisibleLayers, boolean adjustAlpha, int startX, int startY, int w, int h){
     Color[][] finalImage = new Color[w][h];
 
@@ -172,19 +173,12 @@ public final class Image {
     for(int x = startX; x < startX + w; x++) {
       for(int y = startY; y < startY + h; y++) {
         ArrayList<Color> colorsToMix = new ArrayList<>();
-        boolean isFirstLayer = true;
 
         for(Layer layer : layersToCompress) {
           Color pixel = layer.getPixel(x, y);
           if(pixel.getAlpha() == 0) continue;
           if(!layer.getIsLayerVisible() && skipInvisibleLayers) continue;
-          if(pixel.getAlpha() == 255) {
-            if(isFirstLayer) finalImage[x - startX][y - startY] = pixel;
-            else colorsToMix.add(pixel);
-            break;
-          }
           colorsToMix.add(pixel);
-          isFirstLayer = false;
         }
 
         if(!colorsToMix.isEmpty()) {
