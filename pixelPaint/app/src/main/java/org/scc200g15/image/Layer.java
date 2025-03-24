@@ -24,7 +24,6 @@ import org.scc200g15.gui.layerselector.LayerMenuTools;
  */
 final public class Layer extends JPanel {
     ArrayList<ArrayList <Color>> pixels = new ArrayList<ArrayList<Color>>();
-    // Color[][] pixels;
 
     private final LayerMenuTools Tools = new LayerMenuTools();
 
@@ -61,9 +60,6 @@ final public class Layer extends JPanel {
      */
     public Layer(String layerName, Color c, int w, int h) {   
         setupLayerMenuPanel(layerName);
-        
-        // pixels = new Color[w][h];
-
         for (int y = 0; y < h; y++) {
             ArrayList<Color> row = new ArrayList<>();
             for (int x = 0; x < w; x++)
@@ -157,7 +153,7 @@ final public class Layer extends JPanel {
                 int frameHeight = image.getLayer(0).getHeight() - 1;
                 int trueStartPoint = (originIndex * frameHeight) + startPoint;
                 int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint);
-                // endPoint = e.getPoint().y
+
                 int destinationIndex = (int) (trueEndPoint / frameHeight);
                 
                 if (originIndex != destinationIndex) 
@@ -176,8 +172,7 @@ final public class Layer extends JPanel {
 
         });
 
-        // Textbox action has finished (User pressed 'Enter' or moved to another
-        // layer)
+        // Textbox action has finished (User pressed 'Enter' or moved to another layer)
         renameLabelField.addActionListener((ActionEvent e) -> {
             renameLabelToTextField();
         });
@@ -296,13 +291,10 @@ final public class Layer extends JPanel {
      * @param y yPos of the pixel
      */
     public Color getPixel(int x, int y) {
-        // return pixels[x][y];
-        // return pixels.get(y).get(x);
         return pixels.get(y).get(x);
     }
 
     public void setPixel(int x, int y, Color c) {
-        // pixels[x][y] = c;
         pixels.get(y).set(x, c);
     }
 
@@ -311,7 +303,6 @@ final public class Layer extends JPanel {
         for (int i = 0; i < pixels.size(); i++)
             array[i] = (Color []) pixels.get(i).toArray();
         return array;
-        // return pixels;
     }
 
     public void setPixels(Color[][] pixels) {
