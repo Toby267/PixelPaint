@@ -314,8 +314,16 @@ final public class Layer extends JPanel {
     }
 
     public void setPixels(Color[][] pixels) {
-        this.pixels = pixels;
-    }
+        this.pixels.clear();
+        for (int j = 0; j < pixels[0].length; j++) { // Iterate over columns first
+            ArrayList<Color> row = new ArrayList<>(pixels.length);
+            for (int i = 0; i < pixels.length; i++) { // Then iterate over rows
+                row.add(pixels[i][j]);
+            }
+            this.pixels.add(row);
+        }
+    } 
+
     public void setPixels(Point[] points, Color[] colors) {
         if(points.length != colors.length){
             return;
