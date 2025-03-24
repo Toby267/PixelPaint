@@ -18,7 +18,7 @@ public class SelectSubPanel extends JPanel {
 
         this.tool = tool;
         
-        setMaximumSize(new Dimension(171, height));
+        setMaximumSize(new Dimension(214, height));
 
         //buttons
         JButton deleteButton = new JButton(IconManager.DELETE_ICON);
@@ -37,6 +37,10 @@ public class SelectSubPanel extends JPanel {
         pasteButton.setSize(new Dimension(40, height - 4));
         pasteButton.setLocation(128,2);
 
+        JButton rotateButton = new JButton(IconManager.PASTE_ICON);
+        rotateButton.setSize(new Dimension(40, height - 4));
+        rotateButton.setLocation(170,2);
+
         //button action listeners
         deleteButton.addActionListener((ActionEvent e) -> {
             tool.delete(GUI.getInstance().getCanvas());
@@ -54,10 +58,15 @@ public class SelectSubPanel extends JPanel {
             tool.paste(GUI.getInstance().getCanvas());
         });
 
+        rotateButton.addActionListener((ActionEvent e) -> {
+            tool.rotate(GUI.getInstance().getCanvas());
+        });
+
         //adding the buttons
         add(deleteButton);
         add(escapeButton);
         add(copyButton);
         add(pasteButton);
+        add(rotateButton);
     }
 }

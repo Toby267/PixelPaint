@@ -124,6 +124,14 @@ public class SquareSelectTool implements Tool {
     }
   }
 
+  public void rotate(PCanvas c)
+  {
+    if (currentState instanceof Selecting) {
+      printCached(c);
+      deselect(c);
+    }
+  }
+
   // * ---------------------------------- [ PROTECTED ACTIONS ] ---------------------------------- * //
   
   /**
@@ -178,6 +186,16 @@ public class SquareSelectTool implements Tool {
 
     c.repaint();
   }
+
+  /**
+   * rotate selected area 90
+   * 
+   * @param c the canvas
+   */
+  protected void rotateSelected90(PCanvas c) {
+    
+  }
+
   /**
    * caches the selected arrea within cachedArea
    * 
