@@ -208,4 +208,10 @@ public class PCanvas extends JPanel {
   public void recalculateAllPixels(){
     imageBuffer = activeImage.calculateImageBuffer();
   }
+
+  public BufferedImage getBufferedImage() {
+    return imageBuffer;
+  }
+
+
 }

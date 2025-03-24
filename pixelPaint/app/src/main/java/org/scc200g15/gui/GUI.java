@@ -18,6 +18,7 @@ import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.DrawSubPanel;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.image.Image;
+import org.scc200g15.tools.ColourDropperTool;
 import org.scc200g15.tools.DrawTool;
 import org.scc200g15.tools.EraserTool;
 import org.scc200g15.tools.FillTool;
@@ -79,6 +80,10 @@ public class GUI extends JFrame {
 
     FillTool fillTool = new FillTool();
     registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool");
+
+    // Not in toolbar
+    ColourDropperTool dropperTool = new ColourDropperTool();
+    toolManager.registerTool("dropper", dropperTool);
   }
 
   private GUI() {

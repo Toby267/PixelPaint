@@ -25,6 +25,9 @@ public class IconManager {
     public static final String TRIANGLE_ICON_PATH = "/Icons/triangle.png";
     public static final String STAR_ICON_PATH = "/Icons/star.png";
 
+    public static final String DROPPER_ICON_PATH = "/Icons/dropper_icon.png";
+
+
     // Colours for the layer menu background as seen in the UI design
     public static final Color VISIBLE_BACKGROUND_COLOUR = new Color(227,227,227);
     public static final Color INACTIVE_BACKGROUND_COLOUR = VISIBLE_BACKGROUND_COLOUR;
@@ -66,6 +69,9 @@ public class IconManager {
     public static final ImageIcon CIRCLE_ICON = createImageIcon(16, 16, CIRCLE_ICON_PATH);
     public static final ImageIcon TRIANGLE_ICON = createImageIcon(16, 16, TRIANGLE_ICON_PATH);
     public static final ImageIcon STAR_ICON = createImageIcon(16, 16, STAR_ICON_PATH);
+
+    // SideBar Icons
+    public static final ImageIcon DROPPER_ICON = createImageIcon(16, 16, DROPPER_ICON_PATH);
 
     /* --------------------------------------- [ICON GENERATION] --------------------------------------- */
 
