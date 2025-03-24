@@ -267,6 +267,8 @@ public class SquareSelectTool implements Tool {
         cachedArea[i][j] = activeLayer.getPixel(x, y);
         activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
         c.recalculatePixel(x, y);
+
+        actionNewColors.add(activeLayer.getPixel(x, y));
       }
     }
 
