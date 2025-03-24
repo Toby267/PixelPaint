@@ -1,14 +1,14 @@
 package org.scc200g15.gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
@@ -16,7 +16,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.gui.icons.IconManager;
@@ -39,12 +38,6 @@ import org.scc200g15.tools.squareSelect.SquareSelectTool;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-
-
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
 
 
 
@@ -188,7 +181,6 @@ public class GUI extends JFrame {
   }
 
   public void toggleDarkMode(){
-    System.out.println(isDarkMode);
     if(isDarkMode){
       try {
         UIManager.setLookAndFeel( new FlatLightLaf() );
@@ -226,11 +218,11 @@ public class GUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (canvas != null) {
-                canvas.saveImage();
-                System.out.println("Image saved successfully.");
+              canvas.saveImage();
             }
         }
     });
+
 
     // Ctrl + O → Open Image
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK), "openImage");
@@ -238,8 +230,7 @@ public class GUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (canvas != null) {
-                canvas.openImage();
-                System.out.println("Image opened successfully.");
+              canvas.openImage();
             }
         }
     });
@@ -250,8 +241,7 @@ public class GUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (canvas != null) {
-                canvas.undo();
-                System.out.println("Undo action performed.");
+              GUI.getInstance().getActiveImage().undoAction();
             }
         }
     });
@@ -262,8 +252,7 @@ public class GUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (canvas != null) {
-                canvas.redo();
-                System.out.println("Redo action performed.");
+              GUI.getInstance().getActiveImage().redoAction();
             }
         }
     });
@@ -278,10 +267,7 @@ actionMap.put("eraserTool", new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
         if (toolManager != null) {
             try {
-                Tool selectedTool = toolManager.getTool("erase");  // Convert ID to Tool
-                toolManager.setActiveTool(selectedTool);
-                toolBar.highlightSelectedTool(selectedTool);  // Pass Tool object
-                System.out.println("Eraser tool selected.");
+              GUI.getInstance().getToolManager().setActiveTool("erase");
             } catch (Error ex) {
                 System.out.println("Error: Tool 'erase' not found.");
             }
@@ -296,10 +282,7 @@ actionMap.put("brushTool", new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
         if (toolManager != null) {
             try {
-                Tool selectedTool = toolManager.getTool("draw");
-                toolManager.setActiveTool(selectedTool);
-                toolBar.highlightSelectedTool(selectedTool);
-                System.out.println("Brush tool selected.");
+              GUI.getInstance().getToolManager().setActiveTool("draw");
             } catch (Error ex) {
                 System.out.println("Error: Tool 'draw' not found.");
             }
@@ -314,38 +297,13 @@ actionMap.put("fillTool", new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
         if (toolManager != null) {
             try {
-                Tool selectedTool = toolManager.getTool("fill");
-                toolManager.setActiveTool(selectedTool);
-                toolBar.highlightSelectedTool(selectedTool);
-                System.out.println("Fill tool selected.");
+              GUI.getInstance().getToolManager().setActiveTool("fill");
             } catch (Error ex) {
-                System.out.println("Error: Tool 'fill' not found.");
+              System.out.println("Error: Tool 'fill' not found.");
             }
         }
     }
 });
-
-// Ctrl + T → Star Tool
-inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK), "starTool");
-actionMap.put("starTool", new AbstractAction() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (toolManager != null) {
-            try {
-                Tool selectedTool = toolManager.getTool("star");
-                toolManager.setActiveTool(selectedTool);
-                toolBar.highlightSelectedTool(selectedTool);
-                System.out.println("Star tool selected.");
-            } catch (Error ex) {
-                System.out.println("Error: Tool 'star' not found.");
-            }
-        }
-    }
-});
-
-
-
-
 
     // Ctrl + D → Toggle Dark Mode
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "toggleDarkMode");
@@ -353,7 +311,6 @@ actionMap.put("starTool", new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             toggleDarkMode();
-            System.out.println("Dark mode toggled.");
         }
     });
 }
