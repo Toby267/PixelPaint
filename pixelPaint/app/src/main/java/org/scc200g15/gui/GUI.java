@@ -179,10 +179,6 @@ public class GUI extends JFrame {
     toolBar.repaint();
   }
 
-  public PSideBar getSideBar() {
-    return sideBar;
-  }
-
   public void toggleDarkMode(){
     if(isDarkMode){
       try {

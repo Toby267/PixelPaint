@@ -162,6 +162,7 @@ public final class Image {
     return Layers;
   }
 
+  // ! TODO: ISSUE WITH COLOUR MERGE WHERE FULL COLOR JUST APPEAR AS IS REGARDLESS OF IF THEY ARE BEHIND OTHERS.
   private Color[][] compressAllLayers(ArrayList<Layer> layersToCompress, boolean skipInvisibleLayers, boolean adjustAlpha, int startX, int startY, int w, int h){
     Color[][] finalImage = new Color[w][h];
 
@@ -172,19 +173,12 @@ public final class Image {
     for(int x = startX; x < startX + w; x++) {
       for(int y = startY; y < startY + h; y++) {
         ArrayList<Color> colorsToMix = new ArrayList<>();
-        boolean isFirstLayer = true;
 
         for(Layer layer : layersToCompress) {
           Color pixel = layer.getPixel(x, y);
           if(pixel.getAlpha() == 0) continue;
           if(!layer.getIsLayerVisible() && skipInvisibleLayers) continue;
-          if(pixel.getAlpha() == 255) {
-            if(isFirstLayer) finalImage[x - startX][y - startY] = pixel;
-            else colorsToMix.add(pixel);
-            break;
-          }
           colorsToMix.add(pixel);
-          isFirstLayer = false;
         }
 
         if(!colorsToMix.isEmpty()) {
@@ -223,6 +217,7 @@ public final class Image {
 
     return imageBuffer;
   }
+
   public BufferedImage updateImageBuffer(BufferedImage imageBuffer, int startX, int startY, int w, int h) {
     Color[][] pixelData = compressVisiblePixels(startX, startY, w, h);
 
@@ -292,6 +287,28 @@ public final class Image {
       GUI.getInstance().getLayerSelector().removeLayerWithoutWarning(orderedLayers.get(i));
     
     selectedLayers = new ArrayList<>(16); // Effectively removes all elements
+  }
+
+  public void changeImageDimensions(int width, int height) {
+    for (Layer layer : Layers) 
+      layer.changeSize(width, height);
+    this.width = width;
+    this.height = height;
+    GUI.getInstance().getCanvas().recalculateAllPixels();
+  }
+
+  public void changeImageWidth(int width) {
+    for (Layer layer : Layers) 
+      layer.changeWidth(width);
+    this.width = width;
+    GUI.getInstance().getCanvas().recalculateAllPixels();
+  }
+
+  public void changeImageHeight(int height) {
+    for (Layer layer : Layers) 
+      layer.changeHeight(height);
+    this.height = height;
+    GUI.getInstance().getCanvas().recalculateAllPixels();
   }
 
   public void addAction(Action action){
