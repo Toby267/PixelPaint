@@ -17,15 +17,12 @@ import javax.swing.border.LineBorder;
 
 import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.icons.IconManager;
-import org.scc200g15.gui.layerselector.LayerMenuTools;
 
 /**
  * A layer of an image, stores a grid of pixels
  */
 final public class Layer extends JPanel {
     Color[][] pixels;
-
-    private final LayerMenuTools Tools = new LayerMenuTools();
 
     // Actual Components of a LayerMenuItem
     private final JButton displayButton = new JButton(IconManager.VISIBLE_EYE_OPEN_ICON);
@@ -188,8 +185,10 @@ final public class Layer extends JPanel {
         layerLabel.setText(renameLabelField.getText());
         this.remove(renameLabelField);
         this.add(layerLabel);
-        Tools.refreshUI(this);
         isBeingRenamed = false;
+
+        revalidate();
+        repaint();
     }
 
     // Switch to text box so user can text field
@@ -198,17 +197,21 @@ final public class Layer extends JPanel {
             this.remove(layerLabel);
             renameLabelField.setText(layerLabel.getText());
             this.add(renameLabelField);
-            Tools.refreshUI(this);
             renameLabelField.requestFocus();
             renameLabelField.selectAll();
             isBeingRenamed = true;
+
+            revalidate();
+            repaint();
         }
     }
 
     public void activateLayer() {
         setLayerStateUI("active");
         isActive = true;
-        Tools.refreshUI(this);
+
+        revalidate();
+        repaint();
     }
 
     public void deactivateLayer() {
@@ -216,7 +219,9 @@ final public class Layer extends JPanel {
         if (isLayerVisible) setLayerStateUI("visible");
         else setLayerStateUI("hidden");
         isActive = false;
-        Tools.refreshUI(this);
+        
+        revalidate();
+        repaint();
     }
 
     // * ----------------------- [VISIBILITY STATE] ----------------------- * //
@@ -229,7 +234,8 @@ final public class Layer extends JPanel {
         String state = isActive ? "active" : (isLayerVisible ? "visible" : "hidden");        
         setLayerStateUI(state);
 
-        Tools.refreshUI(this);
+        revalidate();
+        repaint();
 
         GUI.getInstance().getCanvas().repaint();
         GUI.getInstance().getCanvas().recalculateAllPixels();
