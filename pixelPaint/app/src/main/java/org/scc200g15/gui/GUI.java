@@ -22,7 +22,6 @@ import org.scc200g15.gui.toolbar.SelectSubPanel;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
-import org.scc200g15.tools.StarTool;
 import org.scc200g15.tools.Tool;
 import org.scc200g15.tools.ToolManager;
 import org.scc200g15.tools.drawableTools.DrawTool;
@@ -87,9 +86,6 @@ public class GUI extends JFrame {
     FillTool fillTool = new FillTool();
     fillSP = new FillSubPanel(PToolBar.height);
     registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool", fillSP);
-
-    StarTool starTool = new StarTool();
-    registerTool(starTool, IconManager.STAR_ICON, "star", "Star Tool");
   }
 
   private GUI() {
