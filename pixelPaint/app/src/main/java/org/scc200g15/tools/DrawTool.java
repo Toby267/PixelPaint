@@ -122,7 +122,7 @@ public class DrawTool implements Tool {
     Point2D point = c.getPixelPoint(e.getPoint());
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
-    int height = image.getHeight(), width = image.getHeight();
+    int height = image.getHeight(), width = image.getWidth();
 
     ArrayList<Point2D> points = activeShape.returnPixels(point, size);
     

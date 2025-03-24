@@ -32,8 +32,6 @@ public class PSideBar extends JPanel {
   JSpinner gText = createTextField();
   JSpinner bText = createTextField();
 
-  boolean isRGBInput = true; // false
-
   public PSideBar(GUI window) {
     setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -68,19 +66,17 @@ public class PSideBar extends JPanel {
     add(Box.createVerticalStrut(8));
 
     // RGB Input
-    if(isRGBInput) {
-      JPanel inputRGB = new JPanel();
-      panelSetup(inputRGB);
-      inputRGB.add(Box.createHorizontalStrut(3));
-      inputRGB.add(rText);
-      inputRGB.add(Box.createHorizontalStrut(5));
-      inputRGB.add(gText);
-      inputRGB.add(Box.createHorizontalStrut(5));
-      inputRGB.add(bText);
-      inputRGB.add(Box.createHorizontalStrut(3));
-      add(inputRGB);
-      add(Box.createVerticalStrut(8));
-    }
+    JPanel inputRGB = new JPanel();
+    panelSetup(inputRGB);
+    inputRGB.add(Box.createHorizontalStrut(3));
+    inputRGB.add(rText);
+    inputRGB.add(Box.createHorizontalStrut(5));
+    inputRGB.add(gText);
+    inputRGB.add(Box.createHorizontalStrut(5));
+    inputRGB.add(bText);
+    inputRGB.add(Box.createHorizontalStrut(3));
+    add(inputRGB);
+    add(Box.createVerticalStrut(8));
 
     // Button
     JPanel button = new JPanel();

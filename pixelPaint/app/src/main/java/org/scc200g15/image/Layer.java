@@ -5,6 +5,9 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,7 +25,8 @@ import org.scc200g15.gui.layerselector.LayerMenuTools;
  * A layer of an image, stores a grid of pixels
  */
 final public class Layer extends JPanel {
-    Color[][] pixels;
+    ArrayList<ArrayList <Color>> pixels = new ArrayList<ArrayList<Color>>();
+    // Color[][] pixels;
 
     private final LayerMenuTools Tools = new LayerMenuTools();
 
@@ -45,8 +49,8 @@ final public class Layer extends JPanel {
      * @param pixels The 2D array of pixels to use
      */
     public Layer(String layerName, Color[][] pixels){
-        setupLayerMenuPanel(layerName);        
-        this.pixels = pixels;
+        setupLayerMenuPanel(layerName);
+        setPixels(pixels);
     }
 
     /**
@@ -60,13 +64,15 @@ final public class Layer extends JPanel {
     public Layer(String layerName, Color c, int w, int h) {   
         setupLayerMenuPanel(layerName);
         
-        pixels = new Color[w][h];
+        // pixels = new Color[w][h];
 
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                pixels[x][y] = c;
-            }
+        for (int y = 0; y < h; y++) {
+            ArrayList<Color> row = new ArrayList<>();
+            for (int x = 0; x < w; x++)
+                row.add(c);
+            this.pixels.add(row);
         }
+
     }
 
     private void setupLayerMenuPanel(String layerName){
@@ -237,7 +243,7 @@ final public class Layer extends JPanel {
 
     // * ----------------------- [CONTEXT MENU] ----------------------- * //
 
-    // ! TODO: MOVE TO ANOTHER FILE AND EXPAND
+    // ! TODO: MOVE TO ANOTHER FILE AND EXPAND IF NEEDED
     public JPopupMenu layerContextMenu() {
         Image image = GUI.getInstance().getActiveImage();
         
@@ -292,20 +298,34 @@ final public class Layer extends JPanel {
      * @param y yPos of the pixel
      */
     public Color getPixel(int x, int y) {
-        return pixels[x][y];
+        // return pixels[x][y];
+        // return pixels.get(y).get(x);
+        return pixels.get(y).get(x);
     }
 
-    public Color setPixel(int x, int y, Color c) {
-        return pixels[x][y] = c;
+    public void setPixel(int x, int y, Color c) {
+        // pixels[x][y] = c;
+        pixels.get(y).set(x, c);
     }
 
     public Color[][] getPixels() {
-        return pixels;
+        Color[][] array = new Color[pixels.size()][pixels.get(0).size()];
+        for (int i = 0; i < pixels.size(); i++)
+            array[i] = (Color []) pixels.get(i).toArray();
+        return array;
+        // return pixels;
     }
 
     public void setPixels(Color[][] pixels) {
-        this.pixels = pixels;
-    }
+        this.pixels.clear();
+        for (int j = 0; j < pixels[0].length; j++) { // Iterate over columns first
+            ArrayList<Color> row = new ArrayList<>(pixels.length);
+            for (int i = 0; i < pixels.length; i++) { // Then iterate over rows
+                row.add(pixels[i][j]);
+            }
+            this.pixels.add(row);
+        }
+    }    
 
     public Boolean getIsActive() {
         return isActive;
@@ -324,5 +344,43 @@ final public class Layer extends JPanel {
     public boolean isSelected() {
         return isSelected;
     }
+
+    public void changeSize(int newWidth, int newHeight) {
+        changeWidth(newWidth);
+        changeHeight(newHeight);
+        GUI.getInstance().getCanvas().repaint();
+    }
+
+    public void changeWidth(int newWidth) {
+        int currentWidth = pixels.get(0).size();
+        if(newWidth > currentWidth) {
+            for(ArrayList<Color> rows : pixels)
+                for(int i = currentWidth; i < newWidth; i++)
+                    rows.add(new Color(0,0,0,0));
+        } else {
+            for(ArrayList<Color> row : pixels) {
+                while (row.size() > newWidth)
+                    row.remove(row.size() - 1);
+            }
+        }
+        GUI.getInstance().getCanvas().repaint();
+    }
+
+    public void changeHeight(int newHeight) {
+        int currentHight = pixels.size();
+        if(newHeight > currentHight) {
+            for(int i = currentHight; i < newHeight; i++) {
+                ArrayList<Color> temp = new ArrayList<>();
+                for(int j = 0; j < pixels.get(0).size(); j++)
+                    temp.add(new Color(0,0,0,0));
+                pixels.add(temp);
+            }
+        } else {
+            while (pixels.size() > newHeight)
+                pixels.remove(pixels.size() - 1);    
+        }
+        GUI.getInstance().getCanvas().repaint();
+    }
+
 
 }
