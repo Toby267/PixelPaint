@@ -35,6 +35,7 @@ public class FillTool implements Tool{
         pointsToCheck.add(new Point((int)point.getX(), (int)point.getY()));
 
         Layer activeLayer = GUI.getInstance().getActiveImage().getActiveLayer();
+        int tolerance = GUI.getInstance().getFillTolerance();
 
         while (!pointsToCheck.isEmpty()){
             Point nextPoint = pointsToCheck.remove();
@@ -44,8 +45,7 @@ public class FillTool implements Tool{
             
             checkedPoints.add(nextPoint);
 
-            //TODO: Check if in tolerance
-            if(!targetColor.equals(pixels[nextPoint.x][nextPoint.y]))
+            if(getTolerance(targetColor, pixels[nextPoint.x][nextPoint.y]) > tolerance)
                 continue;
 
             actionOldColors.add(activeLayer.getPixel(nextPoint.x, nextPoint.y));
@@ -70,6 +70,23 @@ public class FillTool implements Tool{
         GUI.getInstance().getActiveImage().addAction(fillAction);
 
         c.repaint();
+    }
+
+    public double getTolerance(Color c1, Color c2) {
+        // Calculate Squared Diff
+        double rDiff = c1.getRed() - c2.getRed();
+        double gDiff = c1.getGreen() - c2.getGreen();
+        double bDiff = c1.getBlue() - c2.getBlue();
+        
+        // Find the distance in 3D space
+        double distance = Math.sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
+        
+
+        // Convert into scale 0, 100;
+        double maxDistance = Math.sqrt(255 * 255 * 3); // 441.67
+        double tolerance = (distance / maxDistance) * 100;
+        
+        return Math.max(0, Math.min(100, tolerance)); // Ensure it's within [0, 100]
     }
 
     @Override

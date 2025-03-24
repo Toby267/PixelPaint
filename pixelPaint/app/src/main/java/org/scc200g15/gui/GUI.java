@@ -16,6 +16,7 @@ import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.DrawSubPanel;
+import org.scc200g15.gui.toolbar.FillSubPanel;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.gui.toolbar.SelectSubPanel;
 import org.scc200g15.image.Image;
@@ -56,6 +57,8 @@ public class GUI extends JFrame {
   PMenuBar menuBar;
   PSideBar sideBar;
   LayerSelectorPanel layerSelector;
+  PStatusBar statusBar;
+  FillSubPanel fillSP;
 
   private void registerTool(Tool tool, ImageIcon icon, String toolID, String name){
     toolManager.registerTool(toolID, tool);
@@ -82,7 +85,8 @@ public class GUI extends JFrame {
     registerTool(eraseTool, IconManager.ERASE_ICON, "erase", "Erase Tool", esp);
 
     FillTool fillTool = new FillTool();
-    registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool");
+    fillSP = new FillSubPanel(PToolBar.height);
+    registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool", fillSP);
 
     StarTool starTool = new StarTool();
     registerTool(starTool, IconManager.STAR_ICON, "star", "Star Tool");
@@ -108,7 +112,7 @@ public class GUI extends JFrame {
     add(toolBar, BorderLayout.NORTH);
 
     // Add the StatusBar to the JFrame
-    PStatusBar statusBar = new PStatusBar(this);
+    statusBar = new PStatusBar(this);
     add(statusBar, BorderLayout.SOUTH);
 
     // Add the SideBar to the JFrame
@@ -118,6 +122,8 @@ public class GUI extends JFrame {
     // Canvas
     canvas = new PCanvas();
     add(canvas);
+
+    canvas.addMouseMotionListener(statusBar);
 
     // Add the LayerSelector to the JFrame
     layerSelector = new LayerSelectorPanel(this);
@@ -187,5 +193,12 @@ public class GUI extends JFrame {
     SwingUtilities.updateComponentTreeUI(this);
 
     isDarkMode = !isDarkMode;
+  }
+  public PStatusBar getStatusBar(){
+    return statusBar;
+  }
+
+  public int getFillTolerance(){
+    return fillSP.getTolerance();
   }
 }

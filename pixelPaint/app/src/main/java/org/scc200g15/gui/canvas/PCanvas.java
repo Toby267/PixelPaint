@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import org.scc200g15.gui.GUI;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.ToolManager;
 
@@ -144,6 +145,8 @@ public class PCanvas extends JPanel {
   public void zoomIn(Point p) {
     zoomCenter = p;
     zoomLevel += 0.05f;
+
+    GUI.getInstance().getStatusBar().updateZoom(zoomLevel);
   }
 
   /**
@@ -157,6 +160,8 @@ public class PCanvas extends JPanel {
       zoomLevel = 0.05f;
     else
       zoomCenter = p;
+
+    GUI.getInstance().getStatusBar().updateZoom(zoomLevel);
   }
 
   /**
