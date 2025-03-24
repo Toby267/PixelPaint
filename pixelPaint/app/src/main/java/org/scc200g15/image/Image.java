@@ -42,6 +42,22 @@ public final class Image {
     Layers.add(new Layer("LAYER 2", new Color(0, 83, 234, 128), width, height));
   }
 
+  public Image(BufferedImage bufferedImage) {
+    Layers = new ArrayList<>(16);
+
+    Color[][] pixels = new Color[bufferedImage.getWidth()][bufferedImage.getHeight()];
+
+    for(int i = 0; i < bufferedImage.getWidth(); i++){
+      for(int j = 0; j < bufferedImage.getHeight(); j++){
+        pixels[i][j] = new Color(bufferedImage.getRGB(i, j));
+      }
+    }
+
+    Layers.add(new Layer("LAYER 1", pixels));
+    setActiveLayer(Layers.getFirst(), null);
+    GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.getFirst());
+}
+
   public int moveLayer(int index1, int index2) {
     if (index1 < 0 || index1 >= Layers.size() || index2 < 0 || index2 >= Layers.size()) {
       return -1;

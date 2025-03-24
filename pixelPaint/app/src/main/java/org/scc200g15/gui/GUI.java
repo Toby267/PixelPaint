@@ -1,10 +1,18 @@
 package org.scc200g15.gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -30,6 +38,7 @@ import org.scc200g15.tools.squareSelect.SquareSelectTool;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+
 
 
 /**
@@ -90,6 +99,7 @@ public class GUI extends JFrame {
 
   private GUI() {
     super("Pixel Paint");
+    setupShortcuts();
 
     try {
     UIManager.setLookAndFeel( new FlatLightLaf() );
@@ -171,7 +181,6 @@ public class GUI extends JFrame {
   }
 
   public void toggleDarkMode(){
-    System.out.println(isDarkMode);
     if(isDarkMode){
       try {
         UIManager.setLookAndFeel( new FlatLightLaf() );
@@ -197,4 +206,114 @@ public class GUI extends JFrame {
   public int getFillTolerance(){
     return fillSP.getTolerance();
   }
+
+  private void setupShortcuts() {
+    JRootPane rootPane = this.getRootPane();
+    InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+    ActionMap actionMap = rootPane.getActionMap();
+
+    // Ctrl + S → Save Image
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "saveImage");
+    actionMap.put("saveImage", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+              canvas.saveImage();
+            }
+        }
+    });
+
+
+    // Ctrl + O → Open Image
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK), "openImage");
+    actionMap.put("openImage", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+              canvas.openImage();
+            }
+        }
+    });
+
+    // Ctrl + Z → Undo
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK), "undo");
+    actionMap.put("undo", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+              GUI.getInstance().getActiveImage().undoAction();
+            }
+        }
+    });
+
+    // Ctrl + Y → Redo
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK), "redo");
+    actionMap.put("redo", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+              GUI.getInstance().getActiveImage().redoAction();
+            }
+        }
+    });
+
+
+
+
+// Ctrl + E → Eraser Tool
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "eraserTool");
+actionMap.put("eraserTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+              GUI.getInstance().getToolManager().setActiveTool("erase");
+            } catch (Error ex) {
+                System.out.println("Error: Tool 'erase' not found.");
+            }
+        }
+    }
+});
+
+// Ctrl + B → Brush Tool (Draw Tool)
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK), "brushTool");
+actionMap.put("brushTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+              GUI.getInstance().getToolManager().setActiveTool("draw");
+            } catch (Error ex) {
+                System.out.println("Error: Tool 'draw' not found.");
+            }
+        }
+    }
+});
+
+// Ctrl + F → Fill Tool
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), "fillTool");
+actionMap.put("fillTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+              GUI.getInstance().getToolManager().setActiveTool("fill");
+            } catch (Error ex) {
+              System.out.println("Error: Tool 'fill' not found.");
+            }
+        }
+    }
+});
+
+    // Ctrl + D → Toggle Dark Mode
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "toggleDarkMode");
+    actionMap.put("toggleDarkMode", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            toggleDarkMode();
+        }
+    });
+}
+
+
 }
