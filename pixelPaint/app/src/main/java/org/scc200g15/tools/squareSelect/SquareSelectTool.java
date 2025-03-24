@@ -124,10 +124,10 @@ public class SquareSelectTool implements Tool {
     }
   }
 
-  public void rotate(PCanvas c)
+  public void rotate(PCanvas c, boolean isClockwise)
   {
     if (currentState instanceof Selecting) {
-      printCached(c);
+      
       deselect(c);
     }
   }
