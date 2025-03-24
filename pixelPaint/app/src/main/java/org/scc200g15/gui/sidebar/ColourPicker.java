@@ -18,7 +18,7 @@ public class ColourPicker extends JComponent {
     private final int RADIUS_INNER_H = 68;
 
     // Saturation + Brightness components
-    private final int RADIUS_SB = 50;
+    private final int RADIUS_SB = 47;
 
     // Colour wheel center points
     private int x;
