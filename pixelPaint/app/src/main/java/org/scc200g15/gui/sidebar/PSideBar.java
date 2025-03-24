@@ -151,9 +151,6 @@ public class PSideBar extends JPanel {
         (int) bText.getValue(), 
         opacityPercent
       ));
-
-      Color out = getActiveColor(); // ! TEMPORARY
-      System.out.println("Active: (" + out.getRed() + ", " + out.getGreen() + ", " + out.getBlue() + ", " + out.getAlpha() + ")");
     });
 
     return button;
