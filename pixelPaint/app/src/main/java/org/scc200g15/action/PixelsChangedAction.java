@@ -46,6 +46,26 @@ public class PixelsChangedAction implements Action{
      * @param layer the layer the change happened on
      * @param points array contain all of the points that where changed
      * @param originalColors array containing the original color of each point
+     * @param newColors array containing the new color of each point
+     */
+    public PixelsChangedAction(Layer layer, ArrayList<Point> points, ArrayList<Color> originalColors, ArrayList<Color> newColors) {
+        this.layer = layer;
+
+        if(points.size() != originalColors.size()){
+            System.out.println("The Arrays Passed Are of different lengths");
+            return;
+        }
+
+        this.points = points.toArray(Point[]::new);
+        this.originalColors = originalColors.toArray(Color[]::new);
+        this.newColors = newColors.toArray(Color[]::new);
+    }
+
+    /**
+     * Constructor for PixelsChangedAction
+     * @param layer the layer the change happened on
+     * @param points array contain all of the points that where changed
+     * @param originalColors array containing the original color of each point
      * @param newColor the new color for all of the pixels that where changed
      */
     public PixelsChangedAction(Layer layer, Point[] points, Color[] originalColors, Color newColor) {
