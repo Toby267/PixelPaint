@@ -248,6 +248,10 @@ public class PCanvas extends JPanel {
     imageBuffer = activeImage.calculateImageBuffer();
   }
 
+  public BufferedImage getBufferedImage() {
+    return imageBuffer;
+  }
+
   /**
    * @param point the point to check
    * @return returns true if point is out of canvas bounds

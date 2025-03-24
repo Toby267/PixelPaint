@@ -28,6 +28,7 @@ import org.scc200g15.gui.toolbar.FillSubPanel;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.gui.toolbar.SelectSubPanel;
 import org.scc200g15.image.Image;
+import org.scc200g15.tools.ColourDropperTool;
 import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.Tool;
@@ -95,6 +96,10 @@ public class GUI extends JFrame {
     FillTool fillTool = new FillTool();
     fillSP = new FillSubPanel(PToolBar.height);
     registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool", fillSP);
+
+    // Not in toolbar
+    ColourDropperTool dropperTool = new ColourDropperTool();
+    toolManager.registerTool("dropper", dropperTool);    
   }
 
   private GUI() {

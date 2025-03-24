@@ -116,11 +116,6 @@ public class ColourPicker extends JComponent {
                 }
             }
         }
-        if(tempC != null)
-            System.out.println("Calculated: (" + tempC.getRed() + ", " + tempC.getGreen() + ", " + tempC.getBlue() + ")");
-        System.out.println("MouseX SETSB = " + mouseX);
-        System.out.println("MouseY SETSB = " + mouseY);
-        System.out.println("IN RANGE = " + inSBRange(mouseX, mouseY));
         repaint();
     }
 
