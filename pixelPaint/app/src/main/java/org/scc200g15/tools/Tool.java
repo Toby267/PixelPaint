@@ -30,4 +30,5 @@ public interface Tool {
 
   public void keyReleased(PCanvas c, java.awt.event.KeyEvent e);
 
+  public void deactivate(PCanvas c);
 }

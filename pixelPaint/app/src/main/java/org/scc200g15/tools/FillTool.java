@@ -90,6 +90,10 @@ public class FillTool implements Tool{
     }
 
     @Override
+    public void deactivate(PCanvas c) {
+    }
+
+    @Override
     public void mousePressed(PCanvas c, MouseEvent e) {
     }
 

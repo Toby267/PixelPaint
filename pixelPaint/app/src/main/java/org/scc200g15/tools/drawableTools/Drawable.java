@@ -139,22 +139,25 @@ public void mousePressed(PCanvas c, MouseEvent e) {
     c.repaint();
   }
   protected abstract Color getColor();
+
+  @Override
+  public void deactivate(PCanvas c) {}
   
-    // Required interface methods that we don't need
-    @Override
-    public void mouseMoved(PCanvas c, MouseEvent e) {}
-    @Override
-    public void mouseWheelMoved(PCanvas c, MouseWheelEvent e) {}
-    @Override
-    public void mouseClicked(PCanvas c, MouseEvent e) {}
-    @Override
-    public void mouseExited(PCanvas c, MouseEvent e) {}
-    @Override
-    public void mouseEntered(PCanvas c, MouseEvent e) {}
-    @Override
-    public void keyTyped(PCanvas c, KeyEvent e) {}
-    @Override
-    public void keyPressed(PCanvas c, KeyEvent e) {}
-    @Override
-    public void keyReleased(PCanvas c, KeyEvent e) {}
+  // Required interface methods that we don't need
+  @Override
+  public void mouseMoved(PCanvas c, MouseEvent e) {}
+  @Override
+  public void mouseWheelMoved(PCanvas c, MouseWheelEvent e) {}
+  @Override
+  public void mouseClicked(PCanvas c, MouseEvent e) {}
+  @Override
+  public void mouseExited(PCanvas c, MouseEvent e) {}
+  @Override
+  public void mouseEntered(PCanvas c, MouseEvent e) {}
+  @Override
+  public void keyTyped(PCanvas c, KeyEvent e) {}
+  @Override
+  public void keyPressed(PCanvas c, KeyEvent e) {}
+  @Override
+  public void keyReleased(PCanvas c, KeyEvent e) {}
 }
