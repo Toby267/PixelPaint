@@ -53,6 +53,9 @@ public final class Image {
       }
     }
 
+    this.width = bufferedImage.getWidth();
+    this.height = bufferedImage.getHeight();
+
     Layers.add(new Layer("LAYER 1", pixels));
     setActiveLayer(Layers.getFirst(), null);
     GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.getFirst());
