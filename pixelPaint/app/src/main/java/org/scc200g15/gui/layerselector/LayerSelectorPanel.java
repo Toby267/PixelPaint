@@ -161,10 +161,7 @@ public final class LayerSelectorPanel extends JPanel {
     // Redraw the layer menu
     redrawMenuUI();
 
-    addLayerPanel.setVisible(image.getLayerCount() <= 15);
-
-    // TODO: add this to redrawMenuUI?
-    Tools.refreshUI(this);
+    addLayerPanel.setVisible(image.getLayerCount() <= 15);    
   }
 
   // * ----------------------- [REMOVE LAYERS] ----------------------- * //
@@ -174,7 +171,6 @@ public final class LayerSelectorPanel extends JPanel {
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
     if(image == null){
-      // TODO: Handle Error
       System.out.println("ERROR: removeLayerReferences image is null");
       return;
     }

@@ -1,7 +1,6 @@
 package org.scc200g15.gui.menubar;
 
 import java.awt.Graphics;
-import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 

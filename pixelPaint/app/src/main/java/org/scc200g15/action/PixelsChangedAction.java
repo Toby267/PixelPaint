@@ -21,8 +21,8 @@ public class PixelsChangedAction implements Action{
         this.layer = layer;
 
         if(points.length != originalColors.length || points.length != newColors.length){
-            //TODO: Handle Error
             System.out.println("The Arrays Passed Are of different lengths");
+            return;
         }
 
         this.points = points;
@@ -34,8 +34,8 @@ public class PixelsChangedAction implements Action{
         this.layer = layer;
 
         if(points.length != originalColors.length){
-            //TODO: Handle Error
             System.out.println("The Arrays Passed Are of different lengths");
+            return;
         }
 
         this.points = points;
@@ -48,8 +48,8 @@ public class PixelsChangedAction implements Action{
         this.layer = layer;
 
         if(points.size() != originalColors.size()){
-            //TODO: Handle Error
             System.out.println("The Arrays Passed Are of different lengths");
+            return;
         }
 
         this.points = points.toArray(Point[]::new);

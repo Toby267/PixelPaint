@@ -17,7 +17,7 @@ public class ColourPicker extends JComponent {
     private final int RADIUS_OUTER_H = 80;
     private final int RADIUS_INNER_H = 68;
 
-    // Saturation + Brigthness components
+    // Saturation + Brightness components
     private final int RADIUS_SB = 50;
 
     // Current selected colour
@@ -31,11 +31,11 @@ public class ColourPicker extends JComponent {
     private int pastX_H;
     private int pastY_H;
 
-    // Saved Saturation + Brigthness mouse position
+    // Saved Saturation + Brightness mouse position
     private int pastX_BS;
     private int pastY_BS;
 
-    // Stores Saturation + Brigthness to search by pixel
+    // Stores Saturation + Brightness to search by pixel
     private BufferedImage IMAGE_SB;
 
     private final ColourPickerTools Tools = new ColourPickerTools();
@@ -117,7 +117,7 @@ public class ColourPicker extends JComponent {
 
     // * ---------------------------------- [ HUE ] ---------------------------------- * //
 
-    // ! TODO: STOP FROM BEING REPAINTED FOR OPTIMISATION
+    // ! TODO: STOP FROM BEING REPAINTED FOR OPTIMIZATION
     public void paintPickerH(Graphics2D g2, int x, int y) {
         // Draw a line for each colour over a 360° donut.
         for (int i = 0; i < 360; i++) {
@@ -141,7 +141,7 @@ public class ColourPicker extends JComponent {
         int ringWidth = 5 + (RADIUS_OUTER_H - RADIUS_INNER_H) * 2;
         int radius = (RADIUS_OUTER_H + RADIUS_INNER_H) / 2;
 
-        // Find angle (θ) to use in calcuating hue (normalise 0-1)
+        // Find angle (θ) to use in calculating hue (normalize 0-1)
         double θ = Tools.getθ(y - centerY, x - centerX); 
         double hue = Tools.getHue(θ);
 

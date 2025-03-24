@@ -132,7 +132,7 @@ final public class Layer extends JPanel {
                     return;
                 } else {
                     if(!e.isPopupTrigger()) 
-                        GUI.getInstance().getActiveImage().disableSeletedLayers();
+                        GUI.getInstance().getActiveImage().disableSelectedLayers();
                 }
                 
                 checkDisplayContextMenu(e);
@@ -244,9 +244,6 @@ final public class Layer extends JPanel {
         
         JPopupMenu menu = new JPopupMenu();
 
-        JMenuItem temporary = new JMenuItem("TEMPORARY");
-        menu.add(temporary);
-
         if(isSelected) {
             JMenuItem mergeOption = new JMenuItem("Merge");
             mergeOption.addActionListener((ActionEvent e) -> {
@@ -309,7 +306,6 @@ final public class Layer extends JPanel {
     }
     public void setPixels(Point[] points, Color[] colors) {
         if(points.length != colors.length){
-            //TODO: Handle error
             return;
         }
 

@@ -114,7 +114,7 @@ public void mousePressed(PCanvas c, MouseEvent e) {
    * draws on the canvas
    * 
    * @param c the canvas to draw on
-   * @param e the mouse event that caused the interupt
+   * @param e the mouse event that caused the interrupt
    */
   public void draw(PCanvas c, MouseEvent e){
     Point2D point = c.getPixelPoint(e.getPoint());

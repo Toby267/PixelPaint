@@ -44,7 +44,6 @@ public final class Image {
 
   public int moveLayer(int index1, int index2) {
     if (index1 < 0 || index1 >= Layers.size() || index2 < 0 || index2 >= Layers.size()) {
-      // TODO: Handle Error Invalid Layer ID
       return -1;
     }
     Layer tempLayer = Layers.get(index1);
@@ -92,7 +91,6 @@ public final class Image {
 
   public int removeLayer(int ID) {
     if (ID < 0 || ID >= Layers.size()) {
-      // TODO: Handle Error Invalid Layer ID
       return -1;
     }
 
@@ -255,7 +253,7 @@ public final class Image {
     selectedLayers.remove(layer);
   }
 
-  public void disableSeletedLayers() {
+  public void disableSelectedLayers() {
     for(Layer layer : selectedLayers) layer.switchSelectedLayerState();
     selectedLayers = new ArrayList<>(16); // Effectively removes all elements
   }
