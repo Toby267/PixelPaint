@@ -97,6 +97,9 @@ public class GUI extends JFrame {
     fillSP = new FillSubPanel(PToolBar.height);
     registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool", fillSP);
 
+    // Add undo/redo
+    toolBar.addUndoRedo();
+
     // Not in toolbar
     ColourDropperTool dropperTool = new ColourDropperTool();
     toolManager.registerTool("dropper", dropperTool);    
