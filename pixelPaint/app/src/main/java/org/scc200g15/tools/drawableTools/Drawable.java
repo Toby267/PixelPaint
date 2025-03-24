@@ -122,6 +122,7 @@ public void mousePressed(PCanvas c, MouseEvent e) {
 
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
+    int height = image.getHeight(), width = image.getWidth();
 
     ArrayList<Point2D> points = activeShape.returnPixels(point, size);
     

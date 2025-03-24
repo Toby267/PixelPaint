@@ -223,6 +223,7 @@ public final class Image {
 
     return imageBuffer;
   }
+
   public BufferedImage updateImageBuffer(BufferedImage imageBuffer, int startX, int startY, int w, int h) {
     Color[][] pixelData = compressVisiblePixels(startX, startY, w, h);
 
@@ -292,6 +293,28 @@ public final class Image {
       GUI.getInstance().getLayerSelector().removeLayerWithoutWarning(orderedLayers.get(i));
     
     selectedLayers = new ArrayList<>(16); // Effectively removes all elements
+  }
+
+  public void changeImageDimensions(int width, int height) {
+    for (Layer layer : Layers) 
+      layer.changeSize(width, height);
+    this.width = width;
+    this.height = height;
+    GUI.getInstance().getCanvas().recalculateAllPixels();
+  }
+
+  public void changeImageWidth(int width) {
+    for (Layer layer : Layers) 
+      layer.changeWidth(width);
+    this.width = width;
+    GUI.getInstance().getCanvas().recalculateAllPixels();
+  }
+
+  public void changeImageHeight(int height) {
+    for (Layer layer : Layers) 
+      layer.changeHeight(height);
+    this.height = height;
+    GUI.getInstance().getCanvas().recalculateAllPixels();
   }
 
   public void addAction(Action action){
