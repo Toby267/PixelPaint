@@ -49,6 +49,8 @@ public class PanZoomTool implements Tool {
 
   // Not used
   @Override
+  public void deactivate(PCanvas c) {}
+  @Override
   public void mouseClicked(PCanvas c, MouseEvent e) {}
   @Override
   public void mouseMoved(PCanvas c, MouseEvent e) {}

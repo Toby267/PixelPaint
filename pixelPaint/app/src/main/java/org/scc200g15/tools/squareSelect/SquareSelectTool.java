@@ -117,6 +117,13 @@ public class SquareSelectTool implements Tool {
     }
   }
 
+  @Override
+  public void deactivate(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      deselect(c);
+    }
+  }
+
   // * ---------------------------------- [ PROTECTED ACTIONS ] ---------------------------------- * //
   
   /**

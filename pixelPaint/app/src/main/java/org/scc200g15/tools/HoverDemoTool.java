@@ -27,6 +27,8 @@ public class HoverDemoTool implements Tool {
 
   // Not Used
   @Override
+  public void deactivate(PCanvas c) {}
+  @Override
   public void mouseDragged(PCanvas c, MouseEvent e) {}
   @Override
   public void mousePressed(PCanvas c, MouseEvent e) {}

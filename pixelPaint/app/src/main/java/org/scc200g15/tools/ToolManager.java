@@ -80,6 +80,8 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    * @param activeTool the tool you want to be the active tool
    */
   public void setActiveTool(Tool activeTool) {
+    if (this.activeTool != null)
+      this.activeTool.deactivate(canvas);
     this.activeTool = activeTool;
     GUI.getInstance().repaintToolBar();
   }
@@ -90,6 +92,8 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    * @param ID the ID of the tool you want to be the active tool
    */
   public void setActiveTool(String ID) {
+    if (this.activeTool != null)
+      this.activeTool.deactivate(canvas);
     this.activeTool = getTool(ID);
     GUI.getInstance().repaintToolBar();
   }
@@ -105,6 +109,8 @@ public class ToolManager implements MouseMotionListener, MouseListener, MouseWhe
    * sets active tool to the default tool
    */
   public void setDefault(){
+    if (this.activeTool != null)
+      this.activeTool.deactivate(canvas);
     this.activeTool = defaultTool;
   }
 
