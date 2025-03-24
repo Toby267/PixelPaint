@@ -14,8 +14,10 @@ import javax.swing.JSpinner;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.scc200g15.gui.icons.IconManager;
 
 import org.scc200g15.gui.GUI;
 
@@ -32,6 +34,8 @@ public class PSideBar extends JPanel {
   JSpinner gText = createTextField();
   JSpinner bText = createTextField();
 
+  private final JButton dropperButton = new JButton(IconManager.DROPPER_ICON);
+
   public PSideBar(GUI window) {
     setBorder(new BevelBorder(BevelBorder.LOWERED));
 
@@ -44,11 +48,25 @@ public class PSideBar extends JPanel {
   }
 
   private void createDisplay() {
+    JPanel titlePanel = new JPanel();
+    panelSetup(titlePanel);
+
     // Title
     JPanel title = new JPanel();
     panelSetup(title);
     title.add(titleLabel());
-    add(title);
+    titlePanel.add(title);
+
+    // Colour Picker button    
+    dropperButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
+    dropperButton.setOpaque(false);
+    dropperButton.setContentAreaFilled(false);
+    dropperButton.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getToolManager().setActiveTool("dropper");
+    });
+    titlePanel.add(dropperButton);
+
+    add(titlePanel);
 
     // Colour Picker
     this.colourPicker.setAlignmentY(TOP_ALIGNMENT);
@@ -85,7 +103,7 @@ public class PSideBar extends JPanel {
     add(button);
 
     // Bottom Spacing
-    add(Box.createVerticalStrut(340));
+    add(Box.createVerticalStrut(300));
   }
 
   private void panelSetup(JPanel panel) {
@@ -166,6 +184,9 @@ public class PSideBar extends JPanel {
   }
 
 
-
+  public void setColourWheel(Color c) {
+    this.colourPicker.setColor(c);
+    this.repaint();
+  }
 
 }
