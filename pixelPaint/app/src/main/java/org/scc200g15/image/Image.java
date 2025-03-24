@@ -30,16 +30,16 @@ public final class Image {
    * Basic constructor that creates a 16x16 blue image
    */
   public Image() {
+    // ! TODO: CREATE A DEFAULT WHITE BACKGROUND LAYER WHICH CANNOT BE ADDED / REMOVED.
+
     Layers = new ArrayList<>(16);
 
     // Selected layers to be merged
     selectedLayers = new ArrayList<>(16);
 
-    Layers.add(new Layer("LAYER 1", new Color(195, 127, 209, 128), width, height));
+    Layers.add(new Layer("LAYER 1", new Color(255, 255, 255), width, height));
     setActiveLayer(Layers.getFirst(), null);
     GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.getFirst());
-    
-    Layers.add(new Layer("LAYER 2", new Color(0, 83, 234, 128), width, height));
   }
 
   public Image(BufferedImage bufferedImage) {

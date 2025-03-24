@@ -102,10 +102,10 @@ public class GUI extends JFrame {
     setupShortcuts();
 
     try {
-    UIManager.setLookAndFeel( new FlatLightLaf() );
-} catch( UnsupportedLookAndFeelException ex ) {
-    System.err.println( "Failed to initialize LaF" );
-}
+      UIManager.setLookAndFeel( new FlatLightLaf() );
+    } catch( UnsupportedLookAndFeelException ex ) {
+        System.err.println( "Failed to initialize LaF" );
+    }
 
     setLayout(new BorderLayout());
 
@@ -169,10 +169,13 @@ public class GUI extends JFrame {
   public ToolManager getToolManager() {
     return toolManager;
   }
-  public PToolBar getToolBar(){
+  public PToolBar getToolBar() {
     return toolBar;
   }
-  public void repaintToolBar(){
+  public PSideBar getSideBar() {
+    return sideBar;
+  }
+  public void repaintToolBar() {
     toolBar.repaint();
   }
 
