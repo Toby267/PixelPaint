@@ -102,6 +102,10 @@ public class SquareSelectTool implements Tool {
   public void delete(PCanvas c) {
     if (currentState instanceof Selecting) {
       deleteSelected(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColors, new Color(0, 0, 0, 0));
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
       deselect(c);
     }
   }
@@ -121,6 +125,22 @@ public class SquareSelectTool implements Tool {
   public void paste(PCanvas c) {
     if (currentState instanceof Selecting) {
       printCached(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColors, actionNewColors);
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
+      deselect(c);
+    }
+  }
+
+  public void move(PCanvas c) {
+    if (currentState instanceof Moving) {
+      cacheAndDelete(c);
+      printCached(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColors, actionNewColors);
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
       deselect(c);
     }
   }
@@ -157,6 +177,9 @@ public class SquareSelectTool implements Tool {
     setStartPoint(null);
     setEndPoint(null);
 
+    setMoveStartPoint(null);
+    setMoveEndPoint(null);
+
     actionPoints = new ArrayList<>();
     actionOldColors = new ArrayList<>();
     
@@ -190,12 +213,6 @@ public class SquareSelectTool implements Tool {
         c.recalculatePixel(x, y);
       }
     }
-
-    PixelsChangedAction drawAction = new PixelsChangedAction(activeLayer, actionPoints, actionOldColors, new Color(0, 0, 0, 0));
-    GUI.getInstance().getActiveImage().addAction(drawAction);
-
-    actionPoints = new ArrayList<>();
-    actionOldColors = new ArrayList<>();
 
     c.repaint();
   }
@@ -252,11 +269,6 @@ public class SquareSelectTool implements Tool {
         c.recalculatePixel(x, y);
       }
     }
-    PixelsChangedAction drawAction = new PixelsChangedAction(activeLayer, actionPoints, actionOldColors, new Color(0, 0, 0, 0));
-    GUI.getInstance().getActiveImage().addAction(drawAction);
-
-    actionPoints = new ArrayList<>();
-    actionOldColors = new ArrayList<>();
 
     c.repaint();
   }
@@ -295,13 +307,6 @@ public class SquareSelectTool implements Tool {
         actionNewColors.add(activeLayer.getPixel(x, y));
       }
     }
-    //public PixelsChangedAction(Layer layer, Point[] points, Color[] originalColors, Color[] newColors)
-    
-    PixelsChangedAction drawAction = new PixelsChangedAction(activeLayer, actionPoints, actionOldColors, actionNewColors);
-    GUI.getInstance().getActiveImage().addAction(drawAction);
-
-    actionPoints = new ArrayList<>();
-    actionOldColors = new ArrayList<>();
 
     c.repaint();
   }
