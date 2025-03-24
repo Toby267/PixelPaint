@@ -26,12 +26,7 @@ public class Moving implements SelectState{
    */
   @Override
   public void mouseReleased(PCanvas c, MouseEvent e, SquareSelectTool context) {
-    context.cacheAndDelete(c);
-    context.printCached(c);
-    context.deselect(c);
-
-    context.setMoveStartPoint(null);
-    context.setMoveEndPoint(null);
+    context.move(c);
   }
 
   //unused action listeners
