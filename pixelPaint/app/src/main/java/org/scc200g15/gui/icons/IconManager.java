@@ -80,7 +80,7 @@ public class IconManager {
     public static final ImageIcon STAR_ICON = createImageIcon(16, 16, STAR_ICON_PATH);
 
     // SideBar Icons
-    public static final ImageIcon DROPPER_ICON = createImageIcon(16, 16, DROPPER_ICON_PATH);
+    public static final ImageIcon DROPPER_ICON = createImageIcon(25, 25, DROPPER_ICON_PATH);
 
     /* --------------------------------------- [ICON GENERATION] --------------------------------------- */
 
