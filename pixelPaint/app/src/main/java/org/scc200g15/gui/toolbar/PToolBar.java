@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import org.scc200g15.gui.GUI;
+import org.scc200g15.gui.icons.IconManager;
 import org.scc200g15.tools.Tool;
 
 /**
@@ -73,19 +74,21 @@ public class PToolBar extends JPanel {
   }
 
   public void addUndoRedo() {
-    JButton a = new JButton("Undo");
-    JButton b = new JButton("Redo");
+    JButton undoBTN = new JButton(IconManager.UNDO_ICON);
+    undoBTN.setBorder(new LineBorder(new Color(0, 0, 0, 0), 8, true)); 
+    JButton redoBTN = new JButton(IconManager.REDO_ICON);
+    redoBTN.setBorder(new LineBorder(new Color(0, 0, 0, 0), 8, true));
 
-    a.addActionListener((ActionEvent e) -> {
+    undoBTN.addActionListener((ActionEvent e) -> {
       GUI.getInstance().getActiveImage().undoAction();
     });
 
-    b.addActionListener((ActionEvent e) -> {
+    redoBTN.addActionListener((ActionEvent e) -> {
       GUI.getInstance().getActiveImage().redoAction();
     });
 
-    this.add(a);
-    this.add(b);
+    this.add(undoBTN);
+    this.add(redoBTN);
   }
 
 
