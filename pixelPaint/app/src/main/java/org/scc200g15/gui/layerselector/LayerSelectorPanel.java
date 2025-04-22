@@ -1,6 +1,7 @@
 package org.scc200g15.gui.layerselector;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public final class LayerSelectorPanel extends JPanel {
   private JPanel addLayerPanel;
   private Layer lastActiveLayer;
 
+  JPanel separator;
+
   /**
    * SideBar which holds all the Layer Selectors
    */
@@ -42,6 +45,12 @@ public final class LayerSelectorPanel extends JPanel {
 
     // JPanel which holds all the content
     contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
+    separator = new JPanel();
+    //separator.setMaximumSize(new Dimension(contentPanel.getWidth(), 4));
+    //separator.setPreferredSize(new Dimension(contentPanel.getWidth(), 4));
+    separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+    separator.setBackground(Color.BLUE);  // or whatever color you want
 
     // Draw the layer selection menu
     drawMenuUI(window);
@@ -323,4 +332,35 @@ public final class LayerSelectorPanel extends JPanel {
     return new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height);
   } 
 
+  public void setSeparatorPOS(int pos){
+    Image image = GUI.getInstance().getActiveImage();
+
+    contentPanel.remove(separator);
+    System.out.println(pos);
+    if(pos < 0) {
+      contentPanel.repaint();
+      contentPanel.revalidate(); // refresh layout
+      return;
+    }
+
+    Component[] components = contentPanel.getComponents();
+  
+    int layerCount = 0;
+    int insertIndex =  (image.getLayerCount() <= (Config.MAX_LAYERS - 1)) ? components.length - 1 : components.length; // default to end if not found
+
+    for (int i = 0; i < components.length; i++) {
+      if (components[i] instanceof Layer) {
+          if (layerCount == pos) {
+              insertIndex = i; // insert after this Layer
+              break;
+          }
+          layerCount++;
+      }
+    }
+
+    contentPanel.add(separator, insertIndex); // insert at the calculated index
+    contentPanel.repaint();
+    contentPanel.revalidate(); // refresh layout
+  }
 }
+
