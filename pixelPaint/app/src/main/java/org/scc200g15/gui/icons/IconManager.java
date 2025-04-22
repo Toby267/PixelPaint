@@ -20,6 +20,9 @@ public class IconManager {
     private static final String FILL_ICON_PATH = "/Icons/fill.png";
     private static final String SQUARE_SELECT_ICON_PATH = "/Icons/Square_Select.png";
 
+    private static final String UNDO_ICON_PATH = "/Icons/undo.png";
+    private static final String REDO_ICON_PATH = "/Icons/redo.png";
+
     private static final String DELETE_ICON_PATH = "/Icons/delete.png";
     private static final String ESCAPE_ICON_PATH = "/Icons/escape.png";
     private static final String COPY_ICON_PATH = "/Icons/copy.png";
@@ -67,6 +70,9 @@ public class IconManager {
     public static final ImageIcon ERASE_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, ERASE_ICON_PATH);
     public static final ImageIcon FILL_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, FILL_ICON_PATH);
     public static final ImageIcon SQUARE_SELECT_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, SQUARE_SELECT_ICON_PATH);
+
+    public static final ImageIcon UNDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, UNDO_ICON_PATH);
+    public static final ImageIcon REDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, REDO_ICON_PATH);
 
     public static final ImageIcon DELETE_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, DELETE_ICON_PATH);
     public static final ImageIcon ESCAPE_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, ESCAPE_ICON_PATH);
