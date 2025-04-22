@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 /**
  * used to represents a star for drawing on the canvas
- * TODO: this
  */
 public class Star implements Shape {
   final int POINTS = 5;

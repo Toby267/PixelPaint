@@ -28,6 +28,7 @@ import org.scc200g15.gui.toolbar.FillSubPanel;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.gui.toolbar.SelectSubPanel;
 import org.scc200g15.image.Image;
+import org.scc200g15.tools.ColourDropperTool;
 import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.Tool;
@@ -95,6 +96,13 @@ public class GUI extends JFrame {
     FillTool fillTool = new FillTool();
     fillSP = new FillSubPanel(PToolBar.height);
     registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool", fillSP);
+
+    // Add undo/redo
+    toolBar.addUndoRedo();
+
+    // Not in toolbar
+    ColourDropperTool dropperTool = new ColourDropperTool();
+    toolManager.registerTool("dropper", dropperTool);    
   }
 
   private GUI() {
@@ -102,10 +110,10 @@ public class GUI extends JFrame {
     setupShortcuts();
 
     try {
-    UIManager.setLookAndFeel( new FlatLightLaf() );
-} catch( UnsupportedLookAndFeelException ex ) {
-    System.err.println( "Failed to initialize LaF" );
-}
+      UIManager.setLookAndFeel( new FlatLightLaf() );
+    } catch( UnsupportedLookAndFeelException ex ) {
+        System.err.println( "Failed to initialize LaF" );
+    }
 
     setLayout(new BorderLayout());
 
@@ -169,15 +177,14 @@ public class GUI extends JFrame {
   public ToolManager getToolManager() {
     return toolManager;
   }
-  public PToolBar getToolBar(){
+  public PToolBar getToolBar() {
     return toolBar;
   }
-  public void repaintToolBar(){
-    toolBar.repaint();
-  }
-
   public PSideBar getSideBar() {
     return sideBar;
+  }
+  public void repaintToolBar() {
+    toolBar.repaint();
   }
 
   public void toggleDarkMode(){

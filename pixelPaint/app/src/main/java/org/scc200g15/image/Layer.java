@@ -4,8 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,8 +23,8 @@ import org.scc200g15.gui.icons.IconManager;
 /**
  * A layer of an image, stores a grid of pixels
  */
-final public class Layer extends JPanel {
-    Color[][] pixels;
+final public class Layer extends JPanel implements MouseListener, MouseMotionListener {
+    ArrayList<ArrayList <Color>> pixels = new ArrayList<>();
 
     // Actual Components of a LayerMenuItem
     private final JButton displayButton = new JButton(IconManager.VISIBLE_EYE_OPEN_ICON);
@@ -36,6 +38,8 @@ final public class Layer extends JPanel {
     private boolean isBeingRenamed = false;
     private boolean isSelected = false;
 
+    int startPoint, originIndex;
+
      /**
      * Basic constructor that creates a layer with a 2D array of pixels
      * 
@@ -43,8 +47,8 @@ final public class Layer extends JPanel {
      * @param pixels The 2D array of pixels to use
      */
     public Layer(String layerName, Color[][] pixels){
-        setupLayerMenuPanel(layerName);        
-        this.pixels = pixels;
+        setupLayerMenuPanel(layerName);
+        setPixels(pixels);
     }
 
     /**
@@ -57,14 +61,13 @@ final public class Layer extends JPanel {
      */
     public Layer(String layerName, Color c, int w, int h) {   
         setupLayerMenuPanel(layerName);
-        
-        pixels = new Color[w][h];
-
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                pixels[x][y] = c;
-            }
+        for (int y = 0; y < h; y++) {
+            ArrayList<Color> row = new ArrayList<>();
+            for (int x = 0; x < w; x++)
+                row.add(c);
+            this.pixels.add(row);
         }
+
     }
 
     private void setupLayerMenuPanel(String layerName){
@@ -103,79 +106,10 @@ final public class Layer extends JPanel {
             GUI.getInstance().getLayerSelector().removeLayerWithWarning(this);
         });
 
-        // Add the ability to move layers around
-        this.addMouseListener(new MouseAdapter() {
-            int startPoint, originIndex;
+        addMouseListener(this);
+        addMouseMotionListener(this);
 
-
-            // TODO: Could add a feature where a blue bar is displayed where the layer
-            // would be moved if mouseReleased
-            @Override
-            public void mouseDragged(MouseEvent e) {
-
-            }
-
-            // ? Change border to blue when hovered
-            @Override
-            public void mousePressed(MouseEvent e) {
-                Image image = GUI.getInstance().getActiveImage();
-                if (image == null)
-                    return;
-                
-                startPoint = e.getPoint().y;
-                originIndex = image.getLayerIndex((Layer) e.getSource());
-
-                if(e.isAltDown()) {
-                    GUI.getInstance().getLayerSelector().switchSelectedLayerState(originIndex);
-                    return;
-                } 
-
-                if(!e.isAltDown())
-                    checkDisplayContextMenu(e, true);
-                
-                GUI.getInstance().getLayerSelector().setActiveLayer(originIndex);
-            }
-
-            // Move the frame to the correct position
-            // ! TODO: ASSUME IF MOVED LAYER IS UNDER 0 OR OVER MAX IT GOES TO FIRST/LAST POSITION
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                Image image = GUI.getInstance().getActiveImage();
-                if (image == null)
-                    return;
-
-                int frameHeight = image.getLayer(0).getHeight() - 1;
-                int trueStartPoint = (originIndex * frameHeight) + startPoint;
-                int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint);
-                // endPoint = e.getPoint().y
-                int destinationIndex = (int) (trueEndPoint / frameHeight);
-                
-                if (originIndex != destinationIndex) 
-                    GUI.getInstance().getLayerSelector().moveLayer(originIndex, destinationIndex);
-                
-                if(!e.isAltDown())
-                    checkDisplayContextMenu(e, false);
-
-                // Check if double click to rename layer
-                switchLabelToTextField(e);
-            }
-
-            private void checkDisplayContextMenu(MouseEvent e, boolean isMousePressed) {
-                if (isMousePressed && (System.getProperty("os.name").startsWith("Windows")))
-                    return;
-                if (!isMousePressed && !System.getProperty("os.name").startsWith("Windows"))
-                    return;
-
-                if(e.isPopupTrigger())
-                    layerContextMenu().show(e.getComponent(), e.getX(), e.getY());
-                else
-                    GUI.getInstance().getActiveImage().disableSelectedLayers();
-            }    
-
-        });
-
-        // Textbox action has finished (User pressed 'Enter' or moved to another
-        // layer)
+        // Textbox action has finished (User pressed 'Enter' or moved to another layer)
         renameLabelField.addActionListener((ActionEvent e) -> {
             renameLabelToTextField();
         });
@@ -247,8 +181,6 @@ final public class Layer extends JPanel {
 
 
     // * ----------------------- [CONTEXT MENU] ----------------------- * //
-
-    // ! TODO: MOVE TO ANOTHER FILE AND EXPAND
     public JPopupMenu layerContextMenu() {
         Image image = GUI.getInstance().getActiveImage();
         
@@ -300,20 +232,31 @@ final public class Layer extends JPanel {
      * @param y yPos of the pixel
      */
     public Color getPixel(int x, int y) {
-        return pixels[x][y];
+        return pixels.get(y).get(x);
     }
 
-    public Color setPixel(int x, int y, Color c) {
-        return pixels[x][y] = c;
+    public void setPixel(int x, int y, Color c) {
+        pixels.get(y).set(x, c);
     }
 
     public Color[][] getPixels() {
-        return pixels;
+        Color[][] array = new Color[pixels.size()][pixels.get(0).size()];
+        for (int i = 0; i < pixels.size(); i++)
+            array[i] = (Color []) pixels.get(i).toArray();
+        return array;
     }
 
     public void setPixels(Color[][] pixels) {
-        this.pixels = pixels;
-    }
+        this.pixels.clear();
+        for (int j = 0; j < pixels[0].length; j++) { // Iterate over columns first
+            ArrayList<Color> row = new ArrayList<>(pixels.length);
+            for (int i = 0; i < pixels.length; i++) { // Then iterate over rows
+                row.add(pixels[i][j]);
+            }
+            this.pixels.add(row);
+        }
+    } 
+
     public void setPixels(Point[] points, Color[] colors) {
         if(points.length != colors.length){
             return;
@@ -341,5 +284,143 @@ final public class Layer extends JPanel {
     public boolean isSelected() {
         return isSelected;
     }
+
+    public void changeSize(int newWidth, int newHeight) {
+        changeWidth(newWidth);
+        changeHeight(newHeight);
+        GUI.getInstance().getCanvas().repaint();
+    }
+
+    public void changeWidth(int newWidth) {
+        int currentWidth = pixels.get(0).size();
+        if(newWidth > currentWidth) {
+            for(ArrayList<Color> rows : pixels)
+                for(int i = currentWidth; i < newWidth; i++)
+                    rows.add(new Color(0,0,0,0));
+        } else {
+            for(ArrayList<Color> row : pixels) {
+                while (row.size() > newWidth)
+                    row.remove(row.size() - 1);
+            }
+        }
+        GUI.getInstance().getCanvas().repaint();
+    }
+
+    public void changeHeight(int newHeight) {
+        int currentHight = pixels.size();
+        if(newHeight > currentHight) {
+            for(int i = currentHight; i < newHeight; i++) {
+                ArrayList<Color> temp = new ArrayList<>();
+                for(int j = 0; j < pixels.get(0).size(); j++)
+                    temp.add(new Color(0,0,0,0));
+                pixels.add(temp);
+            }
+        } else {
+            while (pixels.size() > newHeight)
+                pixels.remove(pixels.size() - 1);    
+        }
+        GUI.getInstance().getCanvas().repaint();
+    }
+
+    private int calcNewLayerIndex(Image image, MouseEvent e){
+        int frameHeight = image.getLayer(0).getHeight() - 1;
+        int trueStartPoint = (originIndex * frameHeight) + startPoint;
+        int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint);
+
+        int destinationIndex = (int) (trueEndPoint / frameHeight);
+
+        if(destinationIndex < 0) destinationIndex = 0;
+        if(destinationIndex >= image.getLayerCount()) destinationIndex = image.getLayerCount() - 1;
+
+        return destinationIndex;
+    }
+
+    private void checkDisplayContextMenu(MouseEvent e, boolean isMousePressed) {
+        if (isMousePressed && (System.getProperty("os.name").startsWith("Windows")))
+            return;
+        if (!isMousePressed && !System.getProperty("os.name").startsWith("Windows"))
+            return;
+
+        if(e.isPopupTrigger())
+            layerContextMenu().show(e.getComponent(), e.getX(), e.getY());
+        else
+            GUI.getInstance().getActiveImage().disableSelectedLayers();
+    }
+
+    // Mouse listeners for layer reordering
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        Image image = GUI.getInstance().getActiveImage();
+        if (image == null)
+            return;
+                
+        startPoint = e.getPoint().y;
+        originIndex = image.getLayerIndex((Layer) e.getSource());
+
+        if(e.isAltDown()) {
+            GUI.getInstance().getLayerSelector().switchSelectedLayerState(originIndex);
+            return;
+        } 
+
+        if(!e.isAltDown())
+            checkDisplayContextMenu(e, true);
+        
+        GUI.getInstance().getLayerSelector().setActiveLayer(originIndex);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        Image image = GUI.getInstance().getActiveImage();
+        if (image == null)
+            return;
+
+        GUI.getInstance().getLayerSelector().setSeparatorPOS(-1);
+
+        int destinationIndex = calcNewLayerIndex(image, e);
+        
+        if (originIndex != destinationIndex) 
+            GUI.getInstance().getLayerSelector().moveLayer(originIndex, destinationIndex);
+        
+        if(!e.isAltDown())
+            checkDisplayContextMenu(e, false);
+
+        // Check if double click to rename layer
+        switchLabelToTextField(e);
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        Image image = GUI.getInstance().getActiveImage();
+        if (image == null)
+            return;
+
+        int destinationIndex = calcNewLayerIndex(image, e);
+
+        if (originIndex != destinationIndex){
+            if (originIndex < destinationIndex) GUI.getInstance().getLayerSelector().setSeparatorPOS(destinationIndex + 1);
+            else GUI.getInstance().getLayerSelector().setSeparatorPOS(destinationIndex);
+        }else GUI.getInstance().getLayerSelector().setSeparatorPOS(-1);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        
+    }
+
 
 }

@@ -1,11 +1,15 @@
 package org.scc200g15.tools.squareSelect;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
+import org.scc200g15.action.PixelsChangedAction;
+import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
@@ -22,6 +26,10 @@ public class SquareSelectTool implements Tool {
     TOP,
     BOTTOM
   }
+
+  ArrayList<Point> actionPoints = new ArrayList<>();
+  ArrayList<Color> actionOldColours = new ArrayList<>();
+  ArrayList<Color> actionNewColours = new ArrayList<>();
 
   private SelectState currentState = new Idle();
   private Side selectedSide;
@@ -94,6 +102,10 @@ public class SquareSelectTool implements Tool {
   public void delete(PCanvas c) {
     if (currentState instanceof Selecting) {
       deleteSelected(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColours, new Color(0, 0, 0, 0));
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
       deselect(c);
     }
   }
@@ -113,6 +125,22 @@ public class SquareSelectTool implements Tool {
   public void paste(PCanvas c) {
     if (currentState instanceof Selecting) {
       printCached(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColours, actionNewColours);
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
+      deselect(c);
+    }
+  }
+
+  public void move(PCanvas c) {
+    if (currentState instanceof Moving) {
+      cacheAndDelete(c);
+      printCached(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColours, actionNewColours);
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
       deselect(c);
     }
   }
@@ -156,6 +184,13 @@ public class SquareSelectTool implements Tool {
 
     setStartPoint(null);
     setEndPoint(null);
+
+    setMoveStartPoint(null);
+    setMoveEndPoint(null);
+
+    actionPoints = new ArrayList<>();
+    actionOldColours = new ArrayList<>();
+    actionNewColours = new ArrayList<>();
     
     c.setHoverDimensions(0, 0);
     c.repaint();
@@ -178,6 +213,9 @@ public class SquareSelectTool implements Tool {
         int y = (int)trueStart.getY() + j;
 
         if (c.isOutOfBounds(x, y)) continue;
+
+        //adds the pixel to actionPoints, actionOldColours
+        addPixelToActionLists(x, y, activeLayer.getPixel(x, y));
         
         activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
         c.recalculatePixel(x, y);
@@ -239,6 +277,9 @@ public class SquareSelectTool implements Tool {
         int y = (int)trueStart.getY() + j;
 
         if (c.isOutOfBounds(x, y)) continue;
+
+        //adds the pixel to actionPoints, actionOldColours, and actionNewColours
+        addPixelToActionLists(x, y, activeLayer.getPixel(x, y), new Color(0, 0, 0, 0));
         
         cachedArea[i][j] = activeLayer.getPixel(x, y);
         activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
@@ -271,6 +312,9 @@ public class SquareSelectTool implements Tool {
 
         //if the start pixel or end is out of bounds
         if (c.isOutOfBounds(x, y)) continue;
+        
+        //adds the pixel to actionPoints, actionOldColours, and actionNewColours
+        addPixelToActionLists(x, y, activeLayer.getPixel(x, y), cachedArea[i][j]);
 
         //cache the colour and delete the pixel
         activeLayer.setPixel(x, y, cachedArea[i][j]);
@@ -283,6 +327,32 @@ public class SquareSelectTool implements Tool {
 
   // * ---------------------------------- [ HELPER METHODS ] ---------------------------------- * //
 
+  //adds the change to actionPoints, actionOldColours and actionNewColours, overides the value in actionNewColours if it already exists
+  private void addPixelToActionLists(int x, int y, Color oldColor, Color newColor) {
+    int index = actionPoints.indexOf(new Point(x, y));
+
+    if (index == -1) {
+      actionPoints.add(new Point(x, y));
+      actionOldColours.add(oldColor);
+      actionNewColours.add(newColor);
+    }
+    else {
+      actionNewColours.set(index, newColor);
+    }
+  }
+  //adds the change to actionPoints, actionOldColours, overides the value in actionOldColours if it already exist
+  private void addPixelToActionLists(int x, int y, Color oldColor) {
+    int index = actionPoints.indexOf(new Point(x, y));
+
+    if (index == -1) {
+      actionPoints.add(new Point(x, y));
+      actionOldColours.add(oldColor);
+    }
+    else {
+      actionOldColours.set(index, oldColor);
+    }
+  }
+  
   //calculates the top left pixel of the selected area
   protected Point2D calcTrueStart() {
     return new Point2D.Double(

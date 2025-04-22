@@ -1,5 +1,6 @@
 package org.scc200g15.gui.canvas;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,8 +36,13 @@ public class PCanvas extends JPanel {
 
   // Hover Pixel
   Point2D hoverPixel = new Point(-1, -1);
-  int hoverWidth = 1, hoverHeight = 1;
-  Color hoverColour = Color.WHITE;
+  int hoverWidth = 0, hoverHeight = 0;
+  Color hoverColour = new Color(0, 0, 0, 0);
+
+  // Hover Pixel
+  Point2D moveArea = new Point(-1, -1);
+  int moveWidth = 0, moveHeight = 0;
+  Color moveColour = new Color(210,210,210,100);
 
   /**
    * Default constructor, with no image active to start
@@ -87,9 +93,15 @@ public class PCanvas extends JPanel {
 
     g2d.drawImage(imageBuffer, null, 0,0);
 
+    g2d.setColor(Color.LIGHT_GRAY);
+    g2d.setStroke(new BasicStroke(0.1f));
+    g2d.drawRect(0, 0, imageBuffer.getWidth(), imageBuffer.getHeight());
+
     // Draws the selected area if any
     g2d.setColor(hoverColour);
     g2d.fillRect((int)hoverPixel.getX(), (int)hoverPixel.getY(), hoverWidth, hoverHeight);
+    g2d.setColor(moveColour);
+    g2d.fillRect((int)moveArea.getX(), (int)moveArea.getY(), moveWidth, moveHeight);
   }
 
   /**
@@ -221,6 +233,33 @@ public class PCanvas extends JPanel {
     this.hoverColour = hoverColour;
   }
 
+  /** 
+   * @param moveArea the pos of the current move pixel
+   */
+  public void setMovePixel(Point2D moveArea) {
+    this.moveArea = moveArea;
+  }
+
+  /**
+   * Sets the dimensions for the move pixels
+   * 
+   * @param width the width
+   * @param height the height
+   */
+  public void setMoveDimensions(int width, int height) {
+    this.moveWidth = width;
+    this.moveHeight = height;
+  }
+
+  /**
+   * Sets the color for the move pixel
+   * 
+   * @param moveColour the color for the move pixel
+   */
+  public void setMoveColour(Color moveColour) {
+    this.moveColour = moveColour;
+  }
+
   /**
    * Go through all layers for a pixel and work out what color the final result should be
    * @param x the x pos
@@ -246,6 +285,10 @@ public class PCanvas extends JPanel {
    */
   public void recalculateAllPixels(){
     imageBuffer = activeImage.calculateImageBuffer();
+  }
+
+  public BufferedImage getBufferedImage() {
+    return imageBuffer;
   }
 
   /**

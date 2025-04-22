@@ -1,5 +1,6 @@
 package org.scc200g15.tools.squareSelect;
 
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
@@ -19,6 +20,23 @@ public class Moving implements SelectState{
     if (c.isOutOfBounds(p)) return;
     
     context.setMoveEndPoint(p);
+    Point2D transform = context.calcMoveTransform();
+    Point2D trueStart = context.calcTrueStart();
+
+    int x = (int)trueStart.getX() + (int)transform.getX();
+    int y = (int)trueStart.getY() + (int)transform.getY();
+
+    int width = context.calcWidth();
+    int height = context.calcHeight();
+
+    if((int)transform.getX() != 0 || (int)transform.getY() != 0) {
+      c.setMovePixel(new Point(x, y));
+      c.setMoveDimensions(width, height);
+    }else{
+      c.setMoveDimensions(0, 0);
+    }
+
+    c.repaint();
   }
   
   /**
@@ -26,12 +44,11 @@ public class Moving implements SelectState{
    */
   @Override
   public void mouseReleased(PCanvas c, MouseEvent e, SquareSelectTool context) {
-    context.cacheAndDelete(c);
-    context.printCached(c);
-    context.deselect(c);
+    context.move(c);
 
-    context.setMoveStartPoint(null);
-    context.setMoveEndPoint(null);
+    // Remove gray dragging template
+    c.setMoveDimensions(0, 0);
+    c.repaint();
   }
 
   //unused action listeners

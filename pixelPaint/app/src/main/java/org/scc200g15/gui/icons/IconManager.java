@@ -20,6 +20,9 @@ public class IconManager {
     private static final String FILL_ICON_PATH = "/Icons/fill.png";
     private static final String SQUARE_SELECT_ICON_PATH = "/Icons/Square_Select.png";
 
+    private static final String UNDO_ICON_PATH = "/Icons/undo.png";
+    private static final String REDO_ICON_PATH = "/Icons/redo.png";
+
     private static final String DELETE_ICON_PATH = "/Icons/delete.png";
     private static final String ESCAPE_ICON_PATH = "/Icons/escape.png";
     private static final String COPY_ICON_PATH = "/Icons/copy.png";
@@ -29,6 +32,8 @@ public class IconManager {
     public static final String CIRCLE_ICON_PATH = "/Icons/circle.png";
     public static final String TRIANGLE_ICON_PATH = "/Icons/triangle.png";
     public static final String STAR_ICON_PATH = "/Icons/star.png";
+    
+    public static final String DROPPER_ICON_PATH = "/Icons/dropper_icon.png";
 
     public static final String ROT_CW_PATH = "/Icons/rotate-right.png";
     public static final String ROT_ACW_PATH = "/Icons/rotate-left.png";
@@ -69,8 +74,13 @@ public class IconManager {
     public static final ImageIcon FILL_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, FILL_ICON_PATH);
     public static final ImageIcon SQUARE_SELECT_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, SQUARE_SELECT_ICON_PATH);
 
+
     public static final ImageIcon ROT_CW_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, ROT_CW_PATH);
     public static final ImageIcon ROT_ACW_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, ROT_ACW_PATH);
+
+    public static final ImageIcon UNDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, UNDO_ICON_PATH);
+    public static final ImageIcon REDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, REDO_ICON_PATH);
+
 
     public static final ImageIcon DELETE_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, DELETE_ICON_PATH);
     public static final ImageIcon ESCAPE_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, ESCAPE_ICON_PATH);
@@ -82,6 +92,9 @@ public class IconManager {
     public static final ImageIcon CIRCLE_ICON = createImageIcon(16, 16, CIRCLE_ICON_PATH);
     public static final ImageIcon TRIANGLE_ICON = createImageIcon(16, 16, TRIANGLE_ICON_PATH);
     public static final ImageIcon STAR_ICON = createImageIcon(16, 16, STAR_ICON_PATH);
+
+    // SideBar Icons
+    public static final ImageIcon DROPPER_ICON = createImageIcon(25, 25, DROPPER_ICON_PATH);
 
     /* --------------------------------------- [ICON GENERATION] --------------------------------------- */
 

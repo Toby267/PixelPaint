@@ -1,5 +1,6 @@
 package org.scc200g15.gui.toolbar;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -9,8 +10,10 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 import org.scc200g15.gui.GUI;
+import org.scc200g15.gui.icons.IconManager;
 import org.scc200g15.tools.Tool;
 
 /**
@@ -27,20 +30,6 @@ public class PToolBar extends JPanel {
     setPreferredSize(new Dimension(window.getWidth(), height));
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
-    JButton a = new JButton("Undo");
-    JButton b = new JButton("Redo");
-
-    a.addActionListener((ActionEvent e) -> {
-        GUI.getInstance().getActiveImage().undoAction();
-    });
-
-    b.addActionListener((ActionEvent e) -> {
-      GUI.getInstance().getActiveImage().redoAction();
-    });
-
-    this.add(a);
-    this.add(b);
-
     toolbarButtons = new ArrayList<>();
   }
 
@@ -53,20 +42,24 @@ public class PToolBar extends JPanel {
     }
   }
 
-  public void addTool(Tool t, ImageIcon icon){
+  public void addTool(Tool t, ImageIcon icon) {
     // Create Button
     PToolBarButton toolButton = new PToolBarButton(t, icon);
+    toolButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
 
     // Add Button
     add(toolButton);
     toolbarButtons.add(toolButton);
 
+
     revalidate();
     repaint();
   }
-  public void addTool(Tool t, ImageIcon icon, JPanel subPanel){
+
+  public void addTool(Tool t, ImageIcon icon, JPanel subPanel) {
     // Create Button
     PToolBarButton toolButton = new PToolBarButton(t, icon, subPanel);
+    toolButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
 
     // Add Button
     add(toolButton);
@@ -79,4 +72,24 @@ public class PToolBar extends JPanel {
     revalidate();
     repaint();
   }
+
+  public void addUndoRedo() {
+    JButton undoBTN = new JButton(IconManager.UNDO_ICON);
+    undoBTN.setBorder(new LineBorder(new Color(0, 0, 0, 0), 8, true)); 
+    JButton redoBTN = new JButton(IconManager.REDO_ICON);
+    redoBTN.setBorder(new LineBorder(new Color(0, 0, 0, 0), 8, true));
+
+    undoBTN.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getActiveImage().undoAction();
+    });
+
+    redoBTN.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getActiveImage().redoAction();
+    });
+
+    this.add(undoBTN);
+    this.add(redoBTN);
+  }
+
+
 }
