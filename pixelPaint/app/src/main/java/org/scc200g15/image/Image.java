@@ -100,6 +100,19 @@ public final class Image {
 
     return activeLayerID + 1;
   }
+  public int addLayer(Layer layer, int index) {
+    // Get the ID of the active layer
+    int activeLayerID = Layers.indexOf(activeLayer);
+
+    // Add a given layer above the active layer
+    Layers.add(index, layer);
+
+    // Set active layer to new layer if there is not one
+    if (activeLayerID == -1)
+      activeLayer = Layers.get(index);
+
+    return index;
+  }
 
   public int removeLayer(Layer layer) {
     return removeLayer(Layers.indexOf(layer));

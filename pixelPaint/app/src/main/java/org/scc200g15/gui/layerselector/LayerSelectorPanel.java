@@ -16,6 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
+import org.scc200g15.action.LayerCreateAction;
+import org.scc200g15.action.LayerDeleteAction;
+import org.scc200g15.action.LayerMoveAction;
 import org.scc200g15.config.Config;
 import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.icons.IconManager;
@@ -160,7 +163,9 @@ public final class LayerSelectorPanel extends JPanel {
     Layer newLayer = new Layer("New Layer", new Color(0, 0, 0, 0), image.getWidth(), image.getHeight());
   
     // Add the layer to the active image
-    image.addLayer(newLayer);
+    int index = image.addLayer(newLayer);
+
+    image.addAction(new LayerCreateAction(newLayer, index));
 
     // Redraw the layer menu
     redrawMenuUI();
@@ -190,6 +195,7 @@ public final class LayerSelectorPanel extends JPanel {
     }
 
     // Remove the layer
+    image.addAction(new LayerDeleteAction(layer, image.getLayerIndex(layer)));
     image.removeLayer(layer);
     contentPanel.remove(layer);
 
@@ -243,6 +249,7 @@ public final class LayerSelectorPanel extends JPanel {
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
     image.moveLayer(index1, index2);
+    image.addAction(new LayerMoveAction(index1, index2));
 
     // Redraw the menu
     redrawMenuUI();
