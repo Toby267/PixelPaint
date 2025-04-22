@@ -129,7 +129,7 @@ public class ColourPickerTest {
     button.doClick();
 
     Color c = sideBar.getActiveColor();
-    System.out.println("Color: (" + c.getRed() + ", " + c.getGreen() + ", " + c.getBlue() + ", " + c.getAlpha() + ")");
+    ln("Color: (" + c.getRed() + ", " + c.getGreen() + ", " + c.getBlue() + ", " + c.geSystem.out.printtAlpha() + ")");
 
 
     double difference = Tools.colorDifference(new Color(red, green, blue), c);
