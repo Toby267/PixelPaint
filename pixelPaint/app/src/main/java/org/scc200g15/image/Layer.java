@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -25,7 +24,7 @@ import org.scc200g15.gui.icons.IconManager;
  * A layer of an image, stores a grid of pixels
  */
 final public class Layer extends JPanel implements MouseListener, MouseMotionListener {
-    ArrayList<ArrayList <Color>> pixels = new ArrayList<ArrayList<Color>>();
+    ArrayList<ArrayList <Color>> pixels = new ArrayList<>();
 
     // Actual Components of a LayerMenuItem
     private final JButton displayButton = new JButton(IconManager.VISIBLE_EYE_OPEN_ICON);
@@ -182,8 +181,6 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
 
 
     // * ----------------------- [CONTEXT MENU] ----------------------- * //
-
-    // ! TODO: MOVE TO ANOTHER FILE AND EXPAND IF NEEDED
     public JPopupMenu layerContextMenu() {
         Image image = GUI.getInstance().getActiveImage();
         
