@@ -19,5 +19,5 @@
 <a href="https://www.flaticon.com/free-icons/star" title="star icons">Star icons created by Pixel perfect - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/eraser" title="eraser icons">Eraser icons created by Those Icons - Flaticon</a>
 <a href="https://www.flaticon.com/free-icons/paint-bucket" title="paint bucket icons">Paint bucket icons created by Bharat Icons - Flaticon</a>
-<a href="https://www.flaticon.com/free-icons/pipette" title="pipette icons">Pipette icons created by Pixel perfect - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/filter" title="filter icons">Filter icons created by denis.klyuchnikov.1 - Flaticon</a>
 

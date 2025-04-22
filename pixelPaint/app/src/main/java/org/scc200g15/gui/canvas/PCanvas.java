@@ -1,5 +1,6 @@
 package org.scc200g15.gui.canvas;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -86,6 +87,10 @@ public class PCanvas extends JPanel {
     g2d.transform(currentTransform);
 
     g2d.drawImage(imageBuffer, null, 0,0);
+
+    g2d.setColor(Color.LIGHT_GRAY);
+    g2d.setStroke(new BasicStroke(0.1f));
+    g2d.drawRect(0, 0, imageBuffer.getWidth(), imageBuffer.getHeight());
 
     // Draws the selected area if any
     g2d.setColor(hoverColour);
