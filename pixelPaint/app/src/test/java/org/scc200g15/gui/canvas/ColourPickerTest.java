@@ -1,9 +1,5 @@
 package org.scc200g15.gui.canvas;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.awt.Color;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,6 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JSpinner;
 
 import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestReporter;
@@ -129,7 +128,7 @@ public class ColourPickerTest {
     button.doClick();
 
     Color c = sideBar.getActiveColor();
-    ln("Color: (" + c.getRed() + ", " + c.getGreen() + ", " + c.getBlue() + ", " + c.geSystem.out.printtAlpha() + ")");
+    System.out.println("Color: (" + c.getRed() + ", " + c.getGreen() + ", " + c.getBlue() + ", " + c.getAlpha() + ")");
 
 
     double difference = Tools.colorDifference(new Color(red, green, blue), c);

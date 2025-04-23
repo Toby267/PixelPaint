@@ -30,6 +30,8 @@ public final class Image {
    * Basic constructor that creates a 16x16 blue image
    */
   public Image() {
+    // ! TODO: CREATE A DEFAULT WHITE BACKGROUND LAYER WHICH CANNOT BE ADDED / REMOVED.
+
     Layers = new ArrayList<>(16);
 
     // Selected layers to be merged

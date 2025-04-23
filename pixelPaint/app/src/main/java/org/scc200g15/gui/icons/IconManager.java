@@ -107,7 +107,6 @@ public class IconManager {
      */
     public static ImageIcon createImageIcon(int w, int h, String path) {
         return new ImageIcon(
-
             new ImageIcon(IconManager.class.getResource(path))
                 .getImage()
                 .getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH)
