@@ -2,9 +2,16 @@ package org.scc200g15.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Predicate;
+
+import javax.swing.JPanel;
 
 import org.scc200g15.action.Action;
 import org.scc200g15.gui.GUI;
@@ -13,18 +20,26 @@ import org.scc200g15.gui.GUI;
  * The image class stores all of the relevant info about the image an image
  * including pixel and layer data
  */
-public final class Image {
+public final class Image implements Serializable{
   public ArrayList<Layer> Layers;
 
   public Layer activeLayer;
-  public ArrayList<Layer> selectedLayers;
+  transient public ArrayList<Layer> selectedLayers;
 
-  ArrayDeque<Action> actionHistory = new ArrayDeque<>(20);
-  ArrayDeque<Action> undoHistory = new ArrayDeque<>(20);
+  transient ArrayDeque<Action> actionHistory = new ArrayDeque<>(20);
+  transient ArrayDeque<Action> undoHistory = new ArrayDeque<>(20);
 
   // The width and height of the image
   private int width = 32;
   private int height = 32;
+
+  private void init()
+  {
+    selectedLayers = new ArrayList<>(16);
+
+    actionHistory = new ArrayDeque<>(20);
+    undoHistory = new ArrayDeque<>(20);
+  }
 
   /**
    * Basic constructor that creates a 16x16 blue image
@@ -34,8 +49,8 @@ public final class Image {
 
     Layers = new ArrayList<>(16);
 
-    // Selected layers to be merged
-    selectedLayers = new ArrayList<>(16);
+    // Init transient variables
+    init();
 
     Layers.add(new Layer("LAYER 1", new Color(255, 255, 255), width, height));
     setActiveLayer(Layers.getFirst(), null);
@@ -55,6 +70,9 @@ public final class Image {
 
     this.width = bufferedImage.getWidth();
     this.height = bufferedImage.getHeight();
+
+    // Init transient variables
+    init();
 
     Layers.add(new Layer("LAYER 1", pixels));
     setActiveLayer(Layers.getFirst(), null);
@@ -158,6 +176,15 @@ public final class Image {
 
   public int getLayerIndex(Layer layer) {
     return Layers.indexOf(layer);
+  }
+  public int getLayerIndex(JPanel displayPanel) {
+    Predicate<Layer> isJpanel = l -> l.getJPanel() == displayPanel;
+
+    Optional<Layer> l = Layers.stream().filter(isJpanel).findFirst();
+    if(l.isPresent()){
+      return Layers.indexOf(l.get());
+    }else return -1;
+    
   }
 
   /**
@@ -355,4 +382,12 @@ public final class Image {
 
     addAction(a);
   }
+
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();         // Deserialize non-transient fields
+
+    // Init transient variables
+    init();
+  }
+
 }

@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -24,24 +27,44 @@ import org.scc200g15.gui.icons.IconManager;
 /**
  * A layer of an image, stores a grid of pixels
  */
-final public class Layer extends JPanel implements MouseListener, MouseMotionListener {
+final public class Layer implements MouseListener, MouseMotionListener, Serializable {
     ArrayList<ArrayList <Color>> pixels = new ArrayList<>();
-
-    // Actual Components of a LayerMenuItem
-    private final JButton displayButton = new JButton(IconManager.VISIBLE_EYE_OPEN_ICON);
-    private final JButton removeButton = new JButton(IconManager.VISIBLE_TRASH_ICON); // ! TODO: REMOVE VISIBILITY WHEN LAST LAYER
-    private final JLabel layerLabel = new JLabel();
-    private final JTextField renameLabelField = new JTextField();
-
-    // State Variables
-    private boolean isLayerVisible = true;
-    private boolean isActive = false;
-    private boolean isBeingRenamed = false;
-    private boolean isSelected = false;
 
     private String layerName;
 
-    int startPoint, originIndex;
+    // Actual Components of a LayerMenuItem
+    transient private JPanel jPanel;
+    transient private JButton displayButton;
+    transient private JButton removeButton;
+    transient private JLabel layerLabel;
+    transient private JTextField renameLabelField;
+
+    // State Variables
+    transient private boolean isLayerVisible;
+    transient private boolean isActive;
+    transient private boolean isBeingRenamed;
+    transient private boolean isSelected;
+
+    transient int startPoint, originIndex;
+
+    private void init()
+    {
+        // Actual Components of a LayerMenuItem
+        jPanel = new JPanel();
+        jPanel.setName("layer");
+        displayButton = new JButton(IconManager.VISIBLE_EYE_OPEN_ICON);
+        removeButton = new JButton(IconManager.VISIBLE_TRASH_ICON); 
+        layerLabel = new JLabel();
+        renameLabelField = new JTextField();
+
+        // State Variables
+        isLayerVisible = true;
+        isActive = false;
+        isBeingRenamed = false;
+        isSelected = false;
+
+        setupLayerMenuPanel();
+    }
 
      /**
      * Basic constructor that creates a layer with a 2D array of pixels
@@ -50,7 +73,11 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
      * @param pixels The 2D array of pixels to use
      */
     public Layer(String layerName, Color[][] pixels){
-        setupLayerMenuPanel(layerName);
+        this.layerName = layerName;
+
+        // Init transient variables
+        init();
+
         setPixels(pixels);
     }
 
@@ -63,7 +90,11 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
      * @param layerName the name of the layer
      */
     public Layer(String layerName, Color c, int w, int h) {   
-        setupLayerMenuPanel(layerName);
+        this.layerName = layerName;
+        
+        // Init transient variables
+        init();
+
         for (int y = 0; y < h; y++) {
             ArrayList<Color> row = new ArrayList<>();
             for (int x = 0; x < w; x++)
@@ -73,11 +104,10 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
 
     }
 
-    private void setupLayerMenuPanel(String layerName){
-        this.layerName = layerName;
-        this.setLayout(new BorderLayout());
-        this.setBorder(IconManager.DEFAULT_BORDER);
-        this.setBackground(IconManager.VISIBLE_BACKGROUND_COLOUR);
+    private void setupLayerMenuPanel(){
+        jPanel.setLayout(new BorderLayout());
+        jPanel.setBorder(IconManager.DEFAULT_BORDER);
+        jPanel.setBackground(IconManager.VISIBLE_BACKGROUND_COLOUR);
 
         displayButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
         removeButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
@@ -92,9 +122,14 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
         layerLabel.setForeground(IconManager.VISIBLE_ICON_COLOUR);
         
         // Add all components to the LayerMenuItem (JPanel)
-        this.add(displayButton, BorderLayout.WEST);
-        this.add(layerLabel, BorderLayout.CENTER);
-        this.add(removeButton, BorderLayout.EAST);
+        jPanel.add(displayButton, BorderLayout.WEST);
+        jPanel.add(layerLabel, BorderLayout.CENTER);
+        jPanel.add(removeButton, BorderLayout.EAST);
+
+        displayButton.setEnabled(true);
+
+        jPanel.repaint();
+        jPanel.repaint();
 
         setActionListeners();
     }
@@ -110,8 +145,8 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
             GUI.getInstance().getLayerSelector().removeLayerWithWarning(this);
         });
 
-        addMouseListener(this);
-        addMouseMotionListener(this);
+        jPanel.addMouseListener(this);
+        jPanel.addMouseMotionListener(this);
 
         // Textbox action has finished (User pressed 'Enter' or moved to another layer)
         renameLabelField.addActionListener((ActionEvent e) -> {
@@ -127,8 +162,8 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
         layerLabel.setText(name);
         renameLabelField.setText(name);
 
-        revalidate();
-        repaint();
+        jPanel.repaint();
+        jPanel.repaint();
     }
 
     // Apply the new name from the text field to the layer's label
@@ -138,26 +173,26 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
         }
 
         setLayerName(renameLabelField.getText());
-        this.remove(renameLabelField);
-        this.add(layerLabel);
+        jPanel.remove(renameLabelField);
+        jPanel.add(layerLabel);
         isBeingRenamed = false;
 
-        revalidate();
-        repaint();
+        jPanel.repaint();
+        jPanel.repaint();
     }
 
     // Switch to text box so user can text field
     public void switchLabelToTextField(MouseEvent e) {
         if (e.getClickCount() == 2) {
-            this.remove(layerLabel);
+            jPanel.remove(layerLabel);
             renameLabelField.setText(this.layerName);
-            this.add(renameLabelField);
+            jPanel.add(renameLabelField);
             renameLabelField.requestFocus();
             renameLabelField.selectAll();
             isBeingRenamed = true;
 
-            revalidate();
-            repaint();
+            jPanel.repaint();
+            jPanel.repaint();
         }
     }
 
@@ -165,8 +200,8 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
         setLayerStateUI("active");
         isActive = true;
 
-        revalidate();
-        repaint();
+        jPanel.repaint();
+        jPanel.repaint();
     }
 
     public void deactivateLayer() {
@@ -175,8 +210,8 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
         else setLayerStateUI("hidden");
         isActive = false;
         
-        revalidate();
-        repaint();
+        jPanel.repaint();
+        jPanel.repaint();
     }
 
     // * ----------------------- [VISIBILITY STATE] ----------------------- * //
@@ -189,8 +224,8 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
         String state = isActive ? "active" : (isLayerVisible ? "visible" : "hidden");        
         setLayerStateUI(state);
 
-        revalidate();
-        repaint();
+        jPanel.repaint();
+        jPanel.repaint();
 
         GUI.getInstance().getCanvas().repaint();
         GUI.getInstance().getCanvas().recalculateAllPixels();
@@ -219,19 +254,19 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
     public void setLayerStateUI(String state) {
         switch (state.toLowerCase()) {
             case "active" -> {
-                this.setBackground(IconManager.ACTIVE_BACKGROUND_COLOUR);
+                jPanel.setBackground(IconManager.ACTIVE_BACKGROUND_COLOUR);
                 displayButton.setIcon(isLayerVisible ? IconManager.ACTIVE_EYE_OPEN_ICON : IconManager.ACTIVE_EYE_SHUT_ICON);
                 layerLabel.setForeground(IconManager.ACTIVE_ICON_COLOUR);
                 removeButton.setIcon(IconManager.ACTIVE_TRASH_ICON);
             }
             case "visible" -> {
-                this.setBackground(IconManager.VISIBLE_BACKGROUND_COLOUR);
+                jPanel.setBackground(IconManager.VISIBLE_BACKGROUND_COLOUR);
                 displayButton.setIcon(IconManager.VISIBLE_EYE_OPEN_ICON);
                 layerLabel.setForeground(IconManager.VISIBLE_ICON_COLOUR);
                 removeButton.setIcon(IconManager.VISIBLE_TRASH_ICON);
             }
             case "hidden" -> {
-                this.setBackground(IconManager.HIDDEN_BACKGROUND_COLOUR);
+                jPanel.setBackground(IconManager.HIDDEN_BACKGROUND_COLOUR);
                 displayButton.setIcon(IconManager.HIDDEN_EYE_SHUT_ICON);
                 layerLabel.setForeground(IconManager.HIDDEN_ICON_COLOUR);
                 removeButton.setIcon(IconManager.HIDDEN_TRASH_ICON);
@@ -297,8 +332,8 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
 
     public void switchSelectedLayerState() {
         this.isSelected = !isSelected;
-        if (isSelected) this.setBorder(IconManager.IS_SELECTED_BORDER);
-        else this.setBorder(IconManager.DEFAULT_BORDER);
+        if (isSelected) jPanel.setBorder(IconManager.IS_SELECTED_BORDER);
+        else jPanel.setBorder(IconManager.DEFAULT_BORDER);
     }
 
     public boolean isSelected() {
@@ -343,7 +378,7 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
     }
 
     private int calcNewLayerIndex(Image image, MouseEvent e){
-        int frameHeight = image.getLayer(0).getHeight() - 1;
+        int frameHeight = image.getLayer(0).getJPanel().getHeight() - 1;
         int trueStartPoint = (originIndex * frameHeight) + startPoint;
         int trueEndPoint = trueStartPoint + (e.getPoint().y - startPoint);
 
@@ -367,6 +402,10 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
             GUI.getInstance().getActiveImage().disableSelectedLayers();
     }
 
+    public JPanel getJPanel(){
+        return jPanel;
+    }
+
     // Mouse listeners for layer reordering
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -380,7 +419,7 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
             return;
                 
         startPoint = e.getPoint().y;
-        originIndex = image.getLayerIndex((Layer) e.getSource());
+        originIndex = image.getLayerIndex((JPanel) e.getSource());
 
         if(e.isAltDown()) {
             GUI.getInstance().getLayerSelector().switchSelectedLayerState(originIndex);
@@ -450,4 +489,10 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
     }
 
 
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();         // Deserialize non-transient fields
+    
+        // Init transient variables
+        init();
+    }
 }

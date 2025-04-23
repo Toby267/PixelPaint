@@ -39,7 +39,7 @@ public class PMenuBar extends JMenuBar {
     editMenu = new JMenu("edit");
     JMenu viewMenu = new JMenu("view");
     JMenu helpMenu = new JMenu("help");
-    JMenuItem openFileButton = new JMenuItem("Open PNG");
+    JMenuItem openFileButton = new JMenuItem("Import Image");
     openFileButton.addActionListener((ActionEvent e) -> {
       openImageFile();
     });
@@ -47,20 +47,35 @@ public class PMenuBar extends JMenuBar {
     
     fileMenu.add(openFileButton);
 
-    JMenuItem save = new JMenuItem("Save Image");
+    JMenuItem save = new JMenuItem("Export Image");
 
     save.addActionListener((ActionEvent e) -> {
       GUI.getInstance().getCanvas().saveImage();
     });
 
-    JMenuItem saveLayer = new JMenuItem("Save Active Layer");
+    JMenuItem saveLayer = new JMenuItem("Export Active Layer");
 
     saveLayer.addActionListener((ActionEvent e) -> {
       GUI.getInstance().getCanvas().saveActiveLayer();
     });
 
+    JMenuItem saveWithLayer = new JMenuItem("Save With Layers");
+
+    saveWithLayer.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getCanvas().saveWithLayers();
+    });
+
+    JMenuItem openWithLayer = new JMenuItem("Open With Layers");
+
+    openWithLayer.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getCanvas().openWithLayers();
+    });
+
+
     fileMenu.add(save);
     fileMenu.add(saveLayer);
+    fileMenu.add(saveWithLayer);
+    fileMenu.add(openWithLayer);
 
     viewMenu.add(new AbstractAction("Toggle Dark Mode") {
 

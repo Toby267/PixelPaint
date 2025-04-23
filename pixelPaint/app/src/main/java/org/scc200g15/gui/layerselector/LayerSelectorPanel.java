@@ -89,8 +89,8 @@ public final class LayerSelectorPanel extends JPanel {
       // Add existing layers to the Layer Menu
       for (int i = 0; i < image.getLayerCount(); i++) {
         Layer currentLayer = image.getLayer(i);
-        currentLayer.setMaximumSize(getMaxSize(currentLayer));
-        contentPanel.add(currentLayer);
+        currentLayer.getJPanel().setMaximumSize(getMaxSize(currentLayer.getJPanel()));
+        contentPanel.add(currentLayer.getJPanel());
 
         // Add spacing between layers
         if (i < image.getLayerCount() - 1)
@@ -197,7 +197,7 @@ public final class LayerSelectorPanel extends JPanel {
     // Remove the layer
     image.addAction(new LayerDeleteAction(layer, image.getLayerIndex(layer)));
     image.removeLayer(layer);
-    contentPanel.remove(layer);
+    contentPanel.remove(layer.getJPanel());
 
     // If needed readd the create layer button
     addLayerPanel.setVisible(image.getLayerCount() <= 15);
@@ -355,7 +355,7 @@ public final class LayerSelectorPanel extends JPanel {
     int insertIndex =  (image.getLayerCount() <= (Config.MAX_LAYERS - 1)) ? components.length - 1 : components.length; // default to end if not found
 
     for (int i = 0; i < components.length; i++) {
-      if (components[i] instanceof Layer) {
+      if (components[i].getName() != null && components[i].getName().equals("layer")) {
           if (layerCount == pos) {
               insertIndex = i; // insert after this Layer
               break;
