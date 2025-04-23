@@ -343,7 +343,6 @@ public final class LayerSelectorPanel extends JPanel {
     Image image = GUI.getInstance().getActiveImage();
 
     contentPanel.remove(separator);
-    System.out.println(pos);
     if(pos < 0) {
       contentPanel.repaint();
       contentPanel.revalidate(); // refresh layout
