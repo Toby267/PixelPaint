@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 
 import org.scc200g15.gui.GUI;
 import org.scc200g15.image.Image;
+import org.scc200g15.image.Layer;
 import org.scc200g15.tools.ToolManager;
 /**
  * PCanvas - The canvas is the area on the screen where the main ActiveImage is drawn it handles tracks mouse inputs and passes them to the tool manager
@@ -327,8 +328,11 @@ public void saveImage() {
     if (userSelection == JFileChooser.APPROVE_OPTION) {
         File fileToSave = fileChooser.getSelectedFile();
         try {
+          if(!fileToSave.getAbsolutePath().endsWith(".png")) 
             ImageIO.write(imageBuffer, "png", new File(fileToSave.getAbsolutePath() + ".png"));
-            JOptionPane.showMessageDialog(this, "Image saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+          else
+            ImageIO.write(imageBuffer, "png", new File(fileToSave.getAbsolutePath()));
+          JOptionPane.showMessageDialog(this, "Image saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error saving image!", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -337,7 +341,41 @@ public void saveImage() {
 
 public void saveActiveLayer()
 {
+  if (activeImage == null) {
+    JOptionPane.showMessageDialog(this, "No image to save!", "Error", JOptionPane.ERROR_MESSAGE);
+    return;
+  }
 
+  JFileChooser fileChooser = new JFileChooser();
+  fileChooser.setDialogTitle("Save Layer");
+  fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG Images", "png"));
+
+  int userSelection = fileChooser.showSaveDialog(this);
+
+  Layer l = GUI.getInstance().getActiveImage().getActiveLayer();
+
+  BufferedImage layerImage = new BufferedImage(l.getLayerWidth(), l.getLayerHeight(), BufferedImage.TYPE_INT_ARGB);
+  Graphics2D g2d = layerImage.createGraphics();
+
+  for(int i = 0; i < l.getLayerWidth(); i++){
+    for(int j = 0; j < l.getLayerHeight(); j++){
+      g2d.setColor(l.getPixel(i, j));
+      g2d.fillRect(i, j, 1, 1);
+    }
+  }
+
+  if (userSelection == JFileChooser.APPROVE_OPTION) {
+    File fileToSave = fileChooser.getSelectedFile();
+    try {
+      if(!fileToSave.getAbsolutePath().endsWith(".png")) 
+        ImageIO.write(layerImage, "png", new File(fileToSave.getAbsolutePath() + ".png"));
+      else
+        ImageIO.write(layerImage, "png", new File(fileToSave.getAbsolutePath()));
+      JOptionPane.showMessageDialog(this, "Layer saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+    } catch (IOException e) {
+      JOptionPane.showMessageDialog(this, "Error saving layer!", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+  }
 }
 
 public void openImage() {

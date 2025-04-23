@@ -47,11 +47,21 @@ public class PMenuBar extends JMenuBar {
     
     fileMenu.add(openFileButton);
 
-    JMenuItem saveAsBitmap = new JMenuItem("Save Image");
+    JMenuItem save = new JMenuItem("Save Image");
 
-    saveAsBitmap.addActionListener((ActionEvent e) -> {
+    save.addActionListener((ActionEvent e) -> {
       GUI.getInstance().getCanvas().saveImage();
     });
+
+    JMenuItem saveLayer = new JMenuItem("Save Active Layer");
+
+    saveLayer.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getCanvas().saveActiveLayer();
+    });
+
+    fileMenu.add(save);
+    fileMenu.add(saveLayer);
+
     viewMenu.add(new AbstractAction("Toggle Dark Mode") {
 
 		  @Override
@@ -66,7 +76,6 @@ public class PMenuBar extends JMenuBar {
     add(editMenu);
     add(helpMenu);
     add(viewMenu);
-    fileMenu.add(saveAsBitmap);
   }
 
 

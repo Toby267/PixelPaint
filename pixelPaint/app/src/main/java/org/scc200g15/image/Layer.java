@@ -253,12 +253,6 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
             GUI.getInstance().getActiveImage().changeImageHeight(Math.max(newPixels[0].length, this.pixels.get(0).size()));   
         }
 
-        System.out.println(newPixels.length);
-        System.out.println(this.pixels.size());
-
-        System.out.println(newPixels[0].length);
-        System.out.println(this.pixels.get(0).size());
-
         for (int j = 0; j < newPixels[0].length; j++) { 
             for (int i = 0; i < newPixels.length; i++) { 
                 this.pixels.get(j).set(i, newPixels[i][j]);
@@ -400,6 +394,13 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
 
         // Check if double click to rename layer
         switchLabelToTextField(e);
+    }
+
+    public int getLayerWidth(){
+        return pixels.get(0).size();
+    }
+    public int getLayerHeight(){
+        return pixels.size();
     }
 
     @Override
