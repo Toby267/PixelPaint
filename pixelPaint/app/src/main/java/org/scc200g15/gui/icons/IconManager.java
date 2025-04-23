@@ -35,6 +35,9 @@ public class IconManager {
     
     public static final String DROPPER_ICON_PATH = "/Icons/dropper_icon.png";
 
+    public static final String ROT_CW_PATH = "/Icons/rotate-right.png";
+    public static final String ROT_ACW_PATH = "/Icons/rotate-left.png";
+
     // Colours for the layer menu background as seen in the UI design
     public static final Color VISIBLE_BACKGROUND_COLOUR = new Color(227,227,227);
     public static final Color INACTIVE_BACKGROUND_COLOUR = VISIBLE_BACKGROUND_COLOUR;
@@ -71,8 +74,13 @@ public class IconManager {
     public static final ImageIcon FILL_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, FILL_ICON_PATH);
     public static final ImageIcon SQUARE_SELECT_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, SQUARE_SELECT_ICON_PATH);
 
+
+    public static final ImageIcon ROT_CW_ICON = createImageIcon(15, 15, VISIBLE_ICON_COLOUR, ROT_CW_PATH);
+    public static final ImageIcon ROT_ACW_ICON = createImageIcon(15, 15, VISIBLE_ICON_COLOUR, ROT_ACW_PATH);
+
     public static final ImageIcon UNDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, UNDO_ICON_PATH);
     public static final ImageIcon REDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, REDO_ICON_PATH);
+
 
     public static final ImageIcon DELETE_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, DELETE_ICON_PATH);
     public static final ImageIcon ESCAPE_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, ESCAPE_ICON_PATH);

@@ -42,4 +42,7 @@ public class Idle implements SelectState {
   public void mouseReleased(PCanvas c, MouseEvent e, SquareSelectTool context) {}
   @Override
   public void keyPressed(PCanvas c, KeyEvent e, SquareSelectTool context) {}
+
+  @Override
+  public void mouseMoved(PCanvas c, MouseEvent e, SquareSelectTool context) {}
 }
