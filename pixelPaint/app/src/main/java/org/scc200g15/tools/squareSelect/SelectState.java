@@ -15,5 +15,7 @@ public interface SelectState {
 
   public void mouseReleased(PCanvas c, MouseEvent e, SquareSelectTool context);
 
+  public  void mouseMoved (PCanvas c, MouseEvent e, SquareSelectTool context);
+
   public void keyPressed(PCanvas c, KeyEvent e, SquareSelectTool context);
 }

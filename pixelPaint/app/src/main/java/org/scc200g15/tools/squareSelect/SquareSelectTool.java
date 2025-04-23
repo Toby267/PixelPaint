@@ -1,6 +1,7 @@
 package org.scc200g15.tools.squareSelect;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -164,8 +165,6 @@ public class SquareSelectTool implements Tool {
       PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColours, actionNewColours);
       GUI.getInstance().getActiveImage().addAction(drawAction);
 
-
-
       deselect(c);
     }
   }
@@ -202,6 +201,8 @@ public class SquareSelectTool implements Tool {
     actionOldColours = new ArrayList<>();
     actionNewColours = new ArrayList<>();
     
+    GUI.getInstance().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
     c.setHoverDimensions(0, 0);
     c.repaint();
   }
@@ -494,11 +495,16 @@ public class SquareSelectTool implements Tool {
       currentState.mousePressed(c, e, this);
     }
   }
+
+  @Override
+  public void mouseMoved(PCanvas c, MouseEvent e) {
+    if (currentState != null) {
+      currentState.mouseMoved(c, e, this);
+    }
+  }
   
   // * ---------------------------------- [ UNUSED ACTION LISTENERS ] ---------------------------------- * //
 
-  @Override
-  public void mouseMoved(PCanvas c, MouseEvent e) {}
   @Override
   public void mouseWheelMoved(PCanvas c, MouseWheelEvent e) {}
   @Override
