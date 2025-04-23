@@ -138,8 +138,13 @@ public class ColourPicker extends JComponent {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+
         Graphics2D g2 = (Graphics2D) g;
-        
+
+        g2.setColor(Color.RED);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
         g2.setRenderingHints(rh);
 
         // Colour wheel center points

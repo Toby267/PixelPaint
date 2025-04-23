@@ -68,10 +68,16 @@ public class PSideBar extends JPanel {
 
     add(titlePanel);
 
+    Dimension size = new Dimension(500, 200);
+
     // Colour Picker
     this.colourPicker.setAlignmentY(TOP_ALIGNMENT);
     add(this.colourPicker);
-    add(Box.createVerticalStrut(8)); 
+    colourPicker.setMinimumSize(size);
+    colourPicker.setPreferredSize(size);
+    colourPicker.setMaximumSize(size);
+
+    add(Box.createVerticalStrut(8));
     
     // Opacity Slider
     JPanel opacitySlider = new JPanel();
@@ -103,7 +109,7 @@ public class PSideBar extends JPanel {
     add(button);
 
     // Bottom Spacing
-    add(Box.createVerticalStrut(300));
+    add(Box.createVerticalGlue());
   }
 
   private void panelSetup(JPanel panel) {
