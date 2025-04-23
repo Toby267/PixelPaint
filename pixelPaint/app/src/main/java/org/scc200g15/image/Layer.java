@@ -17,6 +17,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import org.scc200g15.action.LayerRenameAction;
 import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.icons.IconManager;
 
@@ -37,6 +38,8 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
     private boolean isActive = false;
     private boolean isBeingRenamed = false;
     private boolean isSelected = false;
+
+    private String layerName;
 
     int startPoint, originIndex;
 
@@ -71,6 +74,7 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
     }
 
     private void setupLayerMenuPanel(String layerName){
+        this.layerName = layerName;
         this.setLayout(new BorderLayout());
         this.setBorder(IconManager.DEFAULT_BORDER);
         this.setBackground(IconManager.VISIBLE_BACKGROUND_COLOUR);
@@ -118,9 +122,22 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
 
     // * ----------------------- [RENAME LAYERS] ----------------------- * //
 
+    public void setLayerName(String name){
+        this.layerName = name;
+        layerLabel.setText(name);
+        renameLabelField.setText(name);
+
+        revalidate();
+        repaint();
+    }
+
     // Apply the new name from the text field to the layer's label
     public void renameLabelToTextField() {
-        layerLabel.setText(renameLabelField.getText());
+        if(!this.layerName.equals(renameLabelField.getText())){
+            GUI.getInstance().getActiveImage().addAction(new LayerRenameAction(this, this.layerName, renameLabelField.getText()));
+        }
+
+        setLayerName(renameLabelField.getText());
         this.remove(renameLabelField);
         this.add(layerLabel);
         isBeingRenamed = false;
@@ -133,7 +150,7 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
     public void switchLabelToTextField(MouseEvent e) {
         if (e.getClickCount() == 2) {
             this.remove(layerLabel);
-            renameLabelField.setText(layerLabel.getText());
+            renameLabelField.setText(this.layerName);
             this.add(renameLabelField);
             renameLabelField.requestFocus();
             renameLabelField.selectAll();
