@@ -178,7 +178,6 @@ public final class Image {
     return Layers;
   }
 
-  // ! TODO: ISSUE WITH COLOUR MERGE WHERE FULL COLOR JUST APPEAR AS IS REGARDLESS OF IF THEY ARE BEHIND OTHERS.
   private Color[][] compressAllLayers(ArrayList<Layer> layersToCompress, boolean skipInvisibleLayers, boolean adjustAlpha, int startX, int startY, int w, int h){
     Color[][] finalImage = new Color[w][h];
 
@@ -311,6 +310,7 @@ public final class Image {
     this.width = width;
     this.height = height;
     GUI.getInstance().getCanvas().recalculateAllPixels();
+    GUI.getInstance().getStatusBar().updateCanvasSizeValues(this.width, this.height);
   }
 
   public void changeImageWidth(int width) {
@@ -318,6 +318,7 @@ public final class Image {
       layer.changeWidth(width);
     this.width = width;
     GUI.getInstance().getCanvas().recalculateAllPixels();
+    GUI.getInstance().getStatusBar().updateCanvasSizeValues(this.width, this.height);
   }
 
   public void changeImageHeight(int height) {
@@ -325,6 +326,7 @@ public final class Image {
       layer.changeHeight(height);
     this.height = height;
     GUI.getInstance().getCanvas().recalculateAllPixels();
+    GUI.getInstance().getStatusBar().updateCanvasSizeValues(this.width, this.height);
   }
 
   public void addAction(Action action){

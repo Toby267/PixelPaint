@@ -335,6 +335,11 @@ public void saveImage() {
     }
 }
 
+public void saveActiveLayer()
+{
+
+}
+
 public void openImage() {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Open Image");

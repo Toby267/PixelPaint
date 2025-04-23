@@ -67,6 +67,12 @@ public class PStatusBar extends JPanel implements MouseMotionListener {
 
   }
 
+  public void updateCanvasSizeValues(int w, int h)
+  {
+    canvasX.setValue(w);
+    canvasY.setValue(h);
+  }
+
   public void setupCanvasResizer() {
     add(new JLabel("X = "));
     canvasX.setMaximumSize(new Dimension(75, 30));

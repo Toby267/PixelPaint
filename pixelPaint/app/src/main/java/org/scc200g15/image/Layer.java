@@ -246,14 +246,23 @@ final public class Layer extends JPanel implements MouseListener, MouseMotionLis
         return array;
     }
 
-    public void setPixels(Color[][] pixels) {
-        this.pixels.clear();
-        for (int j = 0; j < pixels[0].length; j++) { // Iterate over columns first
-            ArrayList<Color> row = new ArrayList<>(pixels.length);
-            for (int i = 0; i < pixels.length; i++) { // Then iterate over rows
-                row.add(pixels[i][j]);
+    public void setPixels(Color[][] newPixels) {
+        if(newPixels.length > this.pixels.size() || newPixels[0].length > this.pixels.get(0).size()){
+            // Expand Canvas
+            GUI.getInstance().getActiveImage().changeImageWidth(Math.max(newPixels.length, this.pixels.size()));
+            GUI.getInstance().getActiveImage().changeImageHeight(Math.max(newPixels[0].length, this.pixels.get(0).size()));   
+        }
+
+        System.out.println(newPixels.length);
+        System.out.println(this.pixels.size());
+
+        System.out.println(newPixels[0].length);
+        System.out.println(this.pixels.get(0).size());
+
+        for (int j = 0; j < newPixels[0].length; j++) { 
+            for (int i = 0; i < newPixels.length; i++) { 
+                this.pixels.get(j).set(i, newPixels[i][j]);
             }
-            this.pixels.add(row);
         }
     } 
 
