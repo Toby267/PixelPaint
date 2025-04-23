@@ -45,7 +45,6 @@ public class SelectSubPanel extends JPanel {
         rotatePanel.setLayout(new BoxLayout(rotatePanel, BoxLayout.X_AXIS));
         rotatePanel.setSize(new Dimension(105, height - 4));
         rotatePanel.setLocation(170,2);
-        rotatePanel.setBackground(Color.RED);
         rotatePanel.setBorder(new LineBorder(Color.DARK_GRAY, 1, true));
 
         JButton rotateCWButton = new JButton(IconManager.ROT_CW_ICON);
