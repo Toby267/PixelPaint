@@ -152,10 +152,20 @@ public class SquareSelectTool implements Tool {
     }
   }
 
-  public void rotate(PCanvas c, boolean isClockwise)
+  public void rotate(PCanvas c, boolean isClockwise, Integer angle)
   {
     if (currentState instanceof Selecting) {
+      cacheAndDelete(c);
+
+      rotateCachedArea(c, isClockwise, angle);
       
+      printCached(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColours, actionNewColours);
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
+
+
       deselect(c);
     }
   }
@@ -226,12 +236,51 @@ public class SquareSelectTool implements Tool {
   }
 
   /**
-   * rotate selected area 90
-   * 
+   * rotate selected area 
+
    * @param c the canvas
    */
-  protected void rotateSelected90(PCanvas c) {
-    
+  protected void rotateCachedArea(PCanvas c, Boolean isClockwise, Integer angle) {
+    if(angle % 90 != 0) return;
+
+    while (angle > 0) {
+      if(isClockwise) cachedArea = rotateCW(cachedArea);
+      else cachedArea = rotateACW(cachedArea);
+
+      angle -= 90;
+    }
+  }
+
+  /**
+   * Rotate 90 degrees clockwise
+   * https://stackoverflow.com/a/2800033
+   */
+  protected Color[][] rotateCW(Color[][] mat) {
+    final int M = mat.length;
+    final int N = mat[0].length;
+    Color[][] ret = new Color[N][M];
+    for (int r = 0; r < M; r++) {
+        for (int c = 0; c < N; c++) {
+          ret[N - 1 - c][r] = mat[r][c];
+        }
+    }
+    return ret;
+  }
+
+  /**
+   * Rotate 90 degrees anti-clockwise
+   * https://stackoverflow.com/a/2800033
+   */
+  protected Color[][] rotateACW(Color[][] mat) {
+    final int M = mat.length;
+    final int N = mat[0].length;
+    Color[][] ret = new Color[N][M];
+    for (int r = 0; r < M; r++) {
+        for (int c = 0; c < N; c++) {
+          ret[c][M-1-r] = mat[r][c];
+        }
+    }
+    return ret;
   }
 
   /**

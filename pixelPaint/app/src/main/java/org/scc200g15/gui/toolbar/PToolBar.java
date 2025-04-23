@@ -90,6 +90,4 @@ public class PToolBar extends JPanel {
     this.add(undoBTN);
     this.add(redoBTN);
   }
-
-
 }

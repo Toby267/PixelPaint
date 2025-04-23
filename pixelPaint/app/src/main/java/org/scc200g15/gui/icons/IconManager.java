@@ -75,8 +75,8 @@ public class IconManager {
     public static final ImageIcon SQUARE_SELECT_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, SQUARE_SELECT_ICON_PATH);
 
 
-    public static final ImageIcon ROT_CW_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, ROT_CW_PATH);
-    public static final ImageIcon ROT_ACW_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, ROT_ACW_PATH);
+    public static final ImageIcon ROT_CW_ICON = createImageIcon(15, 15, VISIBLE_ICON_COLOUR, ROT_CW_PATH);
+    public static final ImageIcon ROT_ACW_ICON = createImageIcon(15, 15, VISIBLE_ICON_COLOUR, ROT_ACW_PATH);
 
     public static final ImageIcon UNDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, UNDO_ICON_PATH);
     public static final ImageIcon REDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, REDO_ICON_PATH);
