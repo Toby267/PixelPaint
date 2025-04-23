@@ -7,6 +7,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -30,16 +31,11 @@ public class PStatusBar extends JPanel implements MouseMotionListener {
   public PStatusBar(GUI window) {
 
     setPreferredSize(new Dimension(window.getWidth(), 16));
-    setLayout(new GridLayout(1,2));
+    setLayout(new GridLayout(1,3));
 
     // Add Label to StatusBar
     zoomLabel = new JLabel("Zoom: 100%", SwingConstants.CENTER);
     add(zoomLabel);
-
-    JLabel statusLabel = new JLabel("Canvas Size: ");
-    statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
-    add(statusLabel);
-    add(Box.createHorizontalStrut(3));
 
     setupCanvasResizer();
 
@@ -74,15 +70,23 @@ public class PStatusBar extends JPanel implements MouseMotionListener {
   }
 
   public void setupCanvasResizer() {
-    add(new JLabel("X = "));
+    JPanel canvasResizer = new JPanel();
+    canvasResizer.setLayout(new BoxLayout(canvasResizer, BoxLayout.X_AXIS));
+
+    JLabel statusLabel = new JLabel("Canvas Size: ");
+    statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+    canvasResizer.add(statusLabel);
+    canvasResizer.add(Box.createHorizontalStrut(3));
+
+    canvasResizer.add(new JLabel("X = "));
     canvasX.setMaximumSize(new Dimension(75, 30));
-    add(canvasX);
+    canvasResizer.add(canvasX);
 
-    add(Box.createHorizontalStrut(8));
+    canvasResizer.add(Box.createHorizontalStrut(8));
 
-    add(new JLabel("Y = "));
+    canvasResizer.add(new JLabel("Y = "));
     canvasY.setMaximumSize(new Dimension(75, 30));
-    add(canvasY);
+    canvasResizer.add(canvasY);
 
     canvasX.addChangeListener(new ChangeListener() {      
       @Override
@@ -97,6 +101,7 @@ public class PStatusBar extends JPanel implements MouseMotionListener {
         GUI.getInstance().getActiveImage().changeImageHeight((int) canvasY.getValue());
       }
     });
+    add(canvasResizer);
   }
 
   @Override
