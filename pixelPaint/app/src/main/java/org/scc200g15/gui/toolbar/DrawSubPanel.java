@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 
 import org.scc200g15.gui.icons.IconManager;
@@ -17,7 +18,7 @@ public class DrawSubPanel extends JPanel{
     public DrawSubPanel(int height, Drawable tool) {
         super(null);
         
-        setMaximumSize(new Dimension(128, height));
+        setMaximumSize(new Dimension(178, height));
         
         ImageIcon icons[] = {IconManager.CIRCLE_ICON,IconManager.SQUARE_ICON, IconManager.TRIANGLE_ICON, IconManager.STAR_ICON};
         String shapeIDs[] = {"Circle", "Square", "Triangle", "Star"};
@@ -31,6 +32,10 @@ public class DrawSubPanel extends JPanel{
         NumberInput sizeInput = new NumberInput(1,100, 2);
         sizeInput.setLocation(64,2);
         sizeInput.setSize(new Dimension(60, height - 4));
+
+        JToggleButton fillToggle = new JToggleButton("Fill", true);
+        fillToggle.setLocation(126,2);
+        fillToggle.setSize(new Dimension(50, height - 4));
 
         // Pass Shape input to draw tool
         shapeSelector.addActionListener((ActionEvent e) -> {
@@ -47,7 +52,12 @@ public class DrawSubPanel extends JPanel{
             tool.setSize(val);
         });
 
+        fillToggle.addActionListener((ActionEvent e) -> {
+            tool.toggleFill();
+        });
+
         add(sizeInput);
         add(shapeSelector);
+        add(fillToggle);
     }
 }
