@@ -13,7 +13,8 @@ import java.util.Queue;
 import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
 
-public class FillTool implements Tool{
+public class
+FillTool implements Tool{
 
     Color targetColor;
     Color newColor = Color.BLACK;

@@ -18,8 +18,8 @@ public final class Image {
   public ArrayList<Layer> selectedLayers;
 
   // The width and height of the image
-  private int width = 32;
-  private int height = 32;
+  private int width = 1000;
+  private int height = 1000;
 
   /**
    * Basic constructor that creates a 16x16 blue image

@@ -16,6 +16,7 @@ import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.DrawSubPanel;
+import org.scc200g15.gui.toolbar.DrawSubPanel1;
 import org.scc200g15.gui.toolbar.PToolBar;
 import org.scc200g15.image.Image;
 import org.scc200g15.tools.FillTool;
@@ -26,7 +27,7 @@ import org.scc200g15.tools.ToolManager;
 import org.scc200g15.tools.drawableTools.DrawTool;
 import org.scc200g15.tools.drawableTools.EraserTool;
 import org.scc200g15.tools.squareSelect.SquareSelectTool;
-
+import org.scc200g15.tools.drawShapes.drawShapeTool;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
@@ -84,6 +85,11 @@ public class GUI extends JFrame {
 
     StarTool starTool = new StarTool();
     registerTool(starTool, IconManager.STAR_ICON, "star", "Star Tool");
+
+      drawShapeTool drawShapeTool = new drawShapeTool();
+      DrawSubPanel1 sqr = new DrawSubPanel1(PToolBar.height, new drawShapeTool());
+      registerTool(drawShapeTool, IconManager.SHAPE_ICON, "drawShapes", "drawShapesTool", sqr);
+
   }
 
   private GUI() {
