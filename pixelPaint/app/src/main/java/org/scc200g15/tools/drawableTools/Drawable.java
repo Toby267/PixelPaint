@@ -31,6 +31,7 @@ public abstract class Drawable implements Tool {
   protected Shape activeShape;
   
   protected int size = 1;
+  protected boolean fill = true;
 
   /**
    * Constructor that sets up all the shapes, and the active shape
@@ -83,6 +84,29 @@ public abstract class Drawable implements Tool {
   public int getSize() {
     return size;
   }
+
+  /**
+   * sets the fill of the draw tool to the one specified by fill
+   * 
+   * @param fill the new fill value
+   */
+  public void setFill(boolean fill) {
+    this.fill = fill;
+  }
+
+  /**
+   * gets the fill of the draw tool
+   */
+  public boolean getFill() {
+    return fill;
+  }
+
+  /**
+   * toggles the fill value of the draw tool
+   */
+  public void toggleFill() {
+    fill = !fill;
+  }
   
   // draws when the mouse is dragged
   @Override
@@ -122,9 +146,8 @@ public void mousePressed(PCanvas c, MouseEvent e) {
 
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
-    int height = image.getHeight(), width = image.getWidth();
 
-    ArrayList<Point2D> points = activeShape.returnPixels(point, size);
+    ArrayList<Point2D> points = activeShape.returnPixels(point, size, fill);
     
     for (Point2D p : points) {
       if (c.isOutOfBounds(p)) continue;

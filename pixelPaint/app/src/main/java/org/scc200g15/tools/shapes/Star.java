@@ -12,18 +12,29 @@ public class Star implements Shape {
   final double INNER_RADIUS_RATIO = 0.5;
   
   /**
-   * returns the pixels for a star of width width around center
+   * returns the pixels for a square of width width around center either filled or non filled
    */
   @Override
-  public ArrayList<Point2D> returnPixels(Point2D center, int width) {
+  public ArrayList<Point2D> returnPixels(Point2D center, int width, boolean fill) {
+    if (fill)   return getPixelsFill(center, width);
+    else        return getPixelsNonFill(center, width);
+  }
+
+  private ArrayList<Point2D> getPixelsFill(Point2D center, int width) {
     // Calculate points of the star
     ArrayList<Point2D> points = calculateStarPoints((int)center.getX(), (int)center.getY(), width/2);
     
     // Draw the star by filling the polygon
     fillPolygon(points);
-    
+
     return points;
   }
+
+  private ArrayList<Point2D> getPixelsNonFill(Point2D center, int width) {
+    return new ArrayList<>();
+  }
+
+  
   
   private ArrayList<Point2D> calculateStarPoints(int centerX, int centerY, int outerRadius) {
     ArrayList<Point2D> points = new ArrayList<>();
