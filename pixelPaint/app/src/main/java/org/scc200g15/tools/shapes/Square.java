@@ -36,7 +36,7 @@ public class Square implements Shape{
 
     private ArrayList<Point2D> getPixelsNonFill(Point2D center, int width) {
         ArrayList<Point2D> points = new ArrayList<>();
-        points.add(center);
+        if (width <= 1) points.add(center);
 
         int radius = width/2;
         int x = (int) center.getX() - radius;

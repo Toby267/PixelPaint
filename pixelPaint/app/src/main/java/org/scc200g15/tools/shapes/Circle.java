@@ -43,7 +43,7 @@ public class Circle implements Shape {
 
     private ArrayList<Point2D> getPixelsNonFill(Point2D center, int diameter) {
         ArrayList<Point2D> points = new ArrayList<>();
-        points.add(center);
+        if (diameter <= 1) points.add(center);
 
         int radius = diameter/2;
 
