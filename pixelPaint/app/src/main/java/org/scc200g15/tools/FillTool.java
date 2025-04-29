@@ -15,7 +15,8 @@ import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Layer;
 
-public class FillTool implements Tool{
+public class
+FillTool implements Tool{
 
     @Override
     public void mouseClicked(PCanvas c, MouseEvent e) {
