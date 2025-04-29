@@ -13,12 +13,12 @@ public class Circle implements Shape {
      */
     @Override
     public ArrayList<Point2D> returnPixels(Point2D center, int diameter, boolean fill) {
-        if (fill)   return getPixelsFill(center, diameter);
-        else        return getPixelsNonFill(center, diameter);
+        return fill ? getPixelsFill(center, diameter) : getPixelsNonFill(center, diameter);
     }
 
     private ArrayList<Point2D> getPixelsFill(Point2D center, int diameter) {
         ArrayList<Point2D> points = new ArrayList<>();
+        points.add(center);
 
         int radius = diameter/2;
 
@@ -43,6 +43,7 @@ public class Circle implements Shape {
 
     private ArrayList<Point2D> getPixelsNonFill(Point2D center, int diameter) {
         ArrayList<Point2D> points = new ArrayList<>();
+        points.add(center);
 
         int radius = diameter/2;
 

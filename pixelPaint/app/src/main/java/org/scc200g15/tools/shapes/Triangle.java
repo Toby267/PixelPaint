@@ -13,12 +13,12 @@ public class Triangle implements Shape {
      */
     @Override
     public ArrayList<Point2D> returnPixels(Point2D center, int width, boolean fill) {
-        if (fill)   return getPixelsFill(center, width);
-        else        return getPixelsNonFill(center, width);
+        return fill ? getPixelsFill(center, width) : getPixelsNonFill(center, width);
     }
 
     private ArrayList<Point2D> getPixelsFill(Point2D center, int width) {
         ArrayList<Point2D> points = new ArrayList<>();
+        points.add(center);
 
         float radius = width/2;
 
@@ -67,6 +67,7 @@ public class Triangle implements Shape {
 
     private ArrayList<Point2D> getPixelsNonFill(Point2D center, int width) {
         ArrayList<Point2D> points = new ArrayList<>();
+        points.add(center);
 
         float radius = width/2;
 
