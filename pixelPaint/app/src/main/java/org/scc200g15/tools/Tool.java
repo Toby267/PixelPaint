@@ -8,6 +8,7 @@ import org.scc200g15.gui.canvas.PCanvas;
  * Interface all tools must conform to Passes through the current canvas and the mouse action which happened
  */
 public interface Tool {
+
   public void mouseDragged(PCanvas c, java.awt.event.MouseEvent e);
 
   public void mousePressed(PCanvas c, java.awt.event.MouseEvent e);
@@ -30,4 +31,5 @@ public interface Tool {
 
   public void keyReleased(PCanvas c, java.awt.event.KeyEvent e);
 
+  public void deactivate(PCanvas c);
 }

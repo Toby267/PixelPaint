@@ -1,10 +1,18 @@
 package org.scc200g15.gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -16,9 +24,18 @@ import org.scc200g15.gui.menubar.PMenuBar;
 import org.scc200g15.gui.sidebar.PSideBar;
 import org.scc200g15.gui.statusbar.PStatusBar;
 import org.scc200g15.gui.toolbar.DrawSubPanel;
+
+
 import org.scc200g15.gui.toolbar.DrawSubPanel1;
+
+
+import org.scc200g15.gui.toolbar.FillSubPanel;
+
+
 import org.scc200g15.gui.toolbar.PToolBar;
+import org.scc200g15.gui.toolbar.SelectSubPanel;
 import org.scc200g15.image.Image;
+import org.scc200g15.tools.ColourDropperTool;
 import org.scc200g15.tools.FillTool;
 import org.scc200g15.tools.PanZoomTool;
 import org.scc200g15.tools.StarTool;
@@ -30,6 +47,7 @@ import org.scc200g15.tools.squareSelect.SquareSelectTool;
 import org.scc200g15.tools.drawShapes.drawShapeTool;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+
 
 
 /**
@@ -56,6 +74,8 @@ public class GUI extends JFrame {
   PMenuBar menuBar;
   PSideBar sideBar;
   LayerSelectorPanel layerSelector;
+  PStatusBar statusBar;
+  FillSubPanel fillSP;
 
   private void registerTool(Tool tool, ImageIcon icon, String toolID, String name){
     toolManager.registerTool(toolID, tool);
@@ -70,7 +90,8 @@ public class GUI extends JFrame {
 
   private void registerTools(){
     SquareSelectTool squareSelect = new SquareSelectTool();
-    registerTool(squareSelect, IconManager.SQUARE_SELECT_ICON, "squareSelect", "Square Select Tool");
+    SelectSubPanel ssp = new SelectSubPanel(PToolBar.height, squareSelect);
+    registerTool(squareSelect, IconManager.SQUARE_SELECT_ICON, "squareSelect", "Square Select Tool", ssp);
     
     DrawTool drawTool = new DrawTool();
     DrawSubPanel dsp = new DrawSubPanel(PToolBar.height, drawTool);
@@ -81,25 +102,35 @@ public class GUI extends JFrame {
     registerTool(eraseTool, IconManager.ERASE_ICON, "erase", "Erase Tool", esp);
 
     FillTool fillTool = new FillTool();
-    registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool");
+    fillSP = new FillSubPanel(PToolBar.height);
+    registerTool(fillTool, IconManager.FILL_ICON, "fill", "Fill Tool", fillSP);
+
 
     StarTool starTool = new StarTool();
     registerTool(starTool, IconManager.STAR_ICON, "star", "Star Tool");
 
       drawShapeTool drawShapeTool = new drawShapeTool();
       DrawSubPanel1 sqr = new DrawSubPanel1(PToolBar.height, new drawShapeTool());
-      registerTool(drawShapeTool, IconManager.SHAPE_ICON, "drawShapes", "drawShapesTool", sqr);
+      registerTool(drawShapeTool, IconManager.STAR_ICON, "drawShapes", "drawShapesTool", sqr);
 
+
+    // Add undo/redo
+    toolBar.addUndoRedo();
+
+    // Not in toolbar
+    ColourDropperTool dropperTool = new ColourDropperTool();
+    toolManager.registerTool("dropper", dropperTool);    
   }
 
   private GUI() {
     super("Pixel Paint");
+    setupShortcuts();
 
     try {
-    UIManager.setLookAndFeel( new FlatLightLaf() );
-} catch( UnsupportedLookAndFeelException ex ) {
-    System.err.println( "Failed to initialize LaF" );
-}
+      UIManager.setLookAndFeel( new FlatLightLaf() );
+    } catch( UnsupportedLookAndFeelException ex ) {
+        System.err.println( "Failed to initialize LaF" );
+    }
 
     setLayout(new BorderLayout());
 
@@ -112,7 +143,7 @@ public class GUI extends JFrame {
     add(toolBar, BorderLayout.NORTH);
 
     // Add the StatusBar to the JFrame
-    PStatusBar statusBar = new PStatusBar(this);
+    statusBar = new PStatusBar(this);
     add(statusBar, BorderLayout.SOUTH);
 
     // Add the SideBar to the JFrame
@@ -122,6 +153,8 @@ public class GUI extends JFrame {
     // Canvas
     canvas = new PCanvas();
     add(canvas);
+
+    canvas.addMouseMotionListener(statusBar);
 
     // Add the LayerSelector to the JFrame
     layerSelector = new LayerSelectorPanel(this);
@@ -161,19 +194,17 @@ public class GUI extends JFrame {
   public ToolManager getToolManager() {
     return toolManager;
   }
-  public PToolBar getToolBar(){
+  public PToolBar getToolBar() {
     return toolBar;
   }
-  public void repaintToolBar(){
-    toolBar.repaint();
-  }
-
   public PSideBar getSideBar() {
     return sideBar;
   }
+  public void repaintToolBar() {
+    toolBar.repaint();
+  }
 
   public void toggleDarkMode(){
-    System.out.println(isDarkMode);
     if(isDarkMode){
       try {
         UIManager.setLookAndFeel( new FlatLightLaf() );
@@ -192,4 +223,121 @@ public class GUI extends JFrame {
 
     isDarkMode = !isDarkMode;
   }
+  public PStatusBar getStatusBar(){
+    return statusBar;
+  }
+
+  public int getFillTolerance(){
+    return fillSP.getTolerance();
+  }
+
+  private void setupShortcuts() {
+    JRootPane rootPane = this.getRootPane();
+    InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+    ActionMap actionMap = rootPane.getActionMap();
+
+    // Ctrl + S → Save Image
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "saveImage");
+    actionMap.put("saveImage", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+              canvas.saveImage();
+            }
+        }
+    });
+
+
+    // Ctrl + O → Open Image
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK), "openImage");
+    actionMap.put("openImage", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+              canvas.openImage();
+            }
+        }
+    });
+
+    // Ctrl + Z → Undo
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK), "undo");
+    actionMap.put("undo", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+              GUI.getInstance().getActiveImage().undoAction();
+            }
+        }
+    });
+
+    // Ctrl + Y → Redo
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK), "redo");
+    actionMap.put("redo", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (canvas != null) {
+              GUI.getInstance().getActiveImage().redoAction();
+            }
+        }
+    });
+
+
+
+
+// Ctrl + E → Eraser Tool
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK), "eraserTool");
+actionMap.put("eraserTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+              GUI.getInstance().getToolManager().setActiveTool("erase");
+            } catch (Error ex) {
+                System.out.println("Error: Tool 'erase' not found.");
+            }
+        }
+    }
+});
+
+// Ctrl + B → Brush Tool (Draw Tool)
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK), "brushTool");
+actionMap.put("brushTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+              GUI.getInstance().getToolManager().setActiveTool("draw");
+            } catch (Error ex) {
+                System.out.println("Error: Tool 'draw' not found.");
+            }
+        }
+    }
+});
+
+// Ctrl + F → Fill Tool
+inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), "fillTool");
+actionMap.put("fillTool", new AbstractAction() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (toolManager != null) {
+            try {
+              GUI.getInstance().getToolManager().setActiveTool("fill");
+            } catch (Error ex) {
+              System.out.println("Error: Tool 'fill' not found.");
+            }
+        }
+    }
+});
+
+    // Ctrl + D → Toggle Dark Mode
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK), "toggleDarkMode");
+    actionMap.put("toggleDarkMode", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            toggleDarkMode();
+        }
+    });
+}
+
+
 }

@@ -1,11 +1,16 @@
 package org.scc200g15.tools.squareSelect;
 
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
+import org.scc200g15.action.PixelsChangedAction;
+import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
 import org.scc200g15.image.Image;
 import org.scc200g15.image.Layer;
@@ -22,6 +27,10 @@ public class SquareSelectTool implements Tool {
     TOP,
     BOTTOM
   }
+
+  ArrayList<Point> actionPoints = new ArrayList<>();
+  ArrayList<Color> actionOldColours = new ArrayList<>();
+  ArrayList<Color> actionNewColours = new ArrayList<>();
 
   private SelectState currentState = new Idle();
   private Side selectedSide;
@@ -54,6 +63,12 @@ public class SquareSelectTool implements Tool {
   protected void setEndPoint(Point2D p) {
     endPoint = p;
   }
+  protected void setEndPointX(double x) {
+    endPoint = new Point2D.Double(x, endPoint.getY());
+  }
+  protected void setEndPointY(double y) {
+    endPoint = new Point2D.Double(endPoint.getX(), y);
+  }
 
   protected Side getSelectedSide() {
     return selectedSide;
@@ -83,8 +98,79 @@ public class SquareSelectTool implements Tool {
     return moveEndPoint;
   }
 
-  // * ---------------------------------- [ ACTIONS ] ---------------------------------- * //
+  // * ---------------------------------- [ PUBLIC ACTIONS ] ---------------------------------- * //
 
+  public void delete(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      deleteSelected(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColours, new Color(0, 0, 0, 0));
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
+      deselect(c);
+    }
+  }
+
+  public void escape(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      deselect(c);
+    }
+  }
+
+  public void copy(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      cacheSelectedArea(c);
+    }
+  }
+
+  public void paste(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      printCached(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColours, actionNewColours);
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
+      deselect(c);
+    }
+  }
+
+  public void move(PCanvas c) {
+    if (currentState instanceof Moving) {
+      cacheAndDelete(c);
+      printCached(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColours, actionNewColours);
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
+      deselect(c);
+    }
+  }
+
+  @Override
+  public void deactivate(PCanvas c) {
+    if (currentState instanceof Selecting) {
+      deselect(c);
+    }
+  }
+
+  public void rotate(PCanvas c, boolean isClockwise, Integer angle)
+  {
+    if (currentState instanceof Selecting) {
+      cacheAndDelete(c);
+
+      rotateCachedArea(c, isClockwise, angle);
+      
+      printCached(c);
+
+      PixelsChangedAction drawAction = new PixelsChangedAction(c.getActiveImage().getActiveLayer(), actionPoints, actionOldColours, actionNewColours);
+      GUI.getInstance().getActiveImage().addAction(drawAction);
+
+      deselect(c);
+    }
+  }
+
+  // * ---------------------------------- [ PROTECTED ACTIONS ] ---------------------------------- * //
+  
   /**
    * highlights the selected area on the given canvas
    * 
@@ -107,7 +193,16 @@ public class SquareSelectTool implements Tool {
 
     setStartPoint(null);
     setEndPoint(null);
+
+    setMoveStartPoint(null);
+    setMoveEndPoint(null);
+
+    actionPoints = new ArrayList<>();
+    actionOldColours = new ArrayList<>();
+    actionNewColours = new ArrayList<>();
     
+    GUI.getInstance().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
     c.setHoverDimensions(0, 0);
     c.repaint();
   }
@@ -129,6 +224,9 @@ public class SquareSelectTool implements Tool {
         int y = (int)trueStart.getY() + j;
 
         if (c.isOutOfBounds(x, y)) continue;
+
+        //adds the pixel to actionPoints, actionOldColours
+        addPixelToActionLists(x, y, activeLayer.getPixel(x, y));
         
         activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
         c.recalculatePixel(x, y);
@@ -137,6 +235,55 @@ public class SquareSelectTool implements Tool {
 
     c.repaint();
   }
+
+  /**
+   * rotate selected area 
+
+   * @param c the canvas
+   */
+  protected void rotateCachedArea(PCanvas c, Boolean isClockwise, Integer angle) {
+    if(angle % 90 != 0) return;
+
+    while (angle > 0) {
+      if(isClockwise) cachedArea = rotateCW(cachedArea);
+      else cachedArea = rotateACW(cachedArea);
+
+      angle -= 90;
+    }
+  }
+
+  /**
+   * Rotate 90 degrees clockwise
+   * https://stackoverflow.com/a/2800033
+   */
+  protected Color[][] rotateCW(Color[][] mat) {
+    final int M = mat.length;
+    final int N = mat[0].length;
+    Color[][] ret = new Color[N][M];
+    for (int r = 0; r < M; r++) {
+        for (int c = 0; c < N; c++) {
+          ret[N - 1 - c][r] = mat[r][c];
+        }
+    }
+    return ret;
+  }
+
+  /**
+   * Rotate 90 degrees anti-clockwise
+   * https://stackoverflow.com/a/2800033
+   */
+  protected Color[][] rotateACW(Color[][] mat) {
+    final int M = mat.length;
+    final int N = mat[0].length;
+    Color[][] ret = new Color[N][M];
+    for (int r = 0; r < M; r++) {
+        for (int c = 0; c < N; c++) {
+          ret[c][M-1-r] = mat[r][c];
+        }
+    }
+    return ret;
+  }
+
   /**
    * caches the selected arrea within cachedArea
    * 
@@ -180,6 +327,9 @@ public class SquareSelectTool implements Tool {
         int y = (int)trueStart.getY() + j;
 
         if (c.isOutOfBounds(x, y)) continue;
+
+        //adds the pixel to actionPoints, actionOldColours, and actionNewColours
+        addPixelToActionLists(x, y, activeLayer.getPixel(x, y), new Color(0, 0, 0, 0));
         
         cachedArea[i][j] = activeLayer.getPixel(x, y);
         activeLayer.setPixel(x, y, new Color(0, 0, 0, 0));
@@ -195,6 +345,9 @@ public class SquareSelectTool implements Tool {
    * @param c the canvas
    */
   protected void printCached(PCanvas c) {
+    if (cachedArea == null)
+      return;
+
     Image image = c.getActiveImage();
     Layer activeLayer = image.getActiveLayer();
 
@@ -209,6 +362,9 @@ public class SquareSelectTool implements Tool {
 
         //if the start pixel or end is out of bounds
         if (c.isOutOfBounds(x, y)) continue;
+        
+        //adds the pixel to actionPoints, actionOldColours, and actionNewColours
+        addPixelToActionLists(x, y, activeLayer.getPixel(x, y), cachedArea[i][j]);
 
         //cache the colour and delete the pixel
         activeLayer.setPixel(x, y, cachedArea[i][j]);
@@ -221,6 +377,32 @@ public class SquareSelectTool implements Tool {
 
   // * ---------------------------------- [ HELPER METHODS ] ---------------------------------- * //
 
+  //adds the change to actionPoints, actionOldColours and actionNewColours, overides the value in actionNewColours if it already exists
+  private void addPixelToActionLists(int x, int y, Color oldColor, Color newColor) {
+    int index = actionPoints.indexOf(new Point(x, y));
+
+    if (index == -1) {
+      actionPoints.add(new Point(x, y));
+      actionOldColours.add(oldColor);
+      actionNewColours.add(newColor);
+    }
+    else {
+      actionNewColours.set(index, newColor);
+    }
+  }
+  //adds the change to actionPoints, actionOldColours, overides the value in actionOldColours if it already exist
+  private void addPixelToActionLists(int x, int y, Color oldColor) {
+    int index = actionPoints.indexOf(new Point(x, y));
+
+    if (index == -1) {
+      actionPoints.add(new Point(x, y));
+      actionOldColours.add(oldColor);
+    }
+    else {
+      actionOldColours.set(index, oldColor);
+    }
+  }
+  
   //calculates the top left pixel of the selected area
   protected Point2D calcTrueStart() {
     return new Point2D.Double(
@@ -313,11 +495,16 @@ public class SquareSelectTool implements Tool {
       currentState.mousePressed(c, e, this);
     }
   }
+
+  @Override
+  public void mouseMoved(PCanvas c, MouseEvent e) {
+    if (currentState != null) {
+      currentState.mouseMoved(c, e, this);
+    }
+  }
   
   // * ---------------------------------- [ UNUSED ACTION LISTENERS ] ---------------------------------- * //
 
-  @Override
-  public void mouseMoved(PCanvas c, MouseEvent e) {}
   @Override
   public void mouseWheelMoved(PCanvas c, MouseWheelEvent e) {}
   @Override

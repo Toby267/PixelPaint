@@ -45,4 +45,6 @@ public class Resizing implements SelectState{
   public void keyPressed(PCanvas c, KeyEvent e, SquareSelectTool context) {}
   @Override
   public void mousePressed(PCanvas c, MouseEvent e, SquareSelectTool context) {}
+  @Override
+  public void mouseMoved(PCanvas c, MouseEvent e, SquareSelectTool context) {}
 }

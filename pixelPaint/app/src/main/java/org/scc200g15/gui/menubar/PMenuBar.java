@@ -1,23 +1,25 @@
 package org.scc200g15.gui.menubar;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import javax.swing.JMenuItem;
-import javax.swing.AbstractAction;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.imageio.ImageIO;
-import org.scc200g15.gui.GUI;
-import org.scc200g15.tools.Tool;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.JOptionPane;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.Color;
+
+import org.scc200g15.gui.GUI;
 import org.scc200g15.image.Layer;
+import org.scc200g15.tools.Tool;
 /**
  * The MenuBar that will appear at the very top of the menu
  */
@@ -37,7 +39,7 @@ public class PMenuBar extends JMenuBar {
     editMenu = new JMenu("edit");
     JMenu viewMenu = new JMenu("view");
     JMenu helpMenu = new JMenu("help");
-    JMenuItem openFileButton = new JMenuItem("Open PNG");
+    JMenuItem openFileButton = new JMenuItem("Import Image");
     openFileButton.addActionListener((ActionEvent e) -> {
       openImageFile();
     });
@@ -45,43 +47,36 @@ public class PMenuBar extends JMenuBar {
     
     fileMenu.add(openFileButton);
 
+    JMenuItem save = new JMenuItem("Export Image");
 
-
-
-    JMenuItem saveAsBitmap = new JMenuItem("Save as BMP");
-
-    saveAsBitmap.addActionListener((ActionEvent e) -> {
-      org.scc200g15.image.Image currentImage = GUI.getInstance().getActiveImage();
-
-      if (currentImage == null) {
-        JOptionPane.showMessageDialog(null, "No active image to save!", "Error", JOptionPane.ERROR_MESSAGE);
-        System.out.println("No active image found.");
-        return;
-      }
-
-      BufferedImage bufferedImage = currentImage.calculateImageBuffer();
-      try {
-        // Get desktop path
-        String desktopPath = System.getProperty("user.home") + "/Desktop";
-        File outputFile = new File(desktopPath, "output.bmp");
-
-        // Save image
-        boolean success = ImageIO.write(bufferedImage, "png", outputFile);
-
-        if (success) {
-          JOptionPane.showMessageDialog(null, "Image saved to Desktop!", "Success", JOptionPane.INFORMATION_MESSAGE);
-          System.out.println("Image successfully saved to: " + outputFile.getAbsolutePath());
-        } else {
-          JOptionPane.showMessageDialog(null, "Failed to save image!", "Error", JOptionPane.ERROR_MESSAGE);
-          System.out.println("ImageIO.write() returned false, failed to save.");
-        }
-      } catch (IOException ex) {
-        ex.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Error saving image: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-      }
-      String[] formats = ImageIO.getWriterFormatNames();
-      System.out.println("Supported formats: " + String.join(", ", formats));
+    save.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getCanvas().saveImage();
     });
+
+    JMenuItem saveLayer = new JMenuItem("Export Active Layer");
+
+    saveLayer.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getCanvas().saveActiveLayer();
+    });
+
+    JMenuItem saveWithLayer = new JMenuItem("Save With Layers");
+
+    saveWithLayer.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getCanvas().saveWithLayers();
+    });
+
+    JMenuItem openWithLayer = new JMenuItem("Open With Layers");
+
+    openWithLayer.addActionListener((ActionEvent e) -> {
+      GUI.getInstance().getCanvas().openWithLayers();
+    });
+
+
+    fileMenu.add(save);
+    fileMenu.add(saveLayer);
+    fileMenu.add(saveWithLayer);
+    fileMenu.add(openWithLayer);
+
     viewMenu.add(new AbstractAction("Toggle Dark Mode") {
 
 		  @Override
@@ -96,7 +91,6 @@ public class PMenuBar extends JMenuBar {
     add(editMenu);
     add(helpMenu);
     add(viewMenu);
-    fileMenu.add(saveAsBitmap);
   }
 
 
@@ -133,6 +127,7 @@ public class PMenuBar extends JMenuBar {
         Layer selectedLayer = getSelectedLayer();  // Get selected layer (from Image or LayerSelector)
         if (selectedLayer != null) {
           selectedLayer.setPixels(pixelData);
+          GUI.getInstance().getCanvas().recalculateAllPixels();
           GUI.getInstance().getCanvas().repaint();  // Repaint the canvas to reflect changes
         } else {
           JOptionPane.showMessageDialog(null, "No active layer selected!", "Error", JOptionPane.ERROR_MESSAGE);

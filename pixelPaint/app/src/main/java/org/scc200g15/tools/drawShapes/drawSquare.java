@@ -149,5 +149,11 @@ public class drawSquare implements Tool {
         endPoint = null;
         isDragging = false;
     }
+
+    @Override
+    public void deactivate(PCanvas c) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deactivate'");
+    }
 }
 

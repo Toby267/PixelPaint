@@ -170,4 +170,10 @@ public class drawTriangle implements Tool {
         isDragging = false;
         vertices.clear(); // Clear the stored vertices for the next triangle
     }
+
+    @Override
+    public void deactivate(PCanvas c) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deactivate'");
+    }
 }

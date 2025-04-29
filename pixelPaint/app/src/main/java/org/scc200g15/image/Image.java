@@ -2,44 +2,85 @@ package org.scc200g15.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Predicate;
 
+import javax.swing.JPanel;
+
+import org.scc200g15.action.Action;
 import org.scc200g15.gui.GUI;
 
 /**
  * The image class stores all of the relevant info about the image an image
  * including pixel and layer data
  */
-public final class Image {
+public final class Image implements Serializable{
   public ArrayList<Layer> Layers;
 
   public Layer activeLayer;
-  public ArrayList<Layer> selectedLayers;
+  transient public ArrayList<Layer> selectedLayers;
+
+  transient ArrayDeque<Action> actionHistory = new ArrayDeque<>(20);
+  transient ArrayDeque<Action> undoHistory = new ArrayDeque<>(20);
 
   // The width and height of the image
   private int width = 1000;
   private int height = 1000;
 
+  private void init()
+  {
+    selectedLayers = new ArrayList<>(16);
+
+    actionHistory = new ArrayDeque<>(20);
+    undoHistory = new ArrayDeque<>(20);
+  }
+
   /**
    * Basic constructor that creates a 16x16 blue image
    */
   public Image() {
+    // ! TODO: CREATE A DEFAULT WHITE BACKGROUND LAYER WHICH CANNOT BE ADDED / REMOVED.
+
     Layers = new ArrayList<>(16);
 
-    // Selected layers to be merged
-    selectedLayers = new ArrayList<>(16);
+    // Init transient variables
+    init();
 
-    Layers.add(new Layer("LAYER 1", new Color(195, 127, 209, 128), width, height));
+    Layers.add(new Layer("LAYER 1", new Color(255, 255, 255), width, height));
     setActiveLayer(Layers.getFirst(), null);
     GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.getFirst());
-    
-    Layers.add(new Layer("LAYER 2", new Color(0, 83, 234, 128), width, height));
   }
+
+  public Image(BufferedImage bufferedImage) {
+    Layers = new ArrayList<>(16);
+
+    Color[][] pixels = new Color[bufferedImage.getWidth()][bufferedImage.getHeight()];
+
+    for(int i = 0; i < bufferedImage.getWidth(); i++){
+      for(int j = 0; j < bufferedImage.getHeight(); j++){
+        pixels[i][j] = new Color(bufferedImage.getRGB(i, j));
+      }
+    }
+
+    this.width = bufferedImage.getWidth();
+    this.height = bufferedImage.getHeight();
+
+    // Init transient variables
+    init();
+
+    Layers.add(new Layer("LAYER 1", pixels));
+    setActiveLayer(Layers.getFirst(), null);
+    GUI.getInstance().getLayerSelector().setLastActiveLayer(Layers.getFirst());
+}
 
   public int moveLayer(int index1, int index2) {
     if (index1 < 0 || index1 >= Layers.size() || index2 < 0 || index2 >= Layers.size()) {
-      // TODO: Handle Error Invalid Layer ID
       return -1;
     }
     Layer tempLayer = Layers.get(index1);
@@ -80,6 +121,19 @@ public final class Image {
 
     return activeLayerID + 1;
   }
+  public int addLayer(Layer layer, int index) {
+    // Get the ID of the active layer
+    int activeLayerID = Layers.indexOf(activeLayer);
+
+    // Add a given layer above the active layer
+    Layers.add(index, layer);
+
+    // Set active layer to new layer if there is not one
+    if (activeLayerID == -1)
+      activeLayer = Layers.get(index);
+
+    return index;
+  }
 
   public int removeLayer(Layer layer) {
     return removeLayer(Layers.indexOf(layer));
@@ -87,7 +141,6 @@ public final class Image {
 
   public int removeLayer(int ID) {
     if (ID < 0 || ID >= Layers.size()) {
-      // TODO: Handle Error Invalid Layer ID
       return -1;
     }
 
@@ -124,6 +177,15 @@ public final class Image {
   public int getLayerIndex(Layer layer) {
     return Layers.indexOf(layer);
   }
+  public int getLayerIndex(JPanel displayPanel) {
+    Predicate<Layer> isJpanel = l -> l.getJPanel() == displayPanel;
+
+    Optional<Layer> l = Layers.stream().filter(isJpanel).findFirst();
+    if(l.isPresent()){
+      return Layers.indexOf(l.get());
+    }else return -1;
+    
+  }
 
   /**
    * Get the width of the image
@@ -153,19 +215,12 @@ public final class Image {
     for(int x = startX; x < startX + w; x++) {
       for(int y = startY; y < startY + h; y++) {
         ArrayList<Color> colorsToMix = new ArrayList<>();
-        boolean isFirstLayer = true;
 
         for(Layer layer : layersToCompress) {
           Color pixel = layer.getPixel(x, y);
           if(pixel.getAlpha() == 0) continue;
           if(!layer.getIsLayerVisible() && skipInvisibleLayers) continue;
-          if(pixel.getAlpha() == 255) {
-            if(isFirstLayer) finalImage[x - startX][y - startY] = pixel;
-            else colorsToMix.add(pixel);
-            break;
-          }
           colorsToMix.add(pixel);
-          isFirstLayer = false;
         }
 
         if(!colorsToMix.isEmpty()) {
@@ -204,6 +259,7 @@ public final class Image {
 
     return imageBuffer;
   }
+
   public BufferedImage updateImageBuffer(BufferedImage imageBuffer, int startX, int startY, int w, int h) {
     Color[][] pixelData = compressVisiblePixels(startX, startY, w, h);
 
@@ -250,7 +306,7 @@ public final class Image {
     selectedLayers.remove(layer);
   }
 
-  public void disableSeletedLayers() {
+  public void disableSelectedLayers() {
     for(Layer layer : selectedLayers) layer.switchSelectedLayerState();
     selectedLayers = new ArrayList<>(16); // Effectively removes all elements
   }
@@ -275,6 +331,63 @@ public final class Image {
     selectedLayers = new ArrayList<>(16); // Effectively removes all elements
   }
 
+  public void changeImageDimensions(int width, int height) {
+    for (Layer layer : Layers) 
+      layer.changeSize(width, height);
+    this.width = width;
+    this.height = height;
+    GUI.getInstance().getCanvas().recalculateAllPixels();
+    GUI.getInstance().getStatusBar().updateCanvasSizeValues(this.width, this.height);
+  }
 
+  public void changeImageWidth(int width) {
+    for (Layer layer : Layers) 
+      layer.changeWidth(width);
+    this.width = width;
+    GUI.getInstance().getCanvas().recalculateAllPixels();
+    GUI.getInstance().getStatusBar().updateCanvasSizeValues(this.width, this.height);
+  }
+
+  public void changeImageHeight(int height) {
+    for (Layer layer : Layers) 
+      layer.changeHeight(height);
+    this.height = height;
+    GUI.getInstance().getCanvas().recalculateAllPixels();
+    GUI.getInstance().getStatusBar().updateCanvasSizeValues(this.width, this.height);
+  }
+
+  public void addAction(Action action){
+    if(actionHistory.size() >= 20){
+      actionHistory.removeFirst();
+    }
+    actionHistory.add(action);
+  }
+  public void undoAction(){
+    if(actionHistory.isEmpty()) return;
+
+    Action a = actionHistory.removeLast();
+    a.undo(this);
+
+    if(undoHistory.size() >= 20){
+      undoHistory.removeLast();
+    }
+    undoHistory.addFirst(a);
+  }
+
+  public void redoAction(){
+    if(undoHistory.isEmpty()) return;
+
+    Action a = undoHistory.removeFirst();
+    a.redo(this);
+
+    addAction(a);
+  }
+
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();         // Deserialize non-transient fields
+
+    // Init transient variables
+    init();
+  }
 
 }

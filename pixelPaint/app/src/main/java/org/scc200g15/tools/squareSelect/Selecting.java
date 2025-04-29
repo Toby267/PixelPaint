@@ -1,10 +1,13 @@
 package org.scc200g15.tools.squareSelect;
 
+import java.awt.Cursor;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
+import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.tools.squareSelect.SquareSelectTool.Side;
 
 /**
  * selecting state for when the select tool has an area selected or is currently selecting an area
@@ -16,9 +19,11 @@ public class Selecting implements SelectState {
   @Override
   public void mouseDragged(PCanvas c, MouseEvent e, SquareSelectTool context) {
     Point2D p = c.getPixelPoint(e.getPoint());
-    if (c.isOutOfBounds(p)) return;
-    
-    context.setEndPoint(c.getPixelPoint(e.getPoint()));
+
+    if (p.getX() >= 0 && p.getX() < c.getActiveImage().getWidth())
+      context.setEndPointX(p.getX());
+    if (p.getY() >= 0 && p.getY() < c.getActiveImage().getHeight())
+      context.setEndPointY(p.getY());
 
     context.paint(c);
   }
@@ -47,6 +52,26 @@ public class Selecting implements SelectState {
     }
   }
   
+  @Override
+  public void mouseMoved(PCanvas c, MouseEvent e, SquareSelectTool context) {
+    Point2D p = c.getPixelPoint(e.getPoint());
+
+    if (context.calcWidth() == 1 && context.calcHeight() == 1) return;
+    else if (context.getBorder(p) != null){
+      Side s = context.getBorder(p);
+
+      if(s == Side.BOTTOM || s == Side.TOP){
+        GUI.getInstance().setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
+      }else{
+        GUI.getInstance().setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+      }
+    }else if (context.contains(p)) {
+      GUI.getInstance().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+    }else{
+      GUI.getInstance().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    }
+  }
+
   /**
    * event for when a key is pressed, will either delete the selected area or deselect it
    */
@@ -61,24 +86,22 @@ public class Selecting implements SelectState {
   private void noModifiers(PCanvas c, KeyEvent e, SquareSelectTool context) {
     switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE -> {
-        context.deleteSelected(c);
-        context.deselect(c);
+        context.delete(c);
       }
       case KeyEvent.VK_ESCAPE -> {
-        context.deselect(c);
+        context.escape(c);
       }
       case KeyEvent.VK_ENTER -> {
-        context.deselect(c);}
+        context.escape(c);}
     }
   }
   private void ctrlDown(PCanvas c, KeyEvent e, SquareSelectTool context) {
     switch (e.getKeyCode()) {
       case KeyEvent.VK_C -> {
-        context.cacheSelectedArea(c);
+        context.copy(c);
       }
       case KeyEvent.VK_V -> {
-        context.printCached(c);
-        context.deselect(c);
+        context.paste(c);
       }
     }
   }
@@ -86,4 +109,5 @@ public class Selecting implements SelectState {
   //unused action listeners
   @Override
   public void mouseReleased(PCanvas c, MouseEvent e, SquareSelectTool context) {}
+
 }

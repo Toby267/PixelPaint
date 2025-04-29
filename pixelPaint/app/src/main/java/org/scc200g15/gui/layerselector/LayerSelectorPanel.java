@@ -1,6 +1,7 @@
 package org.scc200g15.gui.layerselector;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -15,6 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
+import org.scc200g15.action.LayerCreateAction;
+import org.scc200g15.action.LayerDeleteAction;
+import org.scc200g15.action.LayerMoveAction;
 import org.scc200g15.config.Config;
 import org.scc200g15.gui.GUI;
 import org.scc200g15.gui.icons.IconManager;
@@ -25,12 +29,13 @@ import org.scc200g15.image.Layer;
  * The right hand side bar which will contain the layers
  */
 public final class LayerSelectorPanel extends JPanel {
-  private final LayerMenuTools Tools = new LayerMenuTools();
 
   private final JPanel contentPanel = new JPanel();
-    private JPanel addLayerPanel;
 
-    private Layer lastActiveLayer;
+  private JPanel addLayerPanel;
+  private Layer lastActiveLayer;
+
+  JPanel separator;
 
   /**
    * SideBar which holds all the Layer Selectors
@@ -43,6 +48,12 @@ public final class LayerSelectorPanel extends JPanel {
 
     // JPanel which holds all the content
     contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
+    separator = new JPanel();
+    //separator.setMaximumSize(new Dimension(contentPanel.getWidth(), 4));
+    //separator.setPreferredSize(new Dimension(contentPanel.getWidth(), 4));
+    separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+    separator.setBackground(Color.BLUE);  // or whatever color you want
 
     // Draw the layer selection menu
     drawMenuUI(window);
@@ -78,8 +89,8 @@ public final class LayerSelectorPanel extends JPanel {
       // Add existing layers to the Layer Menu
       for (int i = 0; i < image.getLayerCount(); i++) {
         Layer currentLayer = image.getLayer(i);
-        currentLayer.setMaximumSize(Tools.getMaxSize(currentLayer));
-        contentPanel.add(currentLayer);
+        currentLayer.getJPanel().setMaximumSize(getMaxSize(currentLayer.getJPanel()));
+        contentPanel.add(currentLayer.getJPanel());
 
         // Add spacing between layers
         if (i < image.getLayerCount() - 1)
@@ -104,7 +115,7 @@ public final class LayerSelectorPanel extends JPanel {
     this.add(scroll);
 
     // Fix the spacing of the layer menu
-    titleDisplay.setMaximumSize(Tools.getMaxSize(titleDisplay));
+    titleDisplay.setMaximumSize(getMaxSize(titleDisplay));
   }
 
   /**
@@ -121,15 +132,11 @@ public final class LayerSelectorPanel extends JPanel {
         Image image = GUI.getInstance().getActiveImage();
 
         // If no active image do nothing
-        if (image == null) {
+        if (image == null) 
             return;
-        }
 
         // Set layer limit upper bound
-        if (image.getLayerCount() >= Config.MAX_LAYERS) {
-            // Should not happen as the button should be hidden when 16 layers exist in the image
-            return;
-        }
+        if (image.getLayerCount() >= Config.MAX_LAYERS) return; // Should not happen as the button should be hidden when 16 layers exist in the image
 
         // Call the create layer function
         createLayer();
@@ -153,50 +160,68 @@ public final class LayerSelectorPanel extends JPanel {
       return;
     }
     // Create a new layer with a TEMP na,e
-    Layer newLayer = new Layer("TEMP", new Color(0, 0, 0, 0), image.getWidth(), image.getHeight());
+    Layer newLayer = new Layer("New Layer", new Color(0, 0, 0, 0), image.getWidth(), image.getHeight());
   
     // Add the layer to the active image
-    image.addLayer(newLayer);
+    int index = image.addLayer(newLayer);
+
+    image.addAction(new LayerCreateAction(newLayer, index));
 
     // Redraw the layer menu
     redrawMenuUI();
 
-    addLayerPanel.setVisible(image.getLayerCount() <= 15);
-
-    // TODO: add this to redrawMenuUI?
-    Tools.refreshUI(this);
+    addLayerPanel.setVisible(image.getLayerCount() <= 15);    
   }
 
   // * ----------------------- [REMOVE LAYERS] ----------------------- * //
 
-
+  /**
+   * Handel removing a layer from the image
+   * @param layer the layer to remove
+   */
   public void removeLayer(Layer layer) { 
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
+    // Make sure the image is not null
     if(image == null){
-      // TODO: Handle Error
       System.out.println("ERROR: removeLayerReferences image is null");
       return;
     }
 
+    // Make sure there is always 1 layer
     if(image.getLayerCount() == 1) {
-      //TODO: Handle Error Message
-      System.out.println("ERROR: last layer remaining");
+      JOptionPane.showMessageDialog(GUI.getInstance(), "You are not able to remove the last final layer form an image!");
       return;
     }
 
+    // Remove the layer
+    image.addAction(new LayerDeleteAction(layer, image.getLayerIndex(layer)));
     image.removeLayer(layer);
-    contentPanel.remove(layer);
+    contentPanel.remove(layer.getJPanel());
 
+    // If needed readd the create layer button
     addLayerPanel.setVisible(image.getLayerCount() <= 15);
 
-    Tools.refreshUI(this);
+    // Repaint and recalculate
+    revalidate();
+    repaint();
+    
     GUI.getInstance().getCanvas().recalculateAllPixels();
     GUI.getInstance().getCanvas().repaint();
   }
 
-
+  /**
+   * Handel removing a layer from the image but show a warning message first
+   * @param layer the layer to remove
+   */
   public void removeLayerWithWarning(Layer layer) {
+    Image image = GUI.getInstance().getCanvas().getActiveImage();
+
+    if(image.getLayerCount() == 1) {
+      JOptionPane.showMessageDialog(GUI.getInstance(), "You are not able to remove the last final layer form an image!");
+      return;
+    }
+
     int option = JOptionPane.showOptionDialog(
       null, "Are you sure you want to delete this layer?", "Layer Deletion",
       JOptionPane.YES_NO_OPTION,
@@ -213,40 +238,71 @@ public final class LayerSelectorPanel extends JPanel {
     removeLayer(layer);
   }
 
-
-
   // * ----------------------- [REARRANGE LAYERS] ----------------------- * //
    
+  /**
+   * Move a layer from pos 1 to pos 2
+   * @param index1 the start pos
+   * @param index2 the end pos
+   */
   public void moveLayer(int index1, int index2) {
     Image image = GUI.getInstance().getCanvas().getActiveImage();
 
     image.moveLayer(index1, index2);
+    image.addAction(new LayerMoveAction(index1, index2));
 
+    // Redraw the menu
     redrawMenuUI();
+
+    // Recalculate pixels and redraw
     GUI.getInstance().getCanvas().recalculateAllPixels();
     GUI.getInstance().getCanvas().repaint();
   }
 
   // * ----------------------- [SET ACTIVE LAYER]  ----------------------- * //
 
+  /**
+   * Set a layer to be the active layer
+   * @param activeLayer
+   */
   public void setActiveLayer(Layer activeLayer) {
+    // Get the active image
     Image image = GUI.getInstance().getActiveImage();
+
     if (image == null)
       return;
+
+    // Check if the layer is already active  
     if (activeLayer == lastActiveLayer)
       return;
+
+    // Tell the layer it is the active layer
     image.setActiveLayer(activeLayer, lastActiveLayer);
+    
+    // Update the record of last active layer
     lastActiveLayer = activeLayer;
   }
 
+  /**
+   * Set a layer to be the active layer
+   * @param layerID the layer id of the layer to become active
+   */
   public void setActiveLayer(int layerID) {
+    // Get the active image
     Image image = GUI.getInstance().getActiveImage();
+
     if (image == null)
       return;
+    
+    // Get the layer from the ID
     Layer activeLayer = image.getLayer(layerID);
     setActiveLayer(activeLayer);
   }
 
+  /**
+   * Toggle whether a given layer is selected or not
+   * @param layerID
+   */
   public void switchSelectedLayerState(int layerID) {
     Image image = GUI.getInstance().getActiveImage();
     if (image == null)
@@ -263,6 +319,9 @@ public final class LayerSelectorPanel extends JPanel {
 
   // * ----------------------- [ACCESSORS/MUTATORS]  ----------------------- * //
 
+  /**
+   * Get the list of all layers
+   */
   public ArrayList<Layer> getLayers() {
     return GUI.getInstance().getCanvas().getActiveImage().getLayers();
   }
@@ -271,4 +330,43 @@ public final class LayerSelectorPanel extends JPanel {
       this.lastActiveLayer = lastActiveLayer;
   }
 
+  /**
+   * Get Largest Dimensions of a layer item
+   * @param panel
+   * @return
+   */
+  Dimension getMaxSize(JPanel panel) {
+    return new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height);
+  } 
+
+  public void setSeparatorPOS(int pos){
+    Image image = GUI.getInstance().getActiveImage();
+
+    contentPanel.remove(separator);
+    if(pos < 0) {
+      contentPanel.repaint();
+      contentPanel.revalidate(); // refresh layout
+      return;
+    }
+
+    Component[] components = contentPanel.getComponents();
+  
+    int layerCount = 0;
+    int insertIndex =  (image.getLayerCount() <= (Config.MAX_LAYERS - 1)) ? components.length - 1 : components.length; // default to end if not found
+
+    for (int i = 0; i < components.length; i++) {
+      if (components[i].getName() != null && components[i].getName().equals("layer")) {
+          if (layerCount == pos) {
+              insertIndex = i; // insert after this Layer
+              break;
+          }
+          layerCount++;
+      }
+    }
+
+    contentPanel.add(separator, insertIndex); // insert at the calculated index
+    contentPanel.repaint();
+    contentPanel.revalidate(); // refresh layout
+  }
 }
+

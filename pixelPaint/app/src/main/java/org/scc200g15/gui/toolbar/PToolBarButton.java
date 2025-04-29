@@ -59,6 +59,10 @@ public class PToolBarButton extends JButton{
         
         repaint();
     } 
+    
+    public Tool getTool() {
+        return this.tool;
+    }    
 }
 
     

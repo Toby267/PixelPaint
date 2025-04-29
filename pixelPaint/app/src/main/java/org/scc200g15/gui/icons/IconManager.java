@@ -20,11 +20,25 @@ public class IconManager {
     private static final String FILL_ICON_PATH = "/Icons/fill.png";
     private static final String SQUARE_SELECT_ICON_PATH = "/Icons/Square_Select.png";
 
+    private static final String UNDO_ICON_PATH = "/Icons/undo.png";
+    private static final String REDO_ICON_PATH = "/Icons/redo.png";
+
+    private static final String DELETE_ICON_PATH = "/Icons/delete.png";
+    private static final String ESCAPE_ICON_PATH = "/Icons/escape.png";
+    private static final String COPY_ICON_PATH = "/Icons/copy.png";
+    private static final String PASTE_ICON_PATH = "/Icons/paste.png";
+
     public static final String SQUARE_ICON_PATH = "/Icons/square.png";
     public static final String CIRCLE_ICON_PATH = "/Icons/circle.png";
     public static final String TRIANGLE_ICON_PATH = "/Icons/triangle.png";
     public static final String STAR_ICON_PATH = "/Icons/star.png";
-    public static final String SHAPE_ICON_PATH = "/Icons/shapeDraw.png";
+
+    
+    public static final String DROPPER_ICON_PATH = "/Icons/dropper_icon.png";
+
+    public static final String ROT_CW_PATH = "/Icons/rotate-right.png";
+    public static final String ROT_ACW_PATH = "/Icons/rotate-left.png";
+
 
     // Colours for the layer menu background as seen in the UI design
     public static final Color VISIBLE_BACKGROUND_COLOUR = new Color(227,227,227);
@@ -62,31 +76,65 @@ public class IconManager {
     public static final ImageIcon FILL_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, FILL_ICON_PATH);
     public static final ImageIcon SQUARE_SELECT_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, SQUARE_SELECT_ICON_PATH);
 
+
+    public static final ImageIcon ROT_CW_ICON = createImageIcon(15, 15, VISIBLE_ICON_COLOUR, ROT_CW_PATH);
+    public static final ImageIcon ROT_ACW_ICON = createImageIcon(15, 15, VISIBLE_ICON_COLOUR, ROT_ACW_PATH);
+
+    public static final ImageIcon UNDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, UNDO_ICON_PATH);
+    public static final ImageIcon REDO_ICON = createImageIcon(32, 32, VISIBLE_ICON_COLOUR, REDO_ICON_PATH);
+
+
+    public static final ImageIcon DELETE_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, DELETE_ICON_PATH);
+    public static final ImageIcon ESCAPE_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, ESCAPE_ICON_PATH);
+    public static final ImageIcon COPY_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, COPY_ICON_PATH);
+    public static final ImageIcon PASTE_ICON = createImageIcon(24, 24, VISIBLE_ICON_COLOUR, PASTE_ICON_PATH);
+
     // Shape Icons
     public static final ImageIcon SQUARE_ICON = createImageIcon(16, 16, VISIBLE_ICON_COLOUR, SQUARE_ICON_PATH);
     public static final ImageIcon CIRCLE_ICON = createImageIcon(16, 16, CIRCLE_ICON_PATH);
     public static final ImageIcon TRIANGLE_ICON = createImageIcon(16, 16, TRIANGLE_ICON_PATH);
     public static final ImageIcon STAR_ICON = createImageIcon(16, 16, STAR_ICON_PATH);
 
-    public static final ImageIcon SHAPE_ICON = createImageIcon(16, 16, SHAPE_ICON_PATH);
+    // SideBar Icons
+    public static final ImageIcon DROPPER_ICON = createImageIcon(25, 25, DROPPER_ICON_PATH);
+
 
     /* --------------------------------------- [ICON GENERATION] --------------------------------------- */
 
-    public static ImageIcon createImageIcon(int x, int y, String path) {
+    /**
+     * Load an file from the resources folder as an ImageIcon
+     * @param w the desired width of the icon
+     * @param h the desired height of the icon
+     * @param path the path to the icon
+     * @return Scaled image icon loaded from the resources folder
+     */
+    public static ImageIcon createImageIcon(int w, int h, String path) {
         return new ImageIcon(
-
             new ImageIcon(IconManager.class.getResource(path))
                 .getImage()
-                .getScaledInstance(x, y, java.awt.Image.SCALE_SMOOTH)
+                .getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH)
         );
     }
 
-    public static ImageIcon createImageIcon(int x, int y, Color color, String path) {
-        return changeColour(createImageIcon(x, y, path), color);
+    /**
+     * Wrapper for createImageIcon where the color of the icon is changed to the given color
+     * @param w the desired width of the icon
+     * @param h the desired height of the icon
+     * @param color the color to use to preform the recolor
+     * @param path the path to the icon
+     * @return Scaled image icon loaded from the resources folder but recolored to the given color
+     */
+    public static ImageIcon createImageIcon(int w, int h, Color color, String path) {
+        return changeColour(createImageIcon(w, h, path), color);
     }
 
+    /**
+     * Convert a image icon to a buffered image
+     * Code from: Werner Kvalem Vesterås (https://stackoverflow.com/questions/15053214/converting-an-imageicon-to-a-bufferedimage)
+     * @param icon
+     * @return
+     */
     public static BufferedImage convert_ImageIcon_To_BufferedImage(ImageIcon icon) {
-        // Code from: Werner Kvalem Vesterås (https://stackoverflow.com/questions/15053214/converting-an-imageicon-to-a-bufferedimage)
         BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         icon.paintIcon(null, g, 0, 0);
@@ -94,13 +142,19 @@ public class IconManager {
         return image;
     }
 
+    /**
+     * Change the primary color of the given icon
+     * Code from: foowtf (https://stackoverflow.com/questions/8029903/how-to-change-the-color-of-an-icon-based-on-user-action)
+     * @param icon the icon to change the color of
+     * @param newColor the new primary color
+     * @return a recolored version of the icon
+     */
     public static ImageIcon changeColour(ImageIcon icon, Color newColor) {
         BufferedImage image = convert_ImageIcon_To_BufferedImage(icon);
-        // Code from: foowtf (https://stackoverflow.com/questions/8029903/how-to-change-the-color-of-an-icon-based-on-user-action)
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 Color imageColor = new Color(image.getRGB(x, y), true);
-                // New colours but maintain the originally transparent pixels.
+                // New colors but maintain the originally transparent pixels.
                 Color newPixelColor = new Color(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), imageColor.getAlpha());
                 image.setRGB(x, y, newPixelColor.getRGB());
             }

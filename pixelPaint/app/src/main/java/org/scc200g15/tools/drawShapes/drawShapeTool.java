@@ -101,4 +101,10 @@ public class drawShapeTool implements Tool {
     public void keyReleased(PCanvas c, KeyEvent e) {
         // Handle key released event if needed
     }
+
+    @Override
+    public void deactivate(PCanvas c) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deactivate'");
+    }
 }

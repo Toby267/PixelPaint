@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 /**
  * used to represents a star for drawing on the canvas
- * TODO: this
  */
 public class Star implements Shape {
   final int POINTS = 5;
@@ -47,7 +46,7 @@ public class Star implements Shape {
   }
   
   private void fillPolygon(ArrayList<Point2D> points) {
-    ArrayList<Point2D> innerPoints = new ArrayList<Point2D>();
+    ArrayList<Point2D> innerPoints = new ArrayList<>();
     
     // Find bounding box
     int minX = Integer.MAX_VALUE;

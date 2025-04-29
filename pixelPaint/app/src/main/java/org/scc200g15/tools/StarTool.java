@@ -171,4 +171,10 @@ public class StarTool implements Tool {
   public void keyPressed(PCanvas c, KeyEvent e) {}
   @Override
   public void keyReleased(PCanvas c, KeyEvent e) {}
+
+  @Override
+  public void deactivate(PCanvas c) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'deactivate'");
+  }
 } 

@@ -14,12 +14,8 @@ import org.scc200g15.tools.drawableTools.Drawable;
 
 public class DrawSubPanel extends JPanel{
 
-    Drawable tool;
-
     public DrawSubPanel(int height, Drawable tool) {
         super(null);
-
-        this.tool = tool;
         
         setMaximumSize(new Dimension(128, height));
         
