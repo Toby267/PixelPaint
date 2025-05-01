@@ -32,11 +32,57 @@ public class Star implements Shape {
 
   private ArrayList<Point2D> getPixelsNonFill(Point2D center, int width) {
     ArrayList<Point2D> points = new ArrayList<>();
-    if (width <= 1) points.add(center);
+    if (width <= 1){
+      points.add(center);
+      return points;
+    }
+    
+
+    // Calculate the star's outline points
+    ArrayList<Point2D> starPoints = calculateStarPoints((int) center.getX(), (int) center.getY(), width / 2);
+
+    // Connect each point to the next to form the star's edges
+    for (int i = 0; i < starPoints.size(); i++) {
+        Point2D start = starPoints.get(i);
+        Point2D end = starPoints.get((i + 1) % starPoints.size()); // Wrap around to the first point
+        points.addAll(getLinePoints(start, end));
+    }
 
     return points;
   }
-  
+
+  private ArrayList<Point2D> getLinePoints(Point2D start, Point2D end) {
+    ArrayList<Point2D> linePoints = new ArrayList<>();
+
+    int x0 = (int) start.getX();
+    int y0 = (int) start.getY();
+    int x1 = (int) end.getX();
+    int y1 = (int) end.getY();
+
+    int dx = Math.abs(x1 - x0);
+    int dy = Math.abs(y1 - y0);
+
+    int sx = x0 < x1 ? 1 : -1;
+    int sy = y0 < y1 ? 1 : -1;
+
+    int err = dx - dy;
+
+    while (true) {
+        linePoints.add(new Point(x0, y0));
+        if (x0 == x1 && y0 == y1) break;
+        int e2 = 2 * err;
+        if (e2 > -dy) {
+            err -= dy;
+            x0 += sx;
+        }
+        if (e2 < dx) {
+            err += dx;
+            y0 += sy;
+        }
+    }
+
+    return linePoints;
+}  
   private ArrayList<Point2D> calculateStarPoints(int centerX, int centerY, int outerRadius) {
     ArrayList<Point2D> points = new ArrayList<>();
     int innerRadius = (int)(outerRadius * INNER_RADIUS_RATIO);
