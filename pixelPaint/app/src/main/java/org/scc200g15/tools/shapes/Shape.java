@@ -9,5 +9,5 @@ import java.util.ArrayList;
  * probably need to make this an abstract class and store the initial matrix in here then 
  */
 public interface Shape {
-    public ArrayList<Point2D> returnPixels(Point2D center, int size);
+    public ArrayList<Point2D> returnPixels(Point2D center, int size, boolean fill);
 }
