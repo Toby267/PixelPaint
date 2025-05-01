@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class Triangle implements Shape {
     /**
-     * returns the pixels for a square of width width around center either filled or non filled
+     * returns the pixels for a triangle of width width around center either filled or non filled
      */
     @Override
     public ArrayList<Point2D> returnPixels(Point2D center, int width, boolean fill) {

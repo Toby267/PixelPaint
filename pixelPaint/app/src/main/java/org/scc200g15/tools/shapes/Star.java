@@ -12,7 +12,7 @@ public class Star implements Shape {
   final double INNER_RADIUS_RATIO = 0.5;
   
   /**
-   * returns the pixels for a square of width width around center either filled or non filled
+   * returns the pixels for a star of width width around center either filled or non filled
    */
   @Override
   public ArrayList<Point2D> returnPixels(Point2D center, int width, boolean fill) {
