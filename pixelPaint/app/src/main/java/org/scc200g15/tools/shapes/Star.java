@@ -22,10 +22,11 @@ public class Star implements Shape {
   private ArrayList<Point2D> getPixelsFill(Point2D center, int width) {
     // Calculate points of the star
     ArrayList<Point2D> points = calculateStarPoints((int)center.getX(), (int)center.getY(), width/2);
-    points.add(center);
     
     // Draw the star by filling the polygon
     fillPolygon(points);
+
+    points.add(center);
 
     return points;
   }
