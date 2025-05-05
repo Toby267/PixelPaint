@@ -49,7 +49,6 @@ public class ColourPicker extends JComponent {
 
     private final ColourPickerTools Tools = new ColourPickerTools();
 
-
     public ColourPicker() {
 
         // Mouse Listener
@@ -75,7 +74,12 @@ public class ColourPicker extends JComponent {
         });    
     }
 
+    // * ---------------------------------- [ POSITION HOVER ] ---------------------------------- * //
 
+    /**
+     * Set the colour the colour picker will pass on to other tools.
+     * @param c Chosen colour
+     */
     public void setColor(Color c) {
         setH(c);
         paintImmediately(0, 0, getWidth(), getHeight());
@@ -83,6 +87,10 @@ public class ColourPicker extends JComponent {
         paintImmediately(0, 0, getWidth(), getHeight());
     }
 
+    /**
+     * Set the hue component of colour picker.
+     * @param c Chosen colour 
+     */
     public void setH(Color c) {
         int red = c.getRed();
         int green = c.getGreen();
@@ -102,6 +110,10 @@ public class ColourPicker extends JComponent {
         repaint();
     }
 
+    /**
+     * Set the saturation and brightness components of colour picker.
+     * @param c Chosen colour
+     */
     public void setSB(Color c) {
         double minDifference = Double.POSITIVE_INFINITY;
 
@@ -121,7 +133,15 @@ public class ColourPicker extends JComponent {
         repaint();
     }
 
-
+    /**
+     * Calculate the hue component of a colour based on RGB values.
+     * @param red Red component of the colour
+     * @param green Green component of the colour
+     * @param blue Blue component of the colour
+     * @param max Largest component (red, green or blue)
+     * @param min Smallest component (red, green or blue)
+     * @return Hue
+     */
     public double calculateHue(int red, int green, int blue, int max, int min) {
         // Taken from: https://cs.stackexchange.com/questions/64549/convert-hsv-to-rgb-colors
         double hue = 60;
@@ -135,7 +155,9 @@ public class ColourPicker extends JComponent {
         return hue % 1.0;
     }
 
+
     // * ---------------------------------- [ PAINT ] ---------------------------------- * //
+
 
     @Override
     public void paintComponent(Graphics g) {
@@ -180,9 +202,15 @@ public class ColourPicker extends JComponent {
     }
 
 
-
     // * ---------------------------------- [ HUE ] ---------------------------------- * //
 
+
+    /**
+     * Generate the outer ring of the colour picker, representing hue.
+     * @param g2 Graphics2D object
+     * @param x Colour wheel centerpoint x-coordinate
+     * @param y Colour wheel centerpoint y-coordinate
+     */
     public void paintPickerH(Graphics2D g2, int x, int y) {
         // Draw a line for each colour over a 360° donut.
         for (int i = 0; i < 360; i++) {
@@ -199,6 +227,13 @@ public class ColourPicker extends JComponent {
         }
     }
 
+    /**
+     * Generates the hover bubble over the hue ring.
+     * @param g2 Graphics2D object
+     * @param mouseX X-coordinate of the mouse
+     * @param mouseY Y-coordinate of the mouse
+     * @return The colour selected by the hover bubble
+     */
     public Color paintHoverH(Graphics2D g2, int mouseX, int mouseY) {
         g2.setStroke(new BasicStroke(4));
 
@@ -224,9 +259,13 @@ public class ColourPicker extends JComponent {
         return fillColor;
     }
 
-
+    /**
+     * Helper function to check if the mouse cursor is within the outer colour wheel ring.
+     * @param mouseX X-coordinate of the mouse
+     * @param mouseY Y-coordinate of the mouse
+     * @return Is the mouse within the outer colour wheel ring
+     */
     private boolean clickedH(int mouseX, int mouseY) {
-        // Check if the mouse cursor is within the outer colour wheel band (for hue)
         double distance = Tools.getDistance(mouseX - x, mouseY - y);
         int tolerance = 9;
         if (this.mouseX == -1 && this.mouseY == -1) 
@@ -234,9 +273,18 @@ public class ColourPicker extends JComponent {
         return distance >= RADIUS_INNER_H - tolerance && distance <= RADIUS_OUTER_H + tolerance;
     }
 
+
     // * ------------------------- [ SATURATION / BRIGHTNESS ] ------------------------- * //
     
-    // Inspired by: https://stackoverflow.com/questions/64876600/circular-saturation-brightness-gradient-for-color-wheel
+
+    /**
+     * Generate the inner circle of the colour picker, representing saturation and brightness.
+     * <p>Reference: https://stackoverflow.com/questions/64876600/circular-saturation-brightness-gradient-for-color-wheel</p>
+     * @param g2 Graphics2D object
+     * @param x Colour wheel centerpoint x-coordinate
+     * @param y Colour wheel centerpoint y-coordinate
+     * @param c Base colour (hue)
+     */
     public void paintPickerSB(Graphics2D g2, int x, int y, Color c) {
         g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
         
@@ -255,6 +303,13 @@ public class ColourPicker extends JComponent {
         addGradient(g2, x, y, Math.toRadians(θ_white + 5), new Color(255, 255, 255), false, true);
     }
 
+    /**
+     * Generates the hover bubble over the saturation/brightness circle.
+     * @param g2 Graphics2D object
+     * @param x X-coordinate of the mouse
+     * @param y Y-coordinate of the mouse
+     * @return The colour selected by the hover bubble
+     */
     public Color paintHoverSB(Graphics2D g2, int x, int y) {
         g2.setStroke(new BasicStroke(3));
 
@@ -274,8 +329,11 @@ public class ColourPicker extends JComponent {
         return fillColor;
     }
 
+    /**
+     * Helper function to check if the mouse cursor is within the inner colour wheel band (for brightness + saturation)
+     * @return Is the mouse within the inner colour wheel circle
+     */
     private boolean clickedBS() {
-        // Check if the mouse cursor is within the inner colour wheel band (for brightness + saturation)
         double distance = Tools.getDistance(mouseX - x, mouseY - y);
         int tolerance = -1;
         if (this.mouseX == -1 && this.mouseY == -1) 
@@ -283,13 +341,42 @@ public class ColourPicker extends JComponent {
         return distance <= RADIUS_SB + tolerance;
     }
 
+    /**
+     * Find if the hover tool is within the inner colour wheel circle. 
+     * @param hoverX Saturation/brightness hover tool x-coordinate
+     * @param hoverY Saturation/brightness hover tool y-coordinate
+     * @return Boolean value
+     */
     private boolean inSBRange(int hoverX, int hoverY) {
         return Tools.getDistance(hoverX - x, hoverY - y) <= RADIUS_SB - 1;
     }
 
+    /**
+     * Implement a given type of gradient at any specific coordinates/angle.
+     * @param g2 Graphics2D object
+     * @param x Colour wheel centerpoint x-coordinate
+     * @param y Colour wheel centerpoint y-coordinate
+     * @param θ Angle from which the gradient will start
+     * @param c Colour of the gradient
+     * @param isColour Is a unique color and not black/white
+     * @param isInverted Is gradient inverted
+     */
+    private void addGradient(Graphics2D g2, int x, int y, double θ, Color c, boolean isColour, boolean isInverted) {
+        RadialGradientPaint gradient = isInverted ? createInverseGradient(x, y, θ, c) : createGradient(x, y, θ, c, isColour);
+        g2.setPaint(gradient);
+        g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
+    }
+
+    /**
+     * Setup the gradients which go from [center transparent] to [border coloured].
+     * These will be used to have access to black (rgb: 0,0,0) & white (rgb: 255,255,255), as the inner colour wheel is circular instead of square.
+     * @param x Colour wheel centerpoint x-coordinate
+     * @param y Colour wheel centerpoint y-coordinate
+     * @param θ Angle from which the gradient will start
+     * @param c Colour of the gradient
+     * @return Radial gradient
+     */
     private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
-        // Setup the gradients which go from [center transparent] to [border coloured]
-        // These will be used to have access to black (rgb: 0,0,0) & white (rgb: 255,255,255), as the inner colour wheel is circular instead of square.
         float centerFactor = 2.45f;
         float radiusFactor = 3.35f;
         return new RadialGradientPaint(
@@ -301,9 +388,17 @@ public class ColourPicker extends JComponent {
         );
     }
 
+    /**
+     * Setup the gradients which go from [center colored] to [border transparent].
+     * These will be used to get a continous gradient from white/black to the hue colour (c).
+     * @param x Colour wheel centerpoint x-coordinate
+     * @param y Colour wheel centerpoint y-coordinate
+     * @param θ Angle from which the gradient will start
+     * @param c Colour of the gradient
+     * @param isColour Is a unique color and not black/white
+     * @return Radial gradient
+     */
     private RadialGradientPaint createGradient(int x, int y, double θ, Color c, boolean isColour) {
-        // Setup the gradients which go from [center colored] to [border transparent]
-        // These will be used to get a continous gradient from white/black to the hue colour (c).
         float centerFactor = isColour ? 1f : 1.5f;
         float radiusFactor = isColour ? 1.75f : 1.9f;
         return new RadialGradientPaint(
@@ -315,23 +410,29 @@ public class ColourPicker extends JComponent {
         );
     }
 
-    private void addGradient(Graphics2D g2, int x, int y, double θ, Color c, boolean isColour, boolean isInverted) {
-        // Implement a given type of gradient at any specific coordinates/angle
-        RadialGradientPaint gradient = isInverted ? createInverseGradient(x, y, θ, c) : createGradient(x, y, θ, c, isColour);
-        g2.setPaint(gradient);
-        g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);
+    
+    // * ------------------------- [ ACCESSOR / MUTATORS ] ------------------------- * //
+    
+    
+    /**
+     * Returns the currently active colour.
+     * @return Active colour
+     */
+    public Color getActiveColor() {
+        return this.currentColor;
     }
 
-    // From: https://stackoverflow.com/questions/25761438/understanding-bufferedimage-getrgb-output-values
+    /**
+     * Returns the colour of the pixel given its coordinates. 
+     * <p>From: https://stackoverflow.com/questions/25761438/understanding-bufferedimage-getrgb-output-values</p>
+     * @param x X-coordinate
+     * @param y Y-coordinate
+     * @return The colour at coordinates (x, y)
+     */
+    // 
     private Color getPixelColor(int x, int y) {
         int color = this.IMAGE_SB.getRGB(x, y);
         return new Color((color & 0xff0000) >> 16, (color & 0xff00) >> 8, color & 0xff);
-    }
-
-    // * ------------------------- [ ACCESSOR / MUTATORS ] ------------------------- * //
-
-    public Color getActiveColor() {
-        return this.currentColor;
     }
 
 }

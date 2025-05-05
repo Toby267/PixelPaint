@@ -72,8 +72,7 @@ final public class Layer implements MouseListener, MouseMotionListener, Serializ
     public Layer(String layerName, Color[][] pixels) {
         this.layerName = layerName;
 
-        // Init transient variables
-        init();
+        init(); // Init transient variables
 
         setPixels(pixels);
     }
@@ -89,8 +88,7 @@ final public class Layer implements MouseListener, MouseMotionListener, Serializ
     public Layer(String layerName, Color c, int w, int h) {   
         this.layerName = layerName;
         
-        // Init transient variables
-        init();
+        init(); // Init transient variables
 
         for (int y = 0; y < h; y++) {
             ArrayList<Color> row = new ArrayList<>();
@@ -98,7 +96,6 @@ final public class Layer implements MouseListener, MouseMotionListener, Serializ
                 row.add(c);
             this.pixels.add(row);
         }
-
     }
 
     /**
@@ -584,11 +581,8 @@ final public class Layer implements MouseListener, MouseMotionListener, Serializ
 
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        // Deserialize non-transient fields
-        in.defaultReadObject();   
-    
-        // Init transient variables
-        init();
+        in.defaultReadObject(); // Deserialize non-transient fields
+        init(); // Init transient variables
     }
 
 }
