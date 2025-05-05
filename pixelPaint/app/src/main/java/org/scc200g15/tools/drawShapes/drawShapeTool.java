@@ -1,10 +1,11 @@
 package org.scc200g15.tools.drawShapes;
 
-import org.scc200g15.gui.canvas.PCanvas;
-import org.scc200g15.tools.Tool;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+
+import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.tools.Tool;
 
 public class drawShapeTool implements Tool {
 
@@ -104,7 +105,5 @@ public class drawShapeTool implements Tool {
 
     @Override
     public void deactivate(PCanvas c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deactivate'");
     }
 }

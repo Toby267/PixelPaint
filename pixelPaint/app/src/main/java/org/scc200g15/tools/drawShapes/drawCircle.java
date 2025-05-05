@@ -1,17 +1,17 @@
 package org.scc200g15.tools.drawShapes;
 
-import org.scc200g15.gui.GUI;
-import org.scc200g15.gui.canvas.PCanvas;
-import org.scc200g15.image.Image;
-import org.scc200g15.image.Layer;
-import org.scc200g15.tools.Tool;
-
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+
+import org.scc200g15.gui.GUI;
+import org.scc200g15.gui.canvas.PCanvas;
+import org.scc200g15.image.Image;
+import org.scc200g15.image.Layer;
+import org.scc200g15.tools.Tool;
 
 public class drawCircle implements Tool {
 
@@ -187,7 +187,5 @@ public class drawCircle implements Tool {
 
     @Override
     public void deactivate(PCanvas c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deactivate'");
     }
 }
