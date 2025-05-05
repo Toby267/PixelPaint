@@ -8,7 +8,7 @@ import java.awt.event.MouseWheelEvent;
 
 public class drawShapeTool implements Tool {
 
-    static String activeShape;
+    static String activeShape = "Circle";
     private drawCircle circleTool = new drawCircle();
     private drawSquare squareTool = new drawSquare();
     private drawTriangle triangleTool = new drawTriangle();
