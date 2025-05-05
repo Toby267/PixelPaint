@@ -79,6 +79,14 @@ public class PSideBar extends JPanel {
 
     add(Box.createVerticalStrut(8));
     
+    // Opacity Label
+    JPanel opacityLabel = new JPanel();
+    panelSetup(opacityLabel);
+    opacityLabel.add(Box.createHorizontalStrut(10));
+    opacityLabel.add(new JLabel("Opacity"));
+    add(opacityLabel);
+    add(Box.createVerticalStrut(3));
+
     // Opacity Slider
     JPanel opacitySlider = new JPanel();
     panelSetup(opacitySlider);
