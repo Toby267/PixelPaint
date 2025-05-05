@@ -101,7 +101,6 @@ public class ColourPicker extends JComponent {
     }
 
     public void setSB(Color c) {
-        Color tempC = null;
         double minDifference = Double.POSITIVE_INFINITY;
         for(int x_i = 0; x_i < this.IMAGE_SB.getWidth(); x_i++) {
             for (int y_i = 0; y_i < this.IMAGE_SB.getHeight(); y_i++) {
@@ -109,7 +108,6 @@ public class ColourPicker extends JComponent {
                     continue;
                 double difference = Tools.colorDifference(c, getPixelColor(x_i, y_i));
                 if(difference < minDifference) {
-                    tempC = getPixelColor(x_i, y_i);
                     minDifference = difference;
                     this.mouseX = x_i;
                     this.mouseY = y_i;
