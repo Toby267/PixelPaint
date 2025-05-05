@@ -57,7 +57,7 @@ public class PStatusBar extends JPanel implements MouseMotionListener {
     sb.append((int) point.getX());
     sb.append(",");
     sb.append((int) point.getY());
-    sb.append(")");
+    sb.append(")  ");
     posLabel.setText(sb.toString());
 
   }

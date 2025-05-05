@@ -88,12 +88,14 @@ public class ColourPicker extends JComponent {
         int green = c.getGreen();
         int blue = c.getBlue();
 
+        // Calculate correct hue based on rgb value
         int max = Math.max(red, Math.max(green, blue));
         int min = Math.min(red, Math.min(green, blue));
-
         double hue = calculateHue(red, green, blue, max, min);
+
         int radius = (RADIUS_OUTER_H + RADIUS_INNER_H) / 2;
 
+        // Place the selector on the correct part of the outer colour wheel section (for hue).
         this.mouseX = this.x + (int) Math.round(radius * Math.cos(Tools.getθ(hue))); 
         this.mouseY = this.y + (int) Math.round(radius * Math.sin(Tools.getθ(hue)));
 
@@ -102,6 +104,8 @@ public class ColourPicker extends JComponent {
 
     public void setSB(Color c) {
         double minDifference = Double.POSITIVE_INFINITY;
+
+        // Loop over the inner colour wheel (saturation + brightness) to find the closest colour available.
         for(int x_i = 0; x_i < this.IMAGE_SB.getWidth(); x_i++) {
             for (int y_i = 0; y_i < this.IMAGE_SB.getHeight(); y_i++) {
                 if(!inSBRange(x_i, y_i))
@@ -136,7 +140,6 @@ public class ColourPicker extends JComponent {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
 
         Graphics2D g2 = (Graphics2D) g;
 
@@ -180,7 +183,6 @@ public class ColourPicker extends JComponent {
 
     // * ---------------------------------- [ HUE ] ---------------------------------- * //
 
-    // ! TODO: STOP FROM BEING REPAINTED FOR OPTIMIZATION
     public void paintPickerH(Graphics2D g2, int x, int y) {
         // Draw a line for each colour over a 360° donut.
         for (int i = 0; i < 360; i++) {
@@ -224,6 +226,7 @@ public class ColourPicker extends JComponent {
 
 
     private boolean clickedH(int mouseX, int mouseY) {
+        // Check if the mouse cursor is within the outer colour wheel band (for hue)
         double distance = Tools.getDistance(mouseX - x, mouseY - y);
         int tolerance = 9;
         if (this.mouseX == -1 && this.mouseY == -1) 
@@ -259,7 +262,8 @@ public class ColourPicker extends JComponent {
             x = getWidth() / 2;
             y = (int) Math.round(RADIUS_OUTER_H * 1.25);    
         }
-            
+        
+        // Draw the hover tool as an oval centered around the cursor
         int radius = (int) Math.round(RADIUS_SB / 5f);
         Color fillColor = getPixelColor(x, y);
         g2.setColor(fillColor);
@@ -271,6 +275,7 @@ public class ColourPicker extends JComponent {
     }
 
     private boolean clickedBS() {
+        // Check if the mouse cursor is within the inner colour wheel band (for brightness + saturation)
         double distance = Tools.getDistance(mouseX - x, mouseY - y);
         int tolerance = -1;
         if (this.mouseX == -1 && this.mouseY == -1) 
@@ -283,6 +288,8 @@ public class ColourPicker extends JComponent {
     }
 
     private RadialGradientPaint createInverseGradient(int x, int y, double θ, Color c) {
+        // Setup the gradients which go from [center transparent] to [border coloured]
+        // These will be used to have access to black (rgb: 0,0,0) & white (rgb: 255,255,255), as the inner colour wheel is circular instead of square.
         float centerFactor = 2.45f;
         float radiusFactor = 3.35f;
         return new RadialGradientPaint(
@@ -295,8 +302,10 @@ public class ColourPicker extends JComponent {
     }
 
     private RadialGradientPaint createGradient(int x, int y, double θ, Color c, boolean isColour) {
+        // Setup the gradients which go from [center colored] to [border transparent]
+        // These will be used to get a continous gradient from white/black to the hue colour (c).
         float centerFactor = isColour ? 1f : 1.5f;
-        float radiusFactor = isColour ? 1.75f : 1.9f; // 2.0f
+        float radiusFactor = isColour ? 1.75f : 1.9f;
         return new RadialGradientPaint(
             x + Tools.newX(RADIUS_SB, θ) * centerFactor,
             y + Tools.newY(RADIUS_SB, θ) * centerFactor,
@@ -307,6 +316,7 @@ public class ColourPicker extends JComponent {
     }
 
     private void addGradient(Graphics2D g2, int x, int y, double θ, Color c, boolean isColour, boolean isInverted) {
+        // Implement a given type of gradient at any specific coordinates/angle
         RadialGradientPaint gradient = isInverted ? createInverseGradient(x, y, θ, c) : createGradient(x, y, θ, c, isColour);
         g2.setPaint(gradient);
         g2.fillOval(x - RADIUS_SB, y - RADIUS_SB, RADIUS_SB * 2, RADIUS_SB * 2);

@@ -2,6 +2,7 @@ package org.scc200g15.gui.sidebar;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Box;
@@ -126,9 +127,10 @@ public class PSideBar extends JPanel {
   }
 
   private JLabel titleLabel() {
-    JLabel label = new JLabel("Colour Selector");
-    label.setPreferredSize(new Dimension(200, 20));
-    label.setHorizontalAlignment(JLabel.CENTER);
+    JLabel label = new JLabel("   Colour Selector");
+    label.setPreferredSize(new Dimension(200, 30));
+    label.setFont(new Font("Helvetica Neue", Font.PLAIN, 15));
+    label.setHorizontalAlignment(JLabel.LEFT);
     return label;
   }
 
