@@ -9,23 +9,20 @@ import org.scc200g15.gui.canvas.PCanvas;
 
 public class ColourDropperTool implements Tool {
     
-    public ColourDropperTool() {
-        
-    }
+    public ColourDropperTool() {}
 
     @Override
     public void mouseReleased(PCanvas c, java.awt.event.MouseEvent e) {
+        // Get X and Y coordinates of the cursor
         Point2D point = c.getPixelPoint(e.getPoint());
-        
-        int x = (int) Math.round(point.getX());
-        int y = (int) Math.round(point.getY());
-
-
+        int x = (int) Math.floor(point.getX());
+        int y = (int) Math.floor(point.getY());
 
         // From: https://stackoverflow.com/questions/25761438/understanding-bufferedimage-getrgb-output-values
-        int color = GUI.getInstance().getCanvas().getBufferedImage().getRGB(x, y);
-        Color colour = new Color((color & 0xff0000) >> 16, (color & 0xff00) >> 8, color & 0xff);
-        GUI.getInstance().getSideBar().setColourWheel(colour); // SET ACTIVE COLOUR IN COLOR WHEEL
+        // Get the colour at the current pixel and load it onto the colour wheel
+        int colour_rgb = GUI.getInstance().getCanvas().getBufferedImage().getRGB(x, y);
+        Color colour = new Color((colour_rgb & 0xff0000) >> 16, (colour_rgb & 0xff00) >> 8, colour_rgb & 0xff);
+        GUI.getInstance().getSideBar().setColourWheel(colour); // Set active colour in the colour wheel
     }
 
     // Required interface methods that we don't need

@@ -29,17 +29,16 @@ public class PStatusBar extends JPanel implements MouseMotionListener {
   JSpinner canvasY = new JSpinner(new SpinnerNumberModel(32, 0, 512, 1));
 
   public PStatusBar(GUI window) {
-
-    setPreferredSize(new Dimension(window.getWidth(), 16));
+    setPreferredSize(new Dimension(window.getWidth(), 25));
     setLayout(new GridLayout(1,3));
 
     // Add Label to StatusBar
-    zoomLabel = new JLabel("Zoom: 100%", SwingConstants.CENTER);
+    zoomLabel = new JLabel("  Zoom: 100%", SwingConstants.LEFT);
     add(zoomLabel);
 
     setupCanvasResizer();
 
-    posLabel = new JLabel("Mouse Position: (-1, -1)", SwingConstants.CENTER);
+    posLabel = new JLabel("Mouse Position: (-1, -1)  ", SwingConstants.RIGHT);
     add(posLabel);
   }
 
@@ -58,7 +57,7 @@ public class PStatusBar extends JPanel implements MouseMotionListener {
     sb.append((int) point.getX());
     sb.append(",");
     sb.append((int) point.getY());
-    sb.append(")");
+    sb.append(")  ");
     posLabel.setText(sb.toString());
 
   }

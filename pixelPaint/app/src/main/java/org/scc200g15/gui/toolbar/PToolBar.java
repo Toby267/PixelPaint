@@ -51,7 +51,6 @@ public class PToolBar extends JPanel {
     add(toolButton);
     toolbarButtons.add(toolButton);
 
-
     revalidate();
     repaint();
   }
