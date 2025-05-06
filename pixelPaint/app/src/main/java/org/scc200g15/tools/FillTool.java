@@ -38,6 +38,8 @@ FillTool implements Tool{
         Layer activeLayer = GUI.getInstance().getActiveImage().getActiveLayer();
         int tolerance = GUI.getInstance().getFillTolerance();
 
+        int count = 0;
+
         while (!pointsToCheck.isEmpty()){
             Point nextPoint = pointsToCheck.remove();
 
@@ -48,6 +50,8 @@ FillTool implements Tool{
 
             if(getTolerance(targetColor, pixels[nextPoint.x][nextPoint.y]) > tolerance)
                 continue;
+
+            count ++;
 
             actionOldColors.add(activeLayer.getPixel(nextPoint.x, nextPoint.y));
             actionPoints.add(new Point(nextPoint.x, nextPoint.y));
@@ -65,6 +69,8 @@ FillTool implements Tool{
                 pointsToCheck.add(new Point(nextPoint.x + 1, nextPoint.y));
             if(nextPoint.y + 1 < pixels[0].length)
                 pointsToCheck.add(new Point(nextPoint.x, nextPoint.y + 1));
+        
+            if(count > 5000) break;
         }
 
         PixelsChangedAction fillAction = new PixelsChangedAction(activeLayer, actionPoints, actionOldColors, newColor);
