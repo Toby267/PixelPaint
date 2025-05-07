@@ -70,7 +70,7 @@ FillTool implements Tool{
             if(nextPoint.y + 1 < pixels[0].length)
                 pointsToCheck.add(new Point(nextPoint.x, nextPoint.y + 1));
         
-            if(count > 5000) break;
+            if(count > 10000) break;
         }
 
         PixelsChangedAction fillAction = new PixelsChangedAction(activeLayer, actionPoints, actionOldColors, newColor);
