@@ -344,16 +344,25 @@ public class PCanvas extends JPanel {
 
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Save Image");
-    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG Images", "png"));
+    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG and BMP Files", "png", "bmp"));
 
     int userSelection = fileChooser.showSaveDialog(this);
     if (userSelection == JFileChooser.APPROVE_OPTION) {
       File fileToSave = fileChooser.getSelectedFile();
       try {
-        if (!fileToSave.getAbsolutePath().endsWith(".png"))
-          ImageIO.write(imageBuffer, "png", new File(fileToSave.getAbsolutePath() + ".png"));
-        else
+        if (fileToSave.getAbsolutePath().endsWith(".png"))
           ImageIO.write(imageBuffer, "png", new File(fileToSave.getAbsolutePath()));
+        else if (fileToSave.getAbsolutePath().endsWith(".bmp")){
+          System.out.println("BMP");
+          BufferedImage newImage = new BufferedImage(imageBuffer.getWidth(), imageBuffer.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+          Graphics2D g = newImage.createGraphics();
+          g.drawImage(imageBuffer, 0, 0, imageBuffer.getWidth(), imageBuffer.getHeight(), null);
+          g.dispose();
+
+          ImageIO.write(newImage, "bmp", new File(fileToSave.getAbsolutePath()));
+        } else
+          ImageIO.write(imageBuffer, "png", new File(fileToSave.getAbsolutePath() + ".png"));
         JOptionPane.showMessageDialog(this, "Image saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
       } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "Error saving image!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -369,7 +378,7 @@ public class PCanvas extends JPanel {
 
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Save Layer");
-    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG Images", "png"));
+    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG and BMP Files", "png", "bmp"));
 
     int userSelection = fileChooser.showSaveDialog(this);
 
@@ -388,10 +397,19 @@ public class PCanvas extends JPanel {
     if (userSelection == JFileChooser.APPROVE_OPTION) {
       File fileToSave = fileChooser.getSelectedFile();
       try {
-        if (!fileToSave.getAbsolutePath().endsWith(".png"))
-          ImageIO.write(layerImage, "png", new File(fileToSave.getAbsolutePath() + ".png"));
-        else
+        if (fileToSave.getAbsolutePath().endsWith(".png"))
           ImageIO.write(layerImage, "png", new File(fileToSave.getAbsolutePath()));
+        else if (fileToSave.getAbsolutePath().endsWith(".bmp")){
+          System.out.println("BMP");
+          BufferedImage newImage = new BufferedImage(imageBuffer.getWidth(), imageBuffer.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+          Graphics2D g = newImage.createGraphics();
+          g.drawImage(imageBuffer, 0, 0, imageBuffer.getWidth(), imageBuffer.getHeight(), null);
+          g.dispose();
+
+          ImageIO.write(newImage, "bmp", new File(fileToSave.getAbsolutePath()));
+        }else
+          ImageIO.write(layerImage, "png", new File(fileToSave.getAbsolutePath() + ".png"));
         JOptionPane.showMessageDialog(this, "Layer saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
       } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "Error saving layer!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -403,7 +421,7 @@ public class PCanvas extends JPanel {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Open Image");
     fileChooser
-        .setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG & JPEG Images", "png", "jpg", "jpeg"));
+        .setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PNG and BMP Files", "png", "bmp"));
 
     int userSelection = fileChooser.showOpenDialog(this);
     if (userSelection == JFileChooser.APPROVE_OPTION) {

@@ -98,7 +98,7 @@ public class PMenuBar extends JMenuBar {
     // JFileChooser to select PNG file
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Open Image");
-    fileChooser.setFileFilter(new FileNameExtensionFilter("PNG Images", "png"));
+    fileChooser.setFileFilter(new FileNameExtensionFilter("PNG and BMP Files", "png", "bmp"));
 
     int result = fileChooser.showOpenDialog(null);
 
