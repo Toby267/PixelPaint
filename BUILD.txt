@@ -1,9 +1,8 @@
 # Build Instructions
 
-## Ubuntu
+## Ubuntu To Run
 ```sh
 cd pixelPaint
 ./gradlew  build #Builds The App
 ./gradlew run   #Runs The App
-./gradlew test  #Runs All Tests
 ```
