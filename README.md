@@ -1,6 +1,6 @@
 # SCC200 Group 15
 
-• [Build settings](BUILD.md) <br>
+• [Build settings](BUILD.txt) <br>
 • [User manual](manual.pdf)
 
 ## Design
