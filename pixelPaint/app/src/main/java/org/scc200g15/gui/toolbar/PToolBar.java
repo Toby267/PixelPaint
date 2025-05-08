@@ -42,10 +42,11 @@ public class PToolBar extends JPanel {
     }
   }
 
-  public void addTool(Tool t, ImageIcon icon) {
+  public void addTool(Tool t, ImageIcon icon, String ToolTip) {
     // Create Button
     PToolBarButton toolButton = new PToolBarButton(t, icon);
     toolButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
+    toolButton.setToolTipText(ToolTip);
 
     // Add Button
     add(toolButton);
@@ -55,10 +56,11 @@ public class PToolBar extends JPanel {
     repaint();
   }
 
-  public void addTool(Tool t, ImageIcon icon, JPanel subPanel) {
+  public void addTool(Tool t, ImageIcon icon, JPanel subPanel, String ToolTip) {
     // Create Button
     PToolBarButton toolButton = new PToolBarButton(t, icon, subPanel);
     toolButton.setBorder(new LineBorder(new Color(0, 0, 0, 0), 10, true));
+    toolButton.setToolTipText(ToolTip);
 
     // Add Button
     add(toolButton);
@@ -77,6 +79,9 @@ public class PToolBar extends JPanel {
     undoBTN.setBorder(new LineBorder(new Color(0, 0, 0, 0), 8, true)); 
     JButton redoBTN = new JButton(IconManager.REDO_ICON);
     redoBTN.setBorder(new LineBorder(new Color(0, 0, 0, 0), 8, true));
+
+    undoBTN.setToolTipText("Undo");
+    redoBTN.setToolTipText("Redo");
 
     undoBTN.addActionListener((ActionEvent e) -> {
       GUI.getInstance().getActiveImage().undoAction();

@@ -26,16 +26,18 @@ public class DrawSubPanel extends JPanel{
         JComboBox<ImageIcon> shapeSelector = new JComboBox<>(icons);
         shapeSelector.setLocation(2,2);
         shapeSelector.setSize(new Dimension(60, height - 4));
-
         shapeSelector.getSelectedIndex();
+        shapeSelector.setToolTipText("Brush Shape");
 
         NumberInput sizeInput = new NumberInput(1,100, 2);
         sizeInput.setLocation(64,2);
         sizeInput.setSize(new Dimension(60, height - 4));
+        sizeInput.setToolTipText("Brush Size");
 
         JToggleButton fillToggle = new JToggleButton("Fill", true);
         fillToggle.setLocation(126,2);
         fillToggle.setSize(new Dimension(50, height - 4));
+        fillToggle.setToolTipText("Fill or Outline");
 
         // Pass Shape input to draw tool
         shapeSelector.addActionListener((ActionEvent e) -> {

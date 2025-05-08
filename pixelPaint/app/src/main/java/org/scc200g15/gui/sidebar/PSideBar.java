@@ -65,6 +65,7 @@ public class PSideBar extends JPanel {
     dropperButton.addActionListener((ActionEvent e) -> {
       GUI.getInstance().getToolManager().setActiveTool("dropper");
     });
+    dropperButton.setToolTipText("Colour Dropper");
     titlePanel.add(dropperButton);
 
     add(titlePanel);
@@ -100,6 +101,9 @@ public class PSideBar extends JPanel {
 
     // RGB Input
     JPanel inputRGB = new JPanel();
+    rText.setToolTipText("Red");
+    gText.setToolTipText("Green");
+    bText.setToolTipText("Blue");
     panelSetup(inputRGB);
     inputRGB.add(Box.createHorizontalStrut(3));
     inputRGB.add(rText);

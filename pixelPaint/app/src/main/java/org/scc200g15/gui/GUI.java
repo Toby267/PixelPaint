@@ -73,12 +73,12 @@ public class GUI extends JFrame {
 
   private void registerTool(Tool tool, ImageIcon icon, String toolID, String name){
     toolManager.registerTool(toolID, tool);
-    toolBar.addTool(tool, icon);
+    toolBar.addTool(tool, icon, name);
     menuBar.addTool(tool, name);
   }
   private void registerTool(Tool tool, ImageIcon icon, String toolID, String name, JPanel subPanel){
     toolManager.registerTool(toolID, tool);
-    toolBar.addTool(tool, icon, subPanel);
+    toolBar.addTool(tool, icon, subPanel, name);
     menuBar.addTool(tool, name);
   }
 
@@ -102,7 +102,7 @@ public class GUI extends JFrame {
 
     drawShapeTool drawShapeTool = new drawShapeTool();
     DrawSubPanel1 sqr = new DrawSubPanel1(PToolBar.height, new drawShapeTool());
-    registerTool(drawShapeTool, IconManager.STAR_ICON, "drawShapes", "drawShapesTool", sqr);
+    registerTool(drawShapeTool, IconManager.STAR_ICON, "drawShapes", "Shapes Tool", sqr);
 
 
     // Add undo/redo
@@ -153,7 +153,7 @@ public class GUI extends JFrame {
 
     // ToolManager
     PanZoomTool defaultTool = new PanZoomTool();
-    toolBar.addTool(defaultTool, IconManager.PAN_ZOOM_ICON);
+    toolBar.addTool(defaultTool, IconManager.PAN_ZOOM_ICON, "Pan Zoom");
     menuBar.addTool(defaultTool, "Pan Zoom");
     toolManager = new ToolManager(canvas, defaultTool);
 
