@@ -19,7 +19,7 @@ public class DrawSubPanel1 extends JPanel{
 
         this.tool = tool;
 
-        setMaximumSize(new Dimension(128, height));
+        setMaximumSize(new Dimension(64, height));
 
         ImageIcon icons[] = {IconManager.CIRCLE_ICON,IconManager.SQUARE_ICON, IconManager.TRIANGLE_ICON, IconManager.STAR_ICON};
         String shapeIDs[] = {"Circle", "Square", "Triangle", "Star"};
@@ -27,8 +27,8 @@ public class DrawSubPanel1 extends JPanel{
         JComboBox<ImageIcon> shapeSelector = new JComboBox<>(icons);
         shapeSelector.setLocation(2,2);
         shapeSelector.setSize(new Dimension(60, height - 4));
-
         shapeSelector.getSelectedIndex();
+        shapeSelector.setToolTipText("Shape");
 
 
 

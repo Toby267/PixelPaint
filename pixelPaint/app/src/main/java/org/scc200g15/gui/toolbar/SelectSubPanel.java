@@ -28,18 +28,22 @@ public class SelectSubPanel extends JPanel {
         JButton deleteButton = new JButton(IconManager.DELETE_ICON);
         deleteButton.setSize(new Dimension(40, height - 4));
         deleteButton.setLocation(2,2);
+        deleteButton.setToolTipText("Delete");
 
         JButton escapeButton = new JButton(IconManager.ESCAPE_ICON);
         escapeButton.setSize(new Dimension(40, height - 4));
         escapeButton.setLocation(44,2);
+        escapeButton.setToolTipText("Escape");
 
         JButton copyButton = new JButton(IconManager.COPY_ICON);
         copyButton.setSize(new Dimension(40, height - 4));
         copyButton.setLocation(86,2);
+        copyButton.setToolTipText("Copy");
         
         JButton pasteButton = new JButton(IconManager.PASTE_ICON);
         pasteButton.setSize(new Dimension(40, height - 4));
         pasteButton.setLocation(128,2);
+        pasteButton.setToolTipText("Paste");
 
         JPanel rotatePanel = new JPanel();
         rotatePanel.setLayout(new BoxLayout(rotatePanel, BoxLayout.X_AXIS));
@@ -48,15 +52,18 @@ public class SelectSubPanel extends JPanel {
         rotatePanel.setBorder(new LineBorder(Color.DARK_GRAY, 1, true));
 
         JButton rotateCWButton = new JButton(IconManager.ROT_CW_ICON);
-        rotatePanel.add(rotateCWButton);       
+        rotateCWButton.setToolTipText("Rotate Clockwise"); 
+        rotatePanel.add(rotateCWButton);
 
         JButton rotateACWButton = new JButton(IconManager.ROT_ACW_ICON);
+        rotateACWButton.setToolTipText("Rotate Anti Clockwise");
         rotatePanel.add(rotateACWButton);
 
         Integer[] rotateDropdownOptions = {90, 180, 270};
         JComboBox<Integer> rotateComboBox = new JComboBox<>(rotateDropdownOptions);
         rotateComboBox.setMaximumSize(new Dimension(60, height-5));
         rotateComboBox.setPreferredSize(new Dimension(60, height-5));
+        rotateComboBox.setToolTipText("Rotate Angle");
         rotatePanel.add(rotateComboBox);
         
         //button action listeners

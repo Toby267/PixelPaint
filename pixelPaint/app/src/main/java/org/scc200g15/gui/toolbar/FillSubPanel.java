@@ -20,6 +20,8 @@ public class FillSubPanel extends JPanel{
         toleranceSlider.setLocation(new Point(2,2));
         toleranceSlider.setSize(new Dimension(124 ,height - 4));
 
+        toleranceSlider.setToolTipText("Tolerance");
+
         this.add(toleranceSlider);
 
     }
