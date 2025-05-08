@@ -28,9 +28,9 @@ public class SquareSelectTool implements Tool {
     BOTTOM
   }
 
-  ArrayList<Point> actionPoints = new ArrayList<>();
-  ArrayList<Color> actionOldColours = new ArrayList<>();
-  ArrayList<Color> actionNewColours = new ArrayList<>();
+  private ArrayList<Point> actionPoints = new ArrayList<>();
+  private ArrayList<Color> actionOldColours = new ArrayList<>();
+  private ArrayList<Color> actionNewColours = new ArrayList<>();
 
   private SelectState currentState = new Idle();
   private Side selectedSide;

@@ -23,8 +23,8 @@ import org.scc200g15.tools.shapes.Triangle;
 
 public abstract class Drawable implements Tool {
 
-  ArrayList<Point> actionPoints;
-  ArrayList<Color> actionOldColors;
+  protected ArrayList<Point> actionPoints;
+  protected ArrayList<Color> actionOldColors;
 
   // map of all shapes
   protected HashMap<String, Shape> shapes = new HashMap<>();
